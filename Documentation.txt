@@ -1,0 +1,22 @@
+Documentation of the coding style in all Che projects:
+
+Naming conventions:
+#Functions:
+	foo_bar()
+
+	@foo can be the name of a compilation unit or a struct.
+	@bar can be any verb like "get", "set" or "create".
+
+	init <-> terminate : initializing static variables
+	create <-> destroy : A manager or factory or just something else is responsible for creating, storing and destroying objects
+	generate <-> erase : anything that just generates an id or number or index
+	construct <-> destruct : for actual objects where memory *can* (not must) be allocated or deallocated. 
+	Like constructor and destructor. 
+
+	If a function begins with a "_", that means that there is a macro with the same name but without the "_" in front.
+
+#Macros:
+	foo_bar(arg);
+	
+	@function body -> #Functions
+	@arg if it begins with an uppercase letter, it is a type
