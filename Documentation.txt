@@ -13,10 +13,13 @@ Naming conventions:
 	construct <-> destruct : for actual objects where memory *can* (not must) be allocated or deallocated. 
 	Like constructor and destructor. 
 
-	If a function begins with a "_", that means that there is a macro with the same name but without the "_" in front.
+	If a function begins with a "inter_", that means that the function is only used inside the library, not in the API itself. (If the Project is part of a library)
 
 #Macros:
 	foo_bar(arg);
 	
 	@function body -> #Functions
 	@arg if it begins with an uppercase letter, it is a type
+	
+	Variables defined in a macro always have to be uppercase.
+	Functions defined in as macro always have to be written like normal functions -> #Functions

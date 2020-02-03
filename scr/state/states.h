@@ -2,7 +2,6 @@
 #define STATES
 
 #include "../window/window.h"
-#include <string.h>
 #include <checl/containers.h>
 #include <checs/ecs.h>
 

@@ -25,7 +25,8 @@ void vertexArray_buffer_add(GLuint const vao, GLuint const vbo, VertexBufferLayo
 	vertexArray_bind(vao);
 	vertexBuffer_bind(vbo);
 	//each layout of the attributes a the vbo is getting enabled and specified.
-	uint16_t offset = 0;
+	//should be of type uint but glVertexAttribPointer takes a void* where the adress is used as the actual value
+	void const* offset = 0;
 	for (uint8_t i=0; i < layout.elementCount; ++i)
 	{
 		VertexBufferLayoutElement const element = layout.elements[i];
@@ -38,7 +39,7 @@ void vertexArray_buffer_add(GLuint const vao, GLuint const vbo, VertexBufferLayo
 			element.type,
 			element.normalized,
 			layout.stride,    //the stride is the same for all attributes because it is the size of the whole vertex
-			(void*)offset // at which offset this attribute begins relative to the begin of the vertex
+			offset // at which offset this attribute begins relative to the begin of the vertex
 		);
 
 		//with each attribute the offset is getting higher 

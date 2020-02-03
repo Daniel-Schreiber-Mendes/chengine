@@ -69,11 +69,13 @@ GLuint createShader(GLenum const type, char const *const path)
         GLint len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
 
-        char *const message = (char*)alloca(sizeof(char) * len); //stack allocating string
+        char *const message = (char*)malloc(sizeof(char) * len);
         glGetShaderInfoLog(shader, len, &len, message);
 
         printf("Failed to compiler shader!\n\nPath: \n%s\n\nBuffersize: %u\n\nMessage:\n%s", path, file.bufferSize, message);
         printf("%s\n", file.buffer);
+
+        free(message);
     }
 
     return shader;

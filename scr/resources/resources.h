@@ -15,8 +15,8 @@ typedef struct
 
 typedef struct
 {
-	char* buffer;
-	uint64_t bufferSize; //size in bytes
+	char * buffer;
+	uint16_t bufferSize; //size in bytes
 }File;
 
 

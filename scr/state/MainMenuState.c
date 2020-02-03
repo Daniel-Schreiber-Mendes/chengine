@@ -6,7 +6,6 @@ void mainMenuState_construct(MainMenuState *const s)
     s->b.destruct = &mainMenuState_destruct;
     s->b.update = &mainMenuState_update;
     s->b.draw = &mainMenuState_draw;
-    
 
     s->b.drawing = true;
     s->b.updating = true;
