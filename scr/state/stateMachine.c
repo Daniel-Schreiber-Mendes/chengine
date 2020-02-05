@@ -58,6 +58,9 @@ void _stateMachine_state_push(State *const state)
 void stateMachine_terminate(void)
 {
     window_terminate();
+    entityManager_terminate();
+    systemManager_terminate();
+    componentManager_terminate();
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);

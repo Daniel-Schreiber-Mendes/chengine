@@ -28,36 +28,55 @@ void mainMenuState_update(State *const state);
 void mainMenuState_draw(State *const state);
 
 
-void test(void)
+void task(void)
 {
 	//printf("task\n");
 }
 
-void test2(void)
+
+#define PositionComponent 0
+typedef struct
 {
+	int x;
+	int y;
+}Position;
 
-}
-
-void systest(ComponentTable* c)
+#define TransformComponent 1
+typedef struct
 {
-	//printf("system\n");
+	int x;
+	int y;
+}Transform;
+
+
+
+void sys(EntityId *const entitys, uintEC const entityCount)
+{
+	componentManager_component_use(Position, p);
+	entityManager_foreach(entity)
+	{
+		componentManager_component_get(Position, p, entity);
+		printf("%i\n", ++p->x);
+	}
 }
-
-
-#define PositionComponent 1
-typedef struct{}Position;
 
 
 void stateMachine_setup(void)
 {
-	systemManager_init(1, 0, 0, 1);
-	entityManager_init(512);
-	componentManager_init(0);
+	systemManager_init(1, 0, 0, 0);
+	entityManager_init();
+	componentManager_init(2);
+
+	componentManager_component_register(Position);
+	componentManager_component_register(Transform);
+
+	systemManager_system_register(sys, UPDATE, Position);
 
 
-	systemManager_system_register(systest, UPDATE, Position, Position);
-	systemManager_task_register(test, DRAW);
-
+	for(uintEC i=0; i < 1; ++i)
+	{
+		entityManager_entity_generate(Position, Transform);
+	}
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 }

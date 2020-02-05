@@ -1,6 +1,10 @@
 
-LFLAGS = -o#flags for linking
-CFLAGS = -pg -g -c -std=c99#flags for compilation
+
+#flags for linking
+LFLAGS = -pg -o
+
+#flags for compilation
+CFLAGS = -c -pg -g -std=c99
 
 make: OUTPUT
 	./output
