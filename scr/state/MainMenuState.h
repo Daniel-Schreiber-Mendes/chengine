@@ -56,7 +56,8 @@ void sys(EntityId *const entitys, uintEC const entityCount)
 	entityManager_foreach(entity)
 	{
 		componentManager_component_get(Position, p, entity);
-		printf("%i\n", ++p->x);
+		//++p->x;
+		//++p->y;
 	}
 }
 
@@ -73,7 +74,7 @@ void stateMachine_setup(void)
 	systemManager_system_register(sys, UPDATE, Position);
 
 
-	for(uintEC i=0; i < 1; ++i)
+	for(uintEC i=0; i < 100; ++i)
 	{
 		entityManager_entity_generate(Position, Transform);
 	}
