@@ -6,6 +6,9 @@ Naming conventions:
 
 	@foo can be the name of a compilation unit or a struct.
 	@bar can be any verb like "get", "set" or "create".
+	
+	It is possible to name a function for example foo_isActive() but only if this function is the only one mentioning this keyword.
+	This means as soon as the you have a setActive function both need to be written in the form foo_active_get() and foo_active_set()
 
 	init <-> terminate : initializing static variables
 	create <-> destroy : A manager or factory or just something else is responsible for creating, storing and destroying objects
@@ -14,6 +17,8 @@ Naming conventions:
 	Like constructor and destructor. 
 
 	If a function begins with a "inter_", that means that the function is only used inside the library, not in the API itself. (If the Project is part of a library)
+	
+	The end of a function implemenatation has to be exactly 2 lines above the begin of the next one
 
 #Macros:
 	foo_bar(arg);
