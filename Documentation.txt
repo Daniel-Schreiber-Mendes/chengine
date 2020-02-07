@@ -14,6 +14,7 @@ Naming conventions:
 	create <-> destroy : A manager or factory or just something else is responsible for creating, storing and destroying objects
 	generate <-> erase : anything that just generates an id or number or index
 	construct <-> destruct : for actual objects where memory *can* (not must) be allocated or deallocated. 
+	add <-> remove : adding something to a data structure like a vector or stack or sparseSet
 	Like constructor and destructor. 
 
 	If a function begins with a "inter_", that means that the function is only used inside the library, not in the API itself. (If the Project is part of a library)
