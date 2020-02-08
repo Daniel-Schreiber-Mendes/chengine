@@ -29,3 +29,6 @@ Naming conventions:
 	
 	Variables defined in a macro always have to be uppercase.
 	Functions defined in as macro always have to be written like normal functions -> #Functions
+
+#Variables:
+	if defined as extern in a header, they have to be written in this form : variable_name

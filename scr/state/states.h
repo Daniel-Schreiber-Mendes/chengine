@@ -3,7 +3,7 @@
 
 #include "../window/window.h"
 #include <checl/containers.h>
-#include <checs/ecs.h>
+#include <checs/checs.h>
 
 
 typedef struct State State; //the structs that "inherit" from State have to have it as their FIRST member, otherwise they can't be casted correctly

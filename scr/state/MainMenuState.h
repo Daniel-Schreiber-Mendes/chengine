@@ -58,25 +58,24 @@ void sys(EntityId *const entitys, uintEC const entityCount)
 		componentManager_component_get(Position, p, entity);
 		++p->x;
 		++p->y;
-		printf("hallo");
 	}
 }
 
 
 void stateMachine_setup(void)
 {
-	systemManager_init(1, 0, 0, 0);
-	entityManager_init();
-	componentManager_init(2);
+	entityManager_hints_give(150, 5);
+	checs_init(1, 0, 0, 0, 2);
 
-	componentManager_component_register(Position);
-	componentManager_component_register(Transform);
+	checs_component_register(Position);
+	checs_component_register(Transform);
+	
+	checs_system_register(sys, UPDATE, Position);
 
-	systemManager_system_register(sys, UPDATE, Position);
-
-
-	EntityId e = entityManager_entity_generate(Transform, Position);
-	entityManager_entity_erase(e);
+	for(uintEC i=0; i < 150; ++i)
+	{
+		checs_entity_generate(Position);
+	}
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 }

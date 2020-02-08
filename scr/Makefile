@@ -11,11 +11,12 @@ make: OUTPUT
 
 profile:
 	gprof output gmon.out
-	rm *.out
+	rm gmon.out
 
 profileCache: output
 	valgrind --tool=cachegrind make
 	rm *.out.*
+	rm gmon.out
 
 OUTPUT: 		  main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o
 	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o -lGL -lGLU -lglut -lGLEW -lglfw -lm -lchecl -lchecs
