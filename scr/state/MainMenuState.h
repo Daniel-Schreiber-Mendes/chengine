@@ -50,29 +50,28 @@ typedef struct
 
 
 
-void sys(EntityId *const entitys, uintEC const entityCount)
+void sys(checs_system_parameters)
 {
-	componentManager_component_use(Position, p);
-	entityManager_foreach(entity)
+	checs_component_use(Position, p);
+
+	checs_entity_foreach(entity)
 	{
-		componentManager_component_get(Position, p, entity);
+		checs_component_get(Position, p, entity);
 		++p->x;
 		++p->y;
+		printf("%i\n", p->x);
 	}
 }
 
 
 void stateMachine_setup(void)
 {
-	entityManager_hints_give(150, 5);
-	checs_init(1, 0, 0, 0, 2);
+	checs_init(1, 0, 0, 0, 2, 1, 10);
 
-	checs_component_register(Position);
-	checs_component_register(Transform);
-	
-	checs_system_register(sys, UPDATE, Position);
+	checs_components_register(Position, Transform);
+	checs_system_register(sys, UPDATE, 1, 50, Position);
 
-	for(uintEC i=0; i < 150; ++i)
+	for(uintEC i=0; i < 1; ++i)
 	{
 		checs_entity_generate(Position);
 	}
