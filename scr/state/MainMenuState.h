@@ -37,15 +37,14 @@ void task(void)
 #define PositionComponent 0
 typedef struct
 {
-	int x;
-	int y;
+	char x;
 }Position;
 
 #define TransformComponent 1
 typedef struct
 {
-	int x;
-	int y;
+	//int x;
+	char x;
 }Transform;
 
 
@@ -58,20 +57,25 @@ void sys(checs_system_parameters)
 	{
 		checs_component_get(Position, p, entity);
 		++p->x;
-		++p->y;
-		printf("%i\n", p->x);
+		//++p->y;
+		//printf("%i\n", p->x);
+	}
+
+	checs_componentMatches_foreach(entity, PositionComponent)
+	{
+		printf("%u\n", entity);
 	}
 }
 
 
 void stateMachine_setup(void)
 {
-	checs_init(1, 0, 0, 0, 2, 1, 10);
+	checs_init(1, 0, 0, 0, 1, 1, 10);
 
-	checs_components_register(Position, Transform);
-	checs_system_register(sys, UPDATE, 1, 50, Position);
+	checs_component_register(Position, 1, 10);
+	checs_system_register(sys, UPDATE, 1, 10, Position);
 
-	for(uintEC i=0; i < 1; ++i)
+	for(uintEC i=0; i < 10; ++i)
 	{
 		checs_entity_generate(Position);
 	}
