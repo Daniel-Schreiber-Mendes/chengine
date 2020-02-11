@@ -53,29 +53,31 @@ void sys(checs_system_parameters)
 {
 	checs_component_use(Position, p);
 
+
 	checs_entity_foreach(entity)
 	{
 		checs_component_get(Position, p, entity);
-		++p->x;
-		//++p->y;
-		//printf("%i\n", p->x);
+		//printf("%u\n", entity);
+
 	}
 
-	checs_componentMatches_foreach(entity, PositionComponent)
+	checs_componentMatches_foreach(entity, Position, Position, Transform)
 	{
-		printf("%u\n", entity);
+		printf("hallo%u\n", entity);
 	}
 }
 
 
 void stateMachine_setup(void)
 {
-	checs_init(1, 0, 0, 0, 1, 1, 10);
+	checs_init(1, 0, 0, 0, 2, 1000, 5);
 
-	checs_component_register(Position, 1, 10);
-	checs_system_register(sys, UPDATE, 1, 10, Position);
+	checs_component_register(Position, 1000, 5);
+	checs_component_register(Transform, 1, 2);
 
-	for(uintEC i=0; i < 10; ++i)
+	checs_system_register(sys, UPDATE, 1000, 5, Position);
+
+	for(uintEC i=0; i < 1000; ++i)
 	{
 		checs_entity_generate(Position);
 	}
