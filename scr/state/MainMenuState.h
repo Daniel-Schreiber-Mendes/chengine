@@ -28,6 +28,7 @@ void mainMenuState_update(State *const state);
 void mainMenuState_draw(State *const state);
 
 
+/*
 void task(void)
 {
 	//printf("task\n");
@@ -65,13 +66,30 @@ void sys(checs_system_parameters)
 	{
 		printf("hallo%u\n", entity);
 	}
+}*/
+
+
+#define WindowResizeCommand 0
+typedef struct
+{
+	int x;
+}WindowResizeData;
+
+
+void foo(void* data)
+{
+	printf("%i\n", ++((WindowResizeData*)data)->x);
 }
 
 
 void stateMachine_setup(void)
 {
-	checs_init(1, 0, 0, 0, 2, 1000, 5);
+	systemManager_init(0, 0, 0, 0);
+	entityManager_init();
+	componentManager_init(0, 0, 0);
+	commandManager_init(1);
 
+	/*
 	checs_component_register(Position, 1000, 5);
 	checs_component_register(Transform, 1, 2);
 
@@ -80,7 +98,13 @@ void stateMachine_setup(void)
 	for(uintEC i=0; i < 1000; ++i)
 	{
 		checs_entity_generate(Position);
-	}
+	}*/
+
+	checs_command_subscribe(WindowResizeCommand, foo);
+	checs_command_publish(WindowResizeData, WindowResizeCommand, {5});
+	checs_command_publish(WindowResizeData, WindowResizeCommand, {5});
+	checs_command_publish(WindowResizeData, WindowResizeCommand, {5});
+
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 }
