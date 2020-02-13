@@ -73,12 +73,19 @@ void sys(checs_system_parameters)
 typedef struct
 {
 	int x;
-}WindowResizeData;
+}WindowResizeCommandData;
+
+
+#define ExitEvent 0
+typedef struct
+{
+	int x;	
+}ExitEventData;
 
 
 void foo(void* data)
 {
-	printf("%i\n", ++((WindowResizeData*)data)->x);
+	printf("%i\n", ++((WindowResizeCommandData*)data)->x);
 }
 
 
@@ -88,6 +95,7 @@ void stateMachine_setup(void)
 	entityManager_init();
 	componentManager_init(0, 0, 0);
 	commandManager_init(1);
+	eventManager_init(1);
 
 	/*
 	checs_component_register(Position, 1000, 5);
@@ -101,10 +109,19 @@ void stateMachine_setup(void)
 	}*/
 
 	checs_command_subscribe(WindowResizeCommand, foo);
-	checs_command_publish(WindowResizeData, WindowResizeCommand, {5});
-	checs_command_publish(WindowResizeData, WindowResizeCommand, {5});
-	checs_command_publish(WindowResizeData, WindowResizeCommand, {5});
+	checs_command_publish(WindowResizeCommandData, WindowResizeCommand, {5});
+	checs_command_publish(WindowResizeCommandData, WindowResizeCommand, {5});
+	checs_command_publish(WindowResizeCommandData, WindowResizeCommand, {5});
 
+	void* event = malloc(sizeof(ExitEventData));
+	((ExitEventData*)event)->x = 10;
+	eventManager_event_publish(ExitEvent, event);
+	eventManager_event_publish(ExitEvent, event);
+
+	eventManager_events_poll(ExitEventData, ExitEvent, exitEvent)
+	{
+		printf("%i\n", exitEvent->x);
+	}
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 }
