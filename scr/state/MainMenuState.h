@@ -28,7 +28,7 @@ void mainMenuState_update(State *const state);
 void mainMenuState_draw(State *const state);
 
 
-/*
+
 void task(void)
 {
 	//printf("task\n");
@@ -66,7 +66,7 @@ void sys(checs_system_parameters)
 	{
 		printf("hallo%u\n", entity);
 	}
-}*/
+}
 
 
 #define WindowResizeCommand 0
@@ -85,46 +85,56 @@ typedef struct
 
 void foo(void* data)
 {
-	printf("%i\n", ++((WindowResizeCommandData*)data)->x);
+	printf("%i\n", ((ExitEventData*)data)->x);
 }
 
 
 void stateMachine_setup(void)
 {
-	systemManager_init(0, 0, 0, 0);
+	systemManager_init(1, 0, 0, 0);
 	entityManager_init();
-	componentManager_init(0, 0, 0);
+	componentManager_init(1, 1000, 10);
 	commandManager_init(1);
 	eventManager_init(1);
 
-	/*
+	checs_event_register(ExitEvent, 2);
 	checs_component_register(Position, 1000, 5);
-	checs_component_register(Transform, 1, 2);
 
-	checs_system_register(sys, UPDATE, 1000, 5, Position);
+	checs_system_register(sys, ON_UPDATE, 1000, 5, Position);
 
 	for(uintEC i=0; i < 1000; ++i)
 	{
 		checs_entity_generate(Position);
-	}*/
+	}
+	
+	void* c = malloc(sizeof(WindowResizeCommandData));
+	((WindowResizeCommandData*)c)->x = 5;
 
 	checs_command_subscribe(WindowResizeCommand, foo);
-	checs_command_publish(WindowResizeCommandData, WindowResizeCommand, {5});
-	checs_command_publish(WindowResizeCommandData, WindowResizeCommand, {5});
-	checs_command_publish(WindowResizeCommandData, WindowResizeCommand, {5});
+	checs_command_publish(WindowResizeCommand, c);
+	checs_command_publish(WindowResizeCommand, c);
+	checs_command_publish(WindowResizeCommand, c);
+
+	free(c);
 
 	void* event = malloc(sizeof(ExitEventData));
 	((ExitEventData*)event)->x = 10;
-	eventManager_event_publish(ExitEvent, event);
-	eventManager_event_publish(ExitEvent, event);
+	checs_event_publish(ExitEvent, event);
+	checs_event_publish(ExitEvent, event);
 
-	eventManager_events_poll(ExitEventData, ExitEvent, exitEvent)
+	checs_events_poll(ExitEventData, ExitEvent, exitEvent)
 	{
-		printf("%i\n", exitEvent->x);
+		printf("%i\n", ++exitEvent->x);
+	}
+
+	checs_eventBuffers_swap();
+
+	checs_events_poll(ExitEventData, ExitEvent, exitEvent)
+	{
+		printf("%i\n", ++exitEvent->x);
 	}
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 }
-
 
 #endif
