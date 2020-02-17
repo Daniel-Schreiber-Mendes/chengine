@@ -21,7 +21,7 @@ void texture_construct(Texture *const texture, char const *const path)
 	if (texture->buffer)
 		stbi_image_free(texture->buffer);
 	else
-		printf("Failed to load texture: %s\n", path);
+		assert(false);
 }
 
 

@@ -18,8 +18,8 @@ profileCache: output
 	rm *.out.*
 	rm gmon.out
 
-OUTPUT: 		  main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o -lGL -lGLU -lglut -lGLEW -lglfw -lm -lchecl -lchecs
+OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o commands.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o commands.o -lGL -lGLU -lglut -lGLEW -lglfw -lm -lchecl -lchecs
 
 main.o: main.c
 	gcc $(CFLAGS) main.c
@@ -62,3 +62,6 @@ utility.o: utility/utility.c
 	
 MainMenuState.o: state/MainMenuState.c
 	gcc $(CFLAGS) state/MainMenuState.c
+
+commands.o: commands/commands.o
+	gcc $(CFLAGS) commands/commands.c

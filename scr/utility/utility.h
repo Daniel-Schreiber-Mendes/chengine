@@ -9,12 +9,6 @@
 #include <limits.h>
 
 
-typedef struct
-{
-	uint16_t x, y;
-}vec2ui16;
-
-
 typedef struct 
 {
     uint8_t val, min, max;
@@ -89,8 +83,5 @@ void    program_uniformMat4f_set(GLuint const program, char const *const name, m
 void    vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const size);
 void    vertexBufferLayout_destruct(VertexBufferLayout const *const vbl);
 void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element);
-
-//renderer.c
-void    renderer_draw(GLuint const vao, IndexBuffer const *const ibo, GLuint const program);
 
 #endif

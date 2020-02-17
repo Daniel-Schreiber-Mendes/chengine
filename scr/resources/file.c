@@ -5,8 +5,7 @@ void file_load(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "r");
 
-    if (!file)
-        printf("Failed to load file %s\n", path);
+    assert(file);
 
     fseek(file, 0, SEEK_END); //move file pointer to end of file
     f->bufferSize = ftell(file); //tell position of pointer which means length of string
@@ -20,7 +19,7 @@ void file_load(File *const f, char const *const path)
 }
 
 
-void file_destruct(File *const f)
+void file_destruct(File const *const f)
 {
 	free(f->buffer);
 }
