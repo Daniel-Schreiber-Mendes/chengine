@@ -10,16 +10,14 @@ make: OUTPUT
 	./output
 
 profile:
-	gprof output gmon.out
-	rm gmon.out
+	gprof output gmon.out > profile.txt
+	gedit profile.txt
 
 profileCache: output
 	valgrind --tool=cachegrind make
-	rm *.out.*
-	rm gmon.out
 
-OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o commands.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o indexBuffer.o program.o vertexBufferLayout.o renderer.o texture.o file.o commands.o -lGL -lGLU -lglut -lGLEW -lglfw -lm -lchecl -lchecs
+OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o camera.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o camera.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcimgui
 
 main.o: main.c
 	gcc $(CFLAGS) main.c
@@ -36,23 +34,26 @@ file.o: resources/file.c
 stateMachine.o: state/stateMachine.c 
 	gcc $(CFLAGS) state/stateMachine.c
 
-vertexArray.o: utility/vertexArray.c
-	gcc $(CFLAGS) utility/vertexArray.c	
+vertexArray.o: render/vertexArray.c
+	gcc $(CFLAGS) render/vertexArray.c	
 
-vertexBuffer.o: utility/vertexBuffer.c
-	gcc $(CFLAGS) utility/vertexBuffer.c
+vertexBuffer.o: render/vertexBuffer.c
+	gcc $(CFLAGS) render/vertexBuffer.c
 
-indexBuffer.o: utility/indexBuffer.c
-	gcc $(CFLAGS) utility/indexBuffer.c
+elementBuffer.o: render/elementBuffer.c
+	gcc $(CFLAGS) render/elementBuffer.c
 
-program.o: utility/program.c
-	gcc $(CFLAGS) utility/program.c
+program.o: render/program.c
+	gcc $(CFLAGS) render/program.c
 
-renderer.o: utility/renderer.c
-	gcc $(CFLAGS) utility/renderer.c
+vertexBufferLayout.o: render/vertexBufferLayout.c	
+	gcc $(CFLAGS) render/vertexBufferLayout.c	
 
-vertexBufferLayout.o: utility/vertexBufferLayout.c	
-	gcc $(CFLAGS) utility/vertexBufferLayout.c	
+camera.o: render/camera.c
+	gcc $(CFLAGS) render/camera.c
+
+render_system.o: render/render_system.c
+	gcc $(CFLAGS) render/render_system.c
 
 math.o: utility/math.c
 	gcc $(CFLAGS) utility/math.c

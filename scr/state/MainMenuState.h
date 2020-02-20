@@ -9,18 +9,13 @@ typedef struct
 {
 	State b;
 
-	GLfloat positions[5 * 4];
-	GLuint indices[6];
-
 	GLuint vbo;
 	VertexBufferLayout vbl;
 	Texture tex;
-
-	mat4 view, model, mvp, proj;
-
 }
 MainMenuState;
 
+extern Camera c;
 
 void mainMenuState_construct(MainMenuState *const s);
 void mainMenuState_destruct(State *const state);

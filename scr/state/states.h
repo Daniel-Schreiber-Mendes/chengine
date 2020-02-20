@@ -1,8 +1,7 @@
 #ifndef STATES_H
 #define STATES_H
 #include "../window/window.h"
-#include "../commands/commands.h"
-#include "../systems/systems.h"
+#include "../render/render.h"
 
 
 typedef struct State State;

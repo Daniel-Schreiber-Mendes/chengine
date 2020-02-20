@@ -6,8 +6,6 @@ static bool running = true, validState = true;
 void stateMachine_init(void)
 {	 
     vector_construct(&states, sizeof(State*)); 
-    window_init("");
-    commands_init();
 }
 
 
@@ -41,11 +39,11 @@ void stateMachine_run(void)
 	}
     
     window_terminate();
-    checs_terminate();
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);
     }
+    checs_terminate();
     vector_destruct(&states);
 }
 

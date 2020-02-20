@@ -1,9 +1,8 @@
 #ifndef COMMANDS_H
 #define COMMANDS_H
 
-#include "../state/states.h"
-
-
+#include "../window/window.h"
+#include <checs/checs.h>
 
 #define WindowCloseCommand 0
 
