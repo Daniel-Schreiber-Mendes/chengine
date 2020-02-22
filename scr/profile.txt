@@ -1,97 +1,94 @@
 Flat profile:
 
 Each sample counts as 0.01 seconds.
- no time accumulated
-
   %   cumulative   self              self     total           
- time   seconds   seconds    calls  Ts/call  Ts/call  name    
-  0.00      0.00     0.00     3849     0.00     0.00  vertexArray_bind
-  0.00      0.00     0.00     3848     0.00     0.00  program_bind
-  0.00      0.00     0.00     3848     0.00     0.00  program_uniformMat4f_set
-  0.00      0.00     0.00     3847     0.00     0.00  mainMenuState_draw
-  0.00      0.00     0.00     3847     0.00     0.00  mainMenuState_update
-  0.00      0.00     0.00     3353     0.00     0.00  camera_vpm_recalculate
-  0.00      0.00     0.00     1089     0.00     0.00  stbi__zhuffman_decode
-  0.00      0.00     0.00      821     0.00     0.00  stbi__zget8
-  0.00      0.00     0.00      428     0.00     0.00  stbi__zreceive
-  0.00      0.00     0.00      366     0.00     0.00  stbi__fill_bits
-  0.00      0.00     0.00      288     0.00     0.00  stbi__paeth
-  0.00      0.00     0.00       86     0.00     0.00  stbi__get8
-  0.00      0.00     0.00       59     0.00     0.00  stbi__bit_reverse
-  0.00      0.00     0.00       59     0.00     0.00  stbi__bitreverse16
-  0.00      0.00     0.00       32     0.00     0.00  stbi__get16be
-  0.00      0.00     0.00       16     0.00     0.00  stbi__get32be
-  0.00      0.00     0.00        5     0.00     0.00  stbi__get_chunk_header
-  0.00      0.00     0.00        4     0.00     0.00  stbi__mul2sizes_valid
-  0.00      0.00     0.00        4     0.00     0.00  typeGL_size_get
-  0.00      0.00     0.00        3     0.00     0.00  stbi__malloc
-  0.00      0.00     0.00        3     0.00     0.00  stbi__stdio_read
-  0.00      0.00     0.00        3     0.00     0.00  stbi__zbuild_huffman
-  0.00      0.00     0.00        2     0.00     0.00  createShader
-  0.00      0.00     0.00        2     0.00     0.00  file_destruct
-  0.00      0.00     0.00        2     0.00     0.00  file_load
-  0.00      0.00     0.00        2     0.00     0.00  stbi__addsizes_valid
-  0.00      0.00     0.00        2     0.00     0.00  stbi__check_png_header
-  0.00      0.00     0.00        2     0.00     0.00  stbi__mad3sizes_valid
-  0.00      0.00     0.00        2     0.00     0.00  stbi__refill_buffer
-  0.00      0.00     0.00        2     0.00     0.00  stbi__rewind
-  0.00      0.00     0.00        2     0.00     0.00  stbi__skip
-  0.00      0.00     0.00        2     0.00     0.00  vertexBufferLayout_element_add
-  0.00      0.00     0.00        2     0.00     0.00  vertexBuffer_bind
-  0.00      0.00     0.00        1     0.00     0.00  _stateMachine_state_push
-  0.00      0.00     0.00        1     0.00     0.00  camera_construct
-  0.00      0.00     0.00        1     0.00     0.00  commands_init
-  0.00      0.00     0.00        1     0.00     0.00  elementBuffer_bind
-  0.00      0.00     0.00        1     0.00     0.00  elementBuffer_construct
-  0.00      0.00     0.00        1     0.00     0.00  elementBuffer_destruct
-  0.00      0.00     0.00        1     0.00     0.00  mainMenuState_construct
-  0.00      0.00     0.00        1     0.00     0.00  mainMenuState_destruct
-  0.00      0.00     0.00        1     0.00     0.00  program_create
-  0.00      0.00     0.00        1     0.00     0.00  program_destroy
-  0.00      0.00     0.00        1     0.00     0.00  program_uniform1i_set
-  0.00      0.00     0.00        1     0.00     0.00  stateMachine_init
-  0.00      0.00     0.00        1     0.00     0.00  stateMachine_run
-  0.00      0.00     0.00        1     0.00     0.00  stateMachine_running_set
-  0.00      0.00     0.00        1     0.00     0.00  stbi__compute_huffman_codes
-  0.00      0.00     0.00        1     0.00     0.00  stbi__create_png_image
-  0.00      0.00     0.00        1     0.00     0.00  stbi__create_png_image_raw
-  0.00      0.00     0.00        1     0.00     0.00  stbi__decode_jpeg_header
-  0.00      0.00     0.00        1     0.00     0.00  stbi__do_png
-  0.00      0.00     0.00        1     0.00     0.00  stbi__do_zlib
-  0.00      0.00     0.00        1     0.00     0.00  stbi(...)(long double, long double)
-  0.00      0.00     0.00        1     0.00     0.00  stbi__fopen
-  0.00      0.00     0.00        1     0.00     0.00  stbi__get_marker
-  0.00      0.00     0.00        1     0.00     0.00  stbi__getn
-  0.00      0.00     0.00        1     0.00     0.00  stbi__jpeg_test
-  0.00      0.00     0.00        1     0.00     0.00  stbi__load_and_postprocess_8bit
-  0.00      0.00     0.00        1     0.00     0.00  stbi__load_main
-  0.00      0.00     0.00        1     0.00     0.00  stbi__malloc_mad3
-  0.00      0.00     0.00        1     0.00     0.00  stbi__parse_huffman_block
-  0.00      0.00     0.00        1     0.00     0.00  stbi__parse_png_file
-  0.00      0.00     0.00        1     0.00     0.00  stbi__parse_zlib
-  0.00      0.00     0.00        1     0.00     0.00  stbi__parse_zlib_header
-  0.00      0.00     0.00        1     0.00     0.00  stbi__png_load
-  0.00      0.00     0.00        1     0.00     0.00  stbi__png_test
-  0.00      0.00     0.00        1     0.00     0.00  stbi__setup_jpeg
-  0.00      0.00     0.00        1     0.00     0.00  stbi__sse2_available
-  0.00      0.00     0.00        1     0.00     0.00  stbi__start_callbacks
-  0.00      0.00     0.00        1     0.00     0.00  stbi__start_file
-  0.00      0.00     0.00        1     0.00     0.00  stbi_image_free
-  0.00      0.00     0.00        1     0.00     0.00  stbi_load
-  0.00      0.00     0.00        1     0.00     0.00  stbi_load_from_file
-  0.00      0.00     0.00        1     0.00     0.00  stbi_zlib_decode_malloc_guesssize_headerflag
-  0.00      0.00     0.00        1     0.00     0.00  texture_bind
-  0.00      0.00     0.00        1     0.00     0.00  texture_construct
-  0.00      0.00     0.00        1     0.00     0.00  texture_destruct
-  0.00      0.00     0.00        1     0.00     0.00  vertexArray_buffer_add
-  0.00      0.00     0.00        1     0.00     0.00  vertexArray_construct
-  0.00      0.00     0.00        1     0.00     0.00  vertexArray_destruct
-  0.00      0.00     0.00        1     0.00     0.00  vertexBufferLayout_construct
-  0.00      0.00     0.00        1     0.00     0.00  vertexBufferLayout_destruct
-  0.00      0.00     0.00        1     0.00     0.00  vertexBuffer_construct
-  0.00      0.00     0.00        1     0.00     0.00  vertexBuffer_destruct
-  0.00      0.00     0.00        1     0.00     0.00  window_init
-  0.00      0.00     0.00        1     0.00     0.00  window_terminate
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+100.00      0.02     0.02        1    20.00    20.00  stateMachine_run
+  0.00      0.02     0.00    15467     0.00     0.00  vertexArray_bind
+  0.00      0.02     0.00    15466     0.00     0.00  program_bind
+  0.00      0.02     0.00    15465     0.00     0.00  mainMenuState_draw
+  0.00      0.02     0.00     1089     0.00     0.00  stbi__zhuffman_decode
+  0.00      0.02     0.00      821     0.00     0.00  stbi__zget8
+  0.00      0.02     0.00      428     0.00     0.00  stbi__zreceive
+  0.00      0.02     0.00      366     0.00     0.00  stbi__fill_bits
+  0.00      0.02     0.00      288     0.00     0.00  stbi__paeth
+  0.00      0.02     0.00       86     0.00     0.00  stbi__get8
+  0.00      0.02     0.00       59     0.00     0.00  stbi__bit_reverse
+  0.00      0.02     0.00       59     0.00     0.00  stbi__bitreverse16
+  0.00      0.02     0.00       32     0.00     0.00  stbi__get16be
+  0.00      0.02     0.00       16     0.00     0.00  stbi__get32be
+  0.00      0.02     0.00        5     0.00     0.00  stbi__get_chunk_header
+  0.00      0.02     0.00        4     0.00     0.00  stbi__mul2sizes_valid
+  0.00      0.02     0.00        4     0.00     0.00  typeGL_size_get
+  0.00      0.02     0.00        3     0.00     0.00  stbi__malloc
+  0.00      0.02     0.00        3     0.00     0.00  stbi__stdio_read
+  0.00      0.02     0.00        3     0.00     0.00  stbi__zbuild_huffman
+  0.00      0.02     0.00        2     0.00     0.00  camera_vpm_recalculate
+  0.00      0.02     0.00        2     0.00     0.00  createShader
+  0.00      0.02     0.00        2     0.00     0.00  file_destruct
+  0.00      0.02     0.00        2     0.00     0.00  file_load
+  0.00      0.02     0.00        2     0.00     0.00  stbi__addsizes_valid
+  0.00      0.02     0.00        2     0.00     0.00  stbi__check_png_header
+  0.00      0.02     0.00        2     0.00     0.00  stbi__mad3sizes_valid
+  0.00      0.02     0.00        2     0.00     0.00  stbi__refill_buffer
+  0.00      0.02     0.00        2     0.00     0.00  stbi__rewind
+  0.00      0.02     0.00        2     0.00     0.00  stbi__skip
+  0.00      0.02     0.00        2     0.00     0.00  vertexBufferLayout_element_add
+  0.00      0.02     0.00        2     0.00     0.00  vertexBuffer_bind
+  0.00      0.02     0.00        1     0.00     0.00  _stateMachine_state_push
+  0.00      0.02     0.00        1     0.00     0.00  camera_construct
+  0.00      0.02     0.00        1     0.00     0.00  commands_init
+  0.00      0.02     0.00        1     0.00     0.00  elementBuffer_bind
+  0.00      0.02     0.00        1     0.00     0.00  elementBuffer_construct
+  0.00      0.02     0.00        1     0.00     0.00  elementBuffer_destruct
+  0.00      0.02     0.00        1     0.00     0.00  mainMenuState_construct
+  0.00      0.02     0.00        1     0.00     0.00  mainMenuState_destruct
+  0.00      0.02     0.00        1     0.00     0.00  program_create
+  0.00      0.02     0.00        1     0.00     0.00  program_destroy
+  0.00      0.02     0.00        1     0.00     0.00  program_uniform1i_set
+  0.00      0.02     0.00        1     0.00     0.00  program_uniformMat4f_set
+  0.00      0.02     0.00        1     0.00     0.00  stateMachine_init
+  0.00      0.02     0.00        1     0.00     0.00  stateMachine_running_set
+  0.00      0.02     0.00        1     0.00     0.00  stbi__compute_huffman_codes
+  0.00      0.02     0.00        1     0.00     0.00  stbi__create_png_image
+  0.00      0.02     0.00        1     0.00     0.00  stbi__create_png_image_raw
+  0.00      0.02     0.00        1     0.00     0.00  stbi__decode_jpeg_header
+  0.00      0.02     0.00        1     0.00     0.00  stbi__do_png
+  0.00      0.02     0.00        1     0.00     0.00  stbi__do_zlib
+  0.00      0.02     0.00        1     0.00     0.00  stbi(...)(long double, long double)
+  0.00      0.02     0.00        1     0.00     0.00  stbi__fopen
+  0.00      0.02     0.00        1     0.00     0.00  stbi__get_marker
+  0.00      0.02     0.00        1     0.00     0.00  stbi__getn
+  0.00      0.02     0.00        1     0.00     0.00  stbi__jpeg_test
+  0.00      0.02     0.00        1     0.00     0.00  stbi__load_and_postprocess_8bit
+  0.00      0.02     0.00        1     0.00     0.00  stbi__load_main
+  0.00      0.02     0.00        1     0.00     0.00  stbi__malloc_mad3
+  0.00      0.02     0.00        1     0.00     0.00  stbi__parse_huffman_block
+  0.00      0.02     0.00        1     0.00     0.00  stbi__parse_png_file
+  0.00      0.02     0.00        1     0.00     0.00  stbi__parse_zlib
+  0.00      0.02     0.00        1     0.00     0.00  stbi__parse_zlib_header
+  0.00      0.02     0.00        1     0.00     0.00  stbi__png_load
+  0.00      0.02     0.00        1     0.00     0.00  stbi__png_test
+  0.00      0.02     0.00        1     0.00     0.00  stbi__setup_jpeg
+  0.00      0.02     0.00        1     0.00     0.00  stbi__sse2_available
+  0.00      0.02     0.00        1     0.00     0.00  stbi__start_callbacks
+  0.00      0.02     0.00        1     0.00     0.00  stbi__start_file
+  0.00      0.02     0.00        1     0.00     0.00  stbi_image_free
+  0.00      0.02     0.00        1     0.00     0.00  stbi_load
+  0.00      0.02     0.00        1     0.00     0.00  stbi_load_from_file
+  0.00      0.02     0.00        1     0.00     0.00  stbi_zlib_decode_malloc_guesssize_headerflag
+  0.00      0.02     0.00        1     0.00     0.00  texture_bind
+  0.00      0.02     0.00        1     0.00     0.00  texture_construct
+  0.00      0.02     0.00        1     0.00     0.00  texture_destruct
+  0.00      0.02     0.00        1     0.00     0.00  vertexArray_buffer_add
+  0.00      0.02     0.00        1     0.00     0.00  vertexArray_construct
+  0.00      0.02     0.00        1     0.00     0.00  vertexArray_destruct
+  0.00      0.02     0.00        1     0.00     0.00  vertexBufferLayout_construct
+  0.00      0.02     0.00        1     0.00     0.00  vertexBufferLayout_destruct
+  0.00      0.02     0.00        1     0.00     0.00  vertexBuffer_construct
+  0.00      0.02     0.00        1     0.00     0.00  vertexBuffer_destruct
+  0.00      0.02     0.00        1     0.00     0.00  window_init
+  0.00      0.02     0.00        1     0.00     0.00  window_terminate
 
  %         the percentage of the total running time of the
 time       program used by this function.
@@ -129,102 +126,107 @@ notice and this notice are preserved.
 		     Call graph (explanation follows)
 
 
-granularity: each sample hit covers 2 byte(s) no time propagated
+granularity: each sample hit covers 2 byte(s) for 50.00% of 0.02 seconds
 
 index % time    self  children    called     name
-                0.00    0.00       1/3849        vertexArray_construct [79]
-                0.00    0.00       1/3849        vertexArray_buffer_add [78]
-                0.00    0.00    3847/3849        render_system [112]
-[1]      0.0    0.00    0.00    3849         vertexArray_bind [1]
+                0.02    0.00       1/1           main [2]
+[1]    100.0    0.02    0.00       1         stateMachine_run [1]
+                0.00    0.00   15465/15465       mainMenuState_draw [5]
+                0.00    0.00       1/1           window_terminate [86]
+                0.00    0.00       1/1           mainMenuState_destruct [40]
 -----------------------------------------------
-                0.00    0.00       1/3848        program_create [41]
-                0.00    0.00    3847/3848        render_system [112]
-[2]      0.0    0.00    0.00    3848         program_bind [2]
+                                                 <spontaneous>
+[2]    100.0    0.00    0.02                 main [2]
+                0.02    0.00       1/1           stateMachine_run [1]
+                0.00    0.00       1/1           stateMachine_init [45]
+                0.00    0.00       1/1           mainMenuState_construct [39]
+                0.00    0.00       1/1           _stateMachine_state_push [276]
 -----------------------------------------------
-                0.00    0.00       1/3848        mainMenuState_construct [39]
-                0.00    0.00    3847/3848        mainMenuState_update [5]
-[3]      0.0    0.00    0.00    3848         program_uniformMat4f_set [3]
+                0.00    0.00       1/15467       vertexArray_construct [79]
+                0.00    0.00       1/15467       vertexArray_buffer_add [78]
+                0.00    0.00   15465/15467       render_system [112]
+[3]      0.0    0.00    0.00   15467         vertexArray_bind [3]
 -----------------------------------------------
-                0.00    0.00    3847/3847        stateMachine_run [45]
-[4]      0.0    0.00    0.00    3847         mainMenuState_draw [4]
+                0.00    0.00       1/15466       program_create [41]
+                0.00    0.00   15465/15466       render_system [112]
+[4]      0.0    0.00    0.00   15466         program_bind [4]
 -----------------------------------------------
-                0.00    0.00    3847/3847        stateMachine_run [45]
-[5]      0.0    0.00    0.00    3847         mainMenuState_update [5]
-                0.00    0.00    3847/3848        program_uniformMat4f_set [3]
------------------------------------------------
-                0.00    0.00       1/3353        camera_construct [34]
-                0.00    0.00    3352/3353        key_command_callback [103]
-[6]      0.0    0.00    0.00    3353         camera_vpm_recalculate [6]
+                0.00    0.00   15465/15465       stateMachine_run [1]
+[5]      0.0    0.00    0.00   15465         mainMenuState_draw [5]
 -----------------------------------------------
                 0.00    0.00      65/1089        stbi__compute_huffman_codes [47]
                 0.00    0.00    1024/1089        stbi__parse_huffman_block [61]
-[7]      0.0    0.00    0.00    1089         stbi__zhuffman_decode [7]
-                0.00    0.00     363/366         stbi__fill_bits [10]
+[6]      0.0    0.00    0.00    1089         stbi__zhuffman_decode [6]
+                0.00    0.00     363/366         stbi__fill_bits [9]
 -----------------------------------------------
                 0.00    0.00       2/821         stbi__parse_zlib_header [64]
-                0.00    0.00     819/821         stbi__fill_bits [10]
-[8]      0.0    0.00    0.00     821         stbi__zget8 [8]
+                0.00    0.00     819/821         stbi__fill_bits [9]
+[7]      0.0    0.00    0.00     821         stbi__zget8 [7]
 -----------------------------------------------
                 0.00    0.00       2/428         stbi__parse_zlib [63]
                 0.00    0.00      40/428         stbi__compute_huffman_codes [47]
                 0.00    0.00     386/428         stbi__parse_huffman_block [61]
-[9]      0.0    0.00    0.00     428         stbi__zreceive [9]
-                0.00    0.00       3/366         stbi__fill_bits [10]
+[8]      0.0    0.00    0.00     428         stbi__zreceive [8]
+                0.00    0.00       3/366         stbi__fill_bits [9]
 -----------------------------------------------
-                0.00    0.00       3/366         stbi__zreceive [9]
-                0.00    0.00     363/366         stbi__zhuffman_decode [7]
-[10]     0.0    0.00    0.00     366         stbi__fill_bits [10]
-                0.00    0.00     819/821         stbi__zget8 [8]
+                0.00    0.00       3/366         stbi__zreceive [8]
+                0.00    0.00     363/366         stbi__zhuffman_decode [6]
+[9]      0.0    0.00    0.00     366         stbi__fill_bits [9]
+                0.00    0.00     819/821         stbi__zget8 [7]
 -----------------------------------------------
                 0.00    0.00     288/288         stbi__create_png_image_raw [49]
-[11]     0.0    0.00    0.00     288         stbi__paeth [11]
+[10]     0.0    0.00    0.00     288         stbi__paeth [10]
 -----------------------------------------------
                 0.00    0.00       1/86          stbi__get_marker [55]
                 0.00    0.00       5/86          stbi__parse_png_file [62]
                 0.00    0.00      16/86          stbi__check_png_header [27]
-                0.00    0.00      64/86          stbi__get16be [15]
-[12]     0.0    0.00    0.00      86         stbi__get8 [12]
+                0.00    0.00      64/86          stbi__get16be [14]
+[11]     0.0    0.00    0.00      86         stbi__get8 [11]
                 0.00    0.00       1/2           stbi__refill_buffer [29]
 -----------------------------------------------
-                0.00    0.00      59/59          stbi__zbuild_huffman [22]
-[13]     0.0    0.00    0.00      59         stbi__bit_reverse [13]
-                0.00    0.00      59/59          stbi__bitreverse16 [14]
+                0.00    0.00      59/59          stbi__zbuild_huffman [21]
+[12]     0.0    0.00    0.00      59         stbi__bit_reverse [12]
+                0.00    0.00      59/59          stbi__bitreverse16 [13]
 -----------------------------------------------
-                0.00    0.00      59/59          stbi__bit_reverse [13]
-[14]     0.0    0.00    0.00      59         stbi__bitreverse16 [14]
+                0.00    0.00      59/59          stbi__bit_reverse [12]
+[13]     0.0    0.00    0.00      59         stbi__bitreverse16 [13]
 -----------------------------------------------
-                0.00    0.00      32/32          stbi__get32be [16]
-[15]     0.0    0.00    0.00      32         stbi__get16be [15]
-                0.00    0.00      64/86          stbi__get8 [12]
+                0.00    0.00      32/32          stbi__get32be [15]
+[14]     0.0    0.00    0.00      32         stbi__get16be [14]
+                0.00    0.00      64/86          stbi__get8 [11]
 -----------------------------------------------
                 0.00    0.00       6/16          stbi__parse_png_file [62]
-                0.00    0.00      10/16          stbi__get_chunk_header [17]
-[16]     0.0    0.00    0.00      16         stbi__get32be [16]
-                0.00    0.00      32/32          stbi__get16be [15]
+                0.00    0.00      10/16          stbi__get_chunk_header [16]
+[15]     0.0    0.00    0.00      16         stbi__get32be [15]
+                0.00    0.00      32/32          stbi__get16be [14]
 -----------------------------------------------
                 0.00    0.00       5/5           stbi__parse_png_file [62]
-[17]     0.0    0.00    0.00       5         stbi__get_chunk_header [17]
-                0.00    0.00      10/16          stbi__get32be [16]
+[16]     0.0    0.00    0.00       5         stbi__get_chunk_header [16]
+                0.00    0.00      10/16          stbi__get32be [15]
 -----------------------------------------------
                 0.00    0.00       4/4           stbi__mad3sizes_valid [28]
-[18]     0.0    0.00    0.00       4         stbi__mul2sizes_valid [18]
+[17]     0.0    0.00    0.00       4         stbi__mul2sizes_valid [17]
 -----------------------------------------------
                 0.00    0.00       2/4           vertexArray_buffer_add [78]
                 0.00    0.00       2/4           vertexBufferLayout_element_add [32]
-[19]     0.0    0.00    0.00       4         typeGL_size_get [19]
+[18]     0.0    0.00    0.00       4         typeGL_size_get [18]
 -----------------------------------------------
                 0.00    0.00       1/3           stbi__malloc_mad3 [60]
                 0.00    0.00       1/3           stbi__jpeg_test [57]
                 0.00    0.00       1/3           stbi_zlib_decode_malloc_guesssize_headerflag [74]
-[20]     0.0    0.00    0.00       3         stbi__malloc [20]
+[19]     0.0    0.00    0.00       3         stbi__malloc [19]
 -----------------------------------------------
                 0.00    0.00       1/3           stbi__getn [56]
                 0.00    0.00       2/3           stbi__refill_buffer [29]
-[21]     0.0    0.00    0.00       3         stbi__stdio_read [21]
+[20]     0.0    0.00    0.00       3         stbi__stdio_read [20]
 -----------------------------------------------
                 0.00    0.00       3/3           stbi__compute_huffman_codes [47]
-[22]     0.0    0.00    0.00       3         stbi__zbuild_huffman [22]
-                0.00    0.00      59/59          stbi__bit_reverse [13]
+[21]     0.0    0.00    0.00       3         stbi__zbuild_huffman [21]
+                0.00    0.00      59/59          stbi__bit_reverse [12]
+-----------------------------------------------
+                0.00    0.00       1/2           key_command_callback [103]
+                0.00    0.00       1/2           camera_construct [34]
+[22]     0.0    0.00    0.00       2         camera_vpm_recalculate [22]
 -----------------------------------------------
                 0.00    0.00       2/2           program_create [41]
 [23]     0.0    0.00    0.00       2         createShader [23]
@@ -243,18 +245,18 @@ index % time    self  children    called     name
                 0.00    0.00       1/2           stbi__parse_png_file [62]
                 0.00    0.00       1/2           stbi__png_test [66]
 [27]     0.0    0.00    0.00       2         stbi__check_png_header [27]
-                0.00    0.00      16/86          stbi__get8 [12]
+                0.00    0.00      16/86          stbi__get8 [11]
 -----------------------------------------------
                 0.00    0.00       1/2           stbi__malloc_mad3 [60]
                 0.00    0.00       1/2           stbi__create_png_image_raw [49]
 [28]     0.0    0.00    0.00       2         stbi__mad3sizes_valid [28]
-                0.00    0.00       4/4           stbi__mul2sizes_valid [18]
+                0.00    0.00       4/4           stbi__mul2sizes_valid [17]
                 0.00    0.00       2/2           stbi__addsizes_valid [26]
 -----------------------------------------------
                 0.00    0.00       1/2           stbi__start_callbacks [69]
-                0.00    0.00       1/2           stbi__get8 [12]
+                0.00    0.00       1/2           stbi__get8 [11]
 [29]     0.0    0.00    0.00       2         stbi__refill_buffer [29]
-                0.00    0.00       2/3           stbi__stdio_read [21]
+                0.00    0.00       2/3           stbi__stdio_read [20]
 -----------------------------------------------
                 0.00    0.00       1/2           stbi__jpeg_test [57]
                 0.00    0.00       1/2           stbi__png_test [66]
@@ -265,7 +267,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       2/2           mainMenuState_construct [39]
 [32]     0.0    0.00    0.00       2         vertexBufferLayout_element_add [32]
-                0.00    0.00       2/4           typeGL_size_get [19]
+                0.00    0.00       2/4           typeGL_size_get [18]
 -----------------------------------------------
                 0.00    0.00       1/2           vertexArray_buffer_add [78]
                 0.00    0.00       1/2           vertexBuffer_construct [83]
@@ -273,7 +275,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           mainMenuState_construct [39]
 [34]     0.0    0.00    0.00       1         camera_construct [34]
-                0.00    0.00       1/3353        camera_vpm_recalculate [6]
+                0.00    0.00       1/2           camera_vpm_recalculate [22]
 -----------------------------------------------
                 0.00    0.00       1/1           window_init [85]
 [35]     0.0    0.00    0.00       1         commands_init [35]
@@ -288,7 +290,7 @@ index % time    self  children    called     name
                 0.00    0.00       1/1           mainMenuState_destruct [40]
 [38]     0.0    0.00    0.00       1         elementBuffer_destruct [38]
 -----------------------------------------------
-                0.00    0.00       1/1           main [107]
+                0.00    0.00       1/1           main [2]
 [39]     0.0    0.00    0.00       1         mainMenuState_construct [39]
                 0.00    0.00       2/2           vertexBufferLayout_element_add [32]
                 0.00    0.00       1/1           window_init [85]
@@ -300,14 +302,14 @@ index % time    self  children    called     name
                 0.00    0.00       1/1           vertexBufferLayout_construct [81]
                 0.00    0.00       1/1           vertexArray_buffer_add [78]
                 0.00    0.00       1/1           camera_construct [34]
-                0.00    0.00       1/3848        program_uniformMat4f_set [3]
+                0.00    0.00       1/1           program_uniformMat4f_set [44]
                 0.00    0.00       1/1           program_uniform1i_set [43]
 -----------------------------------------------
-                0.00    0.00       1/1           stateMachine_run [45]
+                0.00    0.00       1/1           stateMachine_run [1]
 [40]     0.0    0.00    0.00       1         mainMenuState_destruct [40]
                 0.00    0.00       1/1           elementBuffer_destruct [38]
-                0.00    0.00       1/1           vertexArray_destruct [80]
                 0.00    0.00       1/1           program_destroy [42]
+                0.00    0.00       1/1           vertexArray_destruct [80]
                 0.00    0.00       1/1           vertexBuffer_destruct [84]
                 0.00    0.00       1/1           vertexBufferLayout_destruct [82]
                 0.00    0.00       1/1           texture_destruct [77]
@@ -315,7 +317,7 @@ index % time    self  children    called     name
                 0.00    0.00       1/1           mainMenuState_construct [39]
 [41]     0.0    0.00    0.00       1         program_create [41]
                 0.00    0.00       2/2           createShader [23]
-                0.00    0.00       1/3848        program_bind [2]
+                0.00    0.00       1/15466       program_bind [4]
 -----------------------------------------------
                 0.00    0.00       1/1           mainMenuState_destruct [40]
 [42]     0.0    0.00    0.00       1         program_destroy [42]
@@ -323,24 +325,20 @@ index % time    self  children    called     name
                 0.00    0.00       1/1           mainMenuState_construct [39]
 [43]     0.0    0.00    0.00       1         program_uniform1i_set [43]
 -----------------------------------------------
-                0.00    0.00       1/1           main [107]
-[44]     0.0    0.00    0.00       1         stateMachine_init [44]
+                0.00    0.00       1/1           mainMenuState_construct [39]
+[44]     0.0    0.00    0.00       1         program_uniformMat4f_set [44]
 -----------------------------------------------
-                0.00    0.00       1/1           main [107]
-[45]     0.0    0.00    0.00       1         stateMachine_run [45]
-                0.00    0.00    3847/3847        mainMenuState_update [5]
-                0.00    0.00    3847/3847        mainMenuState_draw [4]
-                0.00    0.00       1/1           window_terminate [86]
-                0.00    0.00       1/1           mainMenuState_destruct [40]
+                0.00    0.00       1/1           main [2]
+[45]     0.0    0.00    0.00       1         stateMachine_init [45]
 -----------------------------------------------
                 0.00    0.00       1/1           window_close_command_callback [273]
 [46]     0.0    0.00    0.00       1         stateMachine_running_set [46]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__parse_zlib [63]
 [47]     0.0    0.00    0.00       1         stbi__compute_huffman_codes [47]
-                0.00    0.00      65/1089        stbi__zhuffman_decode [7]
-                0.00    0.00      40/428         stbi__zreceive [9]
-                0.00    0.00       3/3           stbi__zbuild_huffman [22]
+                0.00    0.00      65/1089        stbi__zhuffman_decode [6]
+                0.00    0.00      40/428         stbi__zreceive [8]
+                0.00    0.00       3/3           stbi__zbuild_huffman [21]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__parse_png_file [62]
 [48]     0.0    0.00    0.00       1         stbi__create_png_image [48]
@@ -348,7 +346,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__create_png_image [48]
 [49]     0.0    0.00    0.00       1         stbi__create_png_image_raw [49]
-                0.00    0.00     288/288         stbi__paeth [11]
+                0.00    0.00     288/288         stbi__paeth [10]
                 0.00    0.00       1/1           stbi__malloc_mad3 [60]
                 0.00    0.00       1/2           stbi__mad3sizes_valid [28]
 -----------------------------------------------
@@ -373,15 +371,15 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__decode_jpeg_header [50]
 [55]     0.0    0.00    0.00       1         stbi__get_marker [55]
-                0.00    0.00       1/86          stbi__get8 [12]
+                0.00    0.00       1/86          stbi__get8 [11]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__parse_png_file [62]
 [56]     0.0    0.00    0.00       1         stbi__getn [56]
-                0.00    0.00       1/3           stbi__stdio_read [21]
+                0.00    0.00       1/3           stbi__stdio_read [20]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__load_main [59]
 [57]     0.0    0.00    0.00       1         stbi__jpeg_test [57]
-                0.00    0.00       1/3           stbi__malloc [20]
+                0.00    0.00       1/3           stbi__malloc [19]
                 0.00    0.00       1/1           stbi__setup_jpeg [67]
                 0.00    0.00       1/1           stbi__decode_jpeg_header [50]
                 0.00    0.00       1/2           stbi__rewind [30]
@@ -399,18 +397,18 @@ index % time    self  children    called     name
                 0.00    0.00       1/1           stbi__create_png_image_raw [49]
 [60]     0.0    0.00    0.00       1         stbi__malloc_mad3 [60]
                 0.00    0.00       1/2           stbi__mad3sizes_valid [28]
-                0.00    0.00       1/3           stbi__malloc [20]
+                0.00    0.00       1/3           stbi__malloc [19]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__parse_zlib [63]
 [61]     0.0    0.00    0.00       1         stbi__parse_huffman_block [61]
-                0.00    0.00    1024/1089        stbi__zhuffman_decode [7]
-                0.00    0.00     386/428         stbi__zreceive [9]
+                0.00    0.00    1024/1089        stbi__zhuffman_decode [6]
+                0.00    0.00     386/428         stbi__zreceive [8]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__do_png [51]
 [62]     0.0    0.00    0.00       1         stbi__parse_png_file [62]
-                0.00    0.00       6/16          stbi__get32be [16]
-                0.00    0.00       5/5           stbi__get_chunk_header [17]
-                0.00    0.00       5/86          stbi__get8 [12]
+                0.00    0.00       6/16          stbi__get32be [15]
+                0.00    0.00       5/5           stbi__get_chunk_header [16]
+                0.00    0.00       5/86          stbi__get8 [11]
                 0.00    0.00       2/2           stbi__skip [31]
                 0.00    0.00       1/2           stbi__check_png_header [27]
                 0.00    0.00       1/1           stbi__getn [56]
@@ -419,14 +417,14 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__do_zlib [52]
 [63]     0.0    0.00    0.00       1         stbi__parse_zlib [63]
-                0.00    0.00       2/428         stbi__zreceive [9]
+                0.00    0.00       2/428         stbi__zreceive [8]
                 0.00    0.00       1/1           stbi__parse_zlib_header [64]
                 0.00    0.00       1/1           stbi__compute_huffman_codes [47]
                 0.00    0.00       1/1           stbi__parse_huffman_block [61]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__parse_zlib [63]
 [64]     0.0    0.00    0.00       1         stbi__parse_zlib_header [64]
-                0.00    0.00       2/821         stbi__zget8 [8]
+                0.00    0.00       2/821         stbi__zget8 [7]
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__load_main [59]
 [65]     0.0    0.00    0.00       1         stbi__png_load [65]
@@ -467,7 +465,7 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           stbi__parse_png_file [62]
 [74]     0.0    0.00    0.00       1         stbi_zlib_decode_malloc_guesssize_headerflag [74]
-                0.00    0.00       1/3           stbi__malloc [20]
+                0.00    0.00       1/3           stbi__malloc [19]
                 0.00    0.00       1/1           stbi__do_zlib [52]
 -----------------------------------------------
                 0.00    0.00       1/1           texture_construct [76]
@@ -484,13 +482,13 @@ index % time    self  children    called     name
 -----------------------------------------------
                 0.00    0.00       1/1           mainMenuState_construct [39]
 [78]     0.0    0.00    0.00       1         vertexArray_buffer_add [78]
-                0.00    0.00       2/4           typeGL_size_get [19]
-                0.00    0.00       1/3849        vertexArray_bind [1]
+                0.00    0.00       2/4           typeGL_size_get [18]
+                0.00    0.00       1/15467       vertexArray_bind [3]
                 0.00    0.00       1/2           vertexBuffer_bind [33]
 -----------------------------------------------
                 0.00    0.00       1/1           mainMenuState_construct [39]
 [79]     0.0    0.00    0.00       1         vertexArray_construct [79]
-                0.00    0.00       1/3849        vertexArray_bind [1]
+                0.00    0.00       1/15467       vertexArray_bind [3]
 -----------------------------------------------
                 0.00    0.00       1/1           mainMenuState_destruct [40]
 [80]     0.0    0.00    0.00       1         vertexArray_destruct [80]
@@ -512,10 +510,10 @@ index % time    self  children    called     name
 [85]     0.0    0.00    0.00       1         window_init [85]
                 0.00    0.00       1/1           commands_init [35]
 -----------------------------------------------
-                0.00    0.00       1/1           stateMachine_run [45]
+                0.00    0.00       1/1           stateMachine_run [1]
 [86]     0.0    0.00    0.00       1         window_terminate [86]
 -----------------------------------------------
-                0.00    0.00       1/1           main [107]
+                0.00    0.00       1/1           main [2]
 [276]    0.0    0.00    0.00       1         _stateMachine_state_push [276]
 -----------------------------------------------
 
@@ -609,32 +607,32 @@ notice and this notice are preserved.
 
 Index by function name
 
- [276] _stateMachine_state_push [50] stbi__decode_jpeg_header (stb_image.h) [31] stbi__skip (stb_image.h)
-  [34] camera_construct       [51] stbi__do_png (stb_image.h) [68] stbi__sse2_available (stb_image.h)
-   [6] camera_vpm_recalculate [52] stbi__do_zlib (stb_image.h) [69] stbi__start_callbacks (stb_image.h)
-  [35] commands_init          [53] stbi(...)(long double, long double) (stb_image.h) [70] stbi__start_file (stb_image.h)
-  [23] createShader (program.c) [10] stbi__fill_bits (stb_image.h) [21] stbi__stdio_read (stb_image.h)
-  [36] elementBuffer_bind     [54] stbi__fopen (stb_image.h) [22] stbi__zbuild_huffman (stb_image.h)
-  [37] elementBuffer_construct [15] stbi__get16be (stb_image.h) [8] stbi__zget8 (stb_image.h)
-  [38] elementBuffer_destruct [16] stbi__get32be (stb_image.h) [7] stbi__zhuffman_decode (stb_image.h)
-  [24] file_destruct          [12] stbi__get8 (stb_image.h) [9] stbi__zreceive (stb_image.h)
-  [25] file_load              [17] stbi__get_chunk_header (stb_image.h) [71] stbi_image_free
-  [39] mainMenuState_construct [55] stbi__get_marker (stb_image.h) [72] stbi_load
-  [40] mainMenuState_destruct [56] stbi__getn (stb_image.h) [73] stbi_load_from_file
-   [4] mainMenuState_draw     [57] stbi__jpeg_test (stb_image.h) [74] stbi_zlib_decode_malloc_guesssize_headerflag
-   [5] mainMenuState_update   [58] stbi__load_and_postprocess_8bit (stb_image.h) [75] texture_bind
-   [2] program_bind           [59] stbi__load_main (stb_image.h) [76] texture_construct
+ [276] _stateMachine_state_push [51] stbi__do_png (stb_image.h) [68] stbi__sse2_available (stb_image.h)
+  [34] camera_construct       [52] stbi__do_zlib (stb_image.h) [69] stbi__start_callbacks (stb_image.h)
+  [22] camera_vpm_recalculate [53] stbi(...)(long double, long double) (stb_image.h) [70] stbi__start_file (stb_image.h)
+  [35] commands_init           [9] stbi__fill_bits (stb_image.h) [20] stbi__stdio_read (stb_image.h)
+  [23] createShader (program.c) [54] stbi__fopen (stb_image.h) [21] stbi__zbuild_huffman (stb_image.h)
+  [36] elementBuffer_bind     [14] stbi__get16be (stb_image.h) [7] stbi__zget8 (stb_image.h)
+  [37] elementBuffer_construct [15] stbi__get32be (stb_image.h) [6] stbi__zhuffman_decode (stb_image.h)
+  [38] elementBuffer_destruct [11] stbi__get8 (stb_image.h) [8] stbi__zreceive (stb_image.h)
+  [24] file_destruct          [16] stbi__get_chunk_header (stb_image.h) [71] stbi_image_free
+  [25] file_load              [55] stbi__get_marker (stb_image.h) [72] stbi_load
+  [39] mainMenuState_construct [56] stbi__getn (stb_image.h) [73] stbi_load_from_file
+  [40] mainMenuState_destruct [57] stbi__jpeg_test (stb_image.h) [74] stbi_zlib_decode_malloc_guesssize_headerflag
+   [5] mainMenuState_draw     [58] stbi__load_and_postprocess_8bit (stb_image.h) [75] texture_bind
+   [4] program_bind           [59] stbi__load_main (stb_image.h) [76] texture_construct
   [41] program_create         [28] stbi__mad3sizes_valid (stb_image.h) [77] texture_destruct
-  [42] program_destroy        [20] stbi__malloc (stb_image.h) [19] typeGL_size_get
-  [43] program_uniform1i_set  [60] stbi__malloc_mad3 (stb_image.h) [1] vertexArray_bind
-   [3] program_uniformMat4f_set [18] stbi__mul2sizes_valid (stb_image.h) [78] vertexArray_buffer_add
-  [44] stateMachine_init      [11] stbi__paeth (stb_image.h) [79] vertexArray_construct
-  [45] stateMachine_run       [61] stbi__parse_huffman_block (stb_image.h) [80] vertexArray_destruct
+  [42] program_destroy        [19] stbi__malloc (stb_image.h) [18] typeGL_size_get
+  [43] program_uniform1i_set  [60] stbi__malloc_mad3 (stb_image.h) [3] vertexArray_bind
+  [44] program_uniformMat4f_set [17] stbi__mul2sizes_valid (stb_image.h) [78] vertexArray_buffer_add
+  [45] stateMachine_init      [10] stbi__paeth (stb_image.h) [79] vertexArray_construct
+   [1] stateMachine_run       [61] stbi__parse_huffman_block (stb_image.h) [80] vertexArray_destruct
   [46] stateMachine_running_set [62] stbi__parse_png_file (stb_image.h) [81] vertexBufferLayout_construct
   [26] stbi__addsizes_valid (stb_image.h) [63] stbi__parse_zlib (stb_image.h) [82] vertexBufferLayout_destruct
-  [13] stbi__bit_reverse (stb_image.h) [64] stbi__parse_zlib_header (stb_image.h) [32] vertexBufferLayout_element_add
-  [14] stbi__bitreverse16 (stb_image.h) [65] stbi__png_load (stb_image.h) [33] vertexBuffer_bind
+  [12] stbi__bit_reverse (stb_image.h) [64] stbi__parse_zlib_header (stb_image.h) [32] vertexBufferLayout_element_add
+  [13] stbi__bitreverse16 (stb_image.h) [65] stbi__png_load (stb_image.h) [33] vertexBuffer_bind
   [27] stbi__check_png_header (stb_image.h) [66] stbi__png_test (stb_image.h) [83] vertexBuffer_construct
   [47] stbi__compute_huffman_codes (stb_image.h) [29] stbi__refill_buffer (stb_image.h) [84] vertexBuffer_destruct
   [48] stbi__create_png_image (stb_image.h) [30] stbi__rewind (stb_image.h) [85] window_init
   [49] stbi__create_png_image_raw (stb_image.h) [67] stbi__setup_jpeg (stb_image.h) [86] window_terminate
+  [50] stbi__decode_jpeg_header (stb_image.h) [31] stbi__skip (stb_image.h)

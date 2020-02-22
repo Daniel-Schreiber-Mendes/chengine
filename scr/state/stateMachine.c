@@ -20,8 +20,13 @@ void stateMachine_state_pop(State *const state)
 
 void stateMachine_run(void)
 {
+    double time;
+    int frames;
 	while(running)
 	{                
+        ++frames;
+        glfwPollEvents();
+        checs_eventBuffers_swap();
         vector_foreach(&states, State*, state)
         {      
             state->update(state);
@@ -34,14 +39,14 @@ void stateMachine_run(void)
                 validState = true;
             }
         }
-        glfwSwapBuffers(window);
-        glfwPollEvents();
 	}
     
+    printf("%f\n", (glfwGetTime() - time) / frames);
     window_terminate();
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);
+        free(state);
     }
     checs_terminate();
     vector_destruct(&states);

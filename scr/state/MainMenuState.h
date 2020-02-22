@@ -15,7 +15,6 @@ typedef struct
 }
 MainMenuState;
 
-extern Camera c;
 
 void mainMenuState_construct(MainMenuState *const s);
 void mainMenuState_destruct(State *const state);

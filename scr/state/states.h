@@ -2,6 +2,7 @@
 #define STATES_H
 #include "../window/window.h"
 #include "../render/render.h"
+//#include <time.h>
 
 
 typedef struct State State;

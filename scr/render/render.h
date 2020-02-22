@@ -2,6 +2,7 @@
 #define RENDER_H
 #include "../resources/resources.h"
 #include "../utility/utility.h"
+#include "../window/window.h"
 #include <string.h>
 #include <cglm/cglm.h>
 #include <checs/checs.h>
@@ -35,16 +36,6 @@ typedef struct
 ElementBuffer;
 
 
-typedef struct
-{
-	vec3 position;	
-	mat4 viewm, projm, vpm;
-	float rotation;
-}
-Camera;
-
-
-
 #define RenderableComponent 0
 typedef struct
 {
@@ -53,6 +44,17 @@ typedef struct
 }
 Renderable;
 
+
+#define TransformComponent 1
+typedef struct
+{
+	float rotation;
+	vec3 position;
+	vec3 scale;
+}
+Transform;
+
+#define CameraTag 0
 
 //vertexBuffer.c
 void	vertexBuffer_construct(GLuint *const vbo, GLsizeiptr const size, void const *const data);
@@ -85,14 +87,22 @@ void    vertexBufferLayout_destruct(VertexBufferLayout const *const vbl);
 void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element);
 
 
-//camera.c
-void camera_construct(Camera *const c, float const left, float const right, float const bottom, float const top);
-void camera_vpm_recalculate(Camera *const c);
-
-
 //render_system.c
-#define RENDER_SYSTEM_COMPONENTS Renderable
+#define RENDER_SYSTEM_COMPONENTS Renderable, Transform
+void render_system_init(void);
 void render_system(checs_system_parameters);
 
+
+static void mat4_print(mat4 const m)
+{
+	for(int i=0; i < 4; ++i)
+	{
+		for(int j=0; j < 4; ++j)
+		{
+			printf("%.2f, ", m[i][j]);
+		}
+		printf("\n");
+	}
+}
 
 #endif

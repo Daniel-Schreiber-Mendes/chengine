@@ -16,8 +16,8 @@ profile:
 profileCache: output
 	valgrind --tool=cachegrind make
 
-OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o camera.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o camera.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcimgui
+OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcimgui
 
 main.o: main.c
 	gcc $(CFLAGS) main.c
@@ -48,9 +48,6 @@ program.o: render/program.c
 
 vertexBufferLayout.o: render/vertexBufferLayout.c	
 	gcc $(CFLAGS) render/vertexBufferLayout.c	
-
-camera.o: render/camera.c
-	gcc $(CFLAGS) render/camera.c
 
 render_system.o: render/render_system.c
 	gcc $(CFLAGS) render/render_system.c

@@ -16,16 +16,15 @@ void window_init(char const* const title, uint16_t const n_width, uint16_t const
     assert(window = glfwCreateWindow(width, height, title, NULL, NULL));
 
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); //enables vertical sync
 
     assert(glewInit() == GLEW_OK);
 
     commands_init();
 
 
-    igCreateContext(NULL);
-    ImGuiIO *io = igGetIO();
-    ImGui_ImplGlfw_InitForOpenGL(window, true); 
+    //igCreateContext(NULL);
+    //ImGuiIO *io = igGetIO();
+    //ImGui_ImplGlfw_InitForOpenGL(window, true); 
 }
 
 
@@ -56,4 +55,10 @@ void window_fullscreen_set(bool const set)
 void window_fullscreen_switch(void)
 {
     window_fullscreen_set(!fullscreen);
+}
+
+
+void window_vsync_set(bool const set)
+{
+    glfwSwapInterval(set);
 }

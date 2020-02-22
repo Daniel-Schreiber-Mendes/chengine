@@ -13,3 +13,4 @@ void window_init(char const* const title, uint16_t const n_width, uint16_t const
 void window_terminate(void);
 void window_fullscreen_set(bool const set);
 void window_fullscreen_switch(void);
+void window_vsync_set(bool const set);
