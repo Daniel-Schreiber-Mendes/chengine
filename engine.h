@@ -1,8 +1,16 @@
 #ifndef ENGINE_H
 #define ENGINE_H
+#include "./src/utility/utility.h"
 #include <cglm/cglm.h>
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 #include <checs/checs.h>
+#include <stdbool.h>
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////// Definions required by vendor ///////////////////////////////////////////////////////////////////////////////
@@ -49,8 +57,8 @@ typedef struct
 
 #define RenderableComponent 0
 #define TransformComponent 1
-#define InputReceiverComponent 2
-
+#define KeyInputComponent 2
+#define ComponentCount 3
 
 typedef struct
 {
@@ -71,8 +79,8 @@ Transform;
 
 typedef struct
 { 
-	int p;	
-}InputReceiver;
+	int i;	
+}KeyInput;
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -201,6 +209,113 @@ typedef struct
 	uint16_t bufferSize; //size in bytes
 }
 File;
+
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Window  ////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+extern GLFWwindow* window;
+
+
+void window_init(char const* const title, uint16_t const n_width, uint16_t const n_height);
+void window_terminate(void);
+void window_fullscreen_set(bool const set);
+void window_fullscreen_switch(void);
+void window_vsync_set(bool const set);
+
+
+void inputManager_init(void);
+void inputManager_inputReceiver_add(EntityId const entity);
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Statemachine  //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+void  stateMachine_init(void);
+void  stateMachine_state_pop(State *const state);
+void _stateMachine_state_push(State *const state);
+void  stateMachine_run(void);
+void  stateMachine_running_set(bool const n_running);
+
+
+#define stateMachine_state_push(StateType, stateConstructFunction)\
+	State *const state = malloc(sizeof(StateType));\
+	stateConstructFunction((StateType*)state);\
+	_stateMachine_state_push(state);
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Resources  /////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+void texture_construct(Texture *const texture, char const *const path);
+void texture_destruct(Texture const* texture);
+void texture_bind(Texture *const texture);
+
+
+//file.c
+void file_load(File *restrict f, char const *const path);
+void file_destruct(File const *const f);
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Render  ////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+//vertexBuffer.c
+void	vertexBuffer_construct(GLuint *const vbo, GLsizeiptr const size, void const *const data);
+void 	vertexBuffer_destruct(GLuint const *const vbo);
+void 	vertexBuffer_bind(GLuint const vbo);
+
+//elementBuffer.c
+void	elementBuffer_construct(ElementBuffer *const ebo, GLsizeiptr const size, GLsizei const elementCount, void const *const data);
+void 	elementBuffer_destruct(ElementBuffer const *const ebo);
+void 	elementBuffer_bind(ElementBuffer const *const ebo);
+
+//vertexArray.c
+void	vertexArray_construct(GLuint *const vao);
+void 	vertexArray_destruct(GLuint const *const vao);
+void 	vertexArray_bind(GLuint const vao);
+void    vertexArray_buffer_add(GLuint const vao, GLuint const vbo, VertexBufferLayout const layout);
+
+//program.c
+void    program_create(GLuint *const program, char const *const fsPath, char const *const vsPath);
+void    program_destroy(GLuint const program);
+void 	program_bind(GLuint const program);
+void    program_uniform4f_set(GLuint const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
+void    program_uniform1i_set(GLuint const program, char const *const name, GLint const v0);
+void    program_uniformMat4f_set(GLuint const program, char const *const name, mat4 const m0);
+
+
+//vertexBufferLayout.c
+void    vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const size);
+void    vertexBufferLayout_destruct(VertexBufferLayout const *const vbl);
+void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element);
+
+
+//render_system.c
+void render_system_init(void);
+void render_system(checs_system_parameters);
+
+
+static void mat4_print(mat4 const m)
+{
+	for(int i=0; i < 4; ++i)
+	{
+		for(int j=0; j < 4; ++j)
+		{
+			printf("%.2f, ", m[i][j]);
+		}
+		printf("\n");
+	}
+}
 
 
 #endif
