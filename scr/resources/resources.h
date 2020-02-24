@@ -1,27 +1,11 @@
 #ifndef RESOURCES_H
 #define RESOURCES_H
-
+#include "../../engine.h"
 #include <stdlib.h>
 #include <GL/glew.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <assert.h>
-
-typedef struct
-{
-	int width, height, bbp; //bits per pixel
-	uint8_t *buffer;
-	GLuint id;
-}
-Texture;
-
-
-typedef struct
-{
-	char *buffer;
-	uint16_t bufferSize; //size in bytes
-}
-File;
 
 
 //texture.c

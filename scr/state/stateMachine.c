@@ -41,7 +41,7 @@ void stateMachine_run(void)
         }
 	}
     
-    printf("%f\n", (glfwGetTime() - time) / frames);
+    //printf("%f\n", (glfwGetTime() - time) / frames);
     window_terminate();
     vector_foreach(&states, State*, state)
     {

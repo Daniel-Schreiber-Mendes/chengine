@@ -4,6 +4,7 @@
 void mainMenuState_construct(MainMenuState *const s)
 {
     window_init("Che Engine", 640, 480);
+    inputManager_init();
     window_vsync_set(true);
 
     render_system_init();
@@ -16,11 +17,9 @@ void mainMenuState_construct(MainMenuState *const s)
         s->b.updating = true;
     }
 
-    checs_component_get_once(Renderable, r, checs_entity_generate(Renderable, Transform));
-    checs_entity_generate(Transform);
-    checs_entity_generate(Transform);
-    checs_entity_generate(Transform);
-    checs_entity_generate(Transform);
+    EntityId player = checs_entity_generate(Renderable, Transform, InputReceiver);
+    checs_component_get_once(Renderable, r, player);
+
 
     EntityId camera = checs_entity_generate(Transform);
     checs_component_get_once(Transform, transform, camera);

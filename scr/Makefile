@@ -16,8 +16,8 @@ profile:
 profileCache: output
 	valgrind --tool=cachegrind make
 
-OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o commands.o render_system.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcimgui
+OUTPUT: 		         main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o render_system.o inputManager.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o MainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o render_system.o inputManager.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcimgui
 
 main.o: main.c
 	gcc $(CFLAGS) main.c
@@ -52,6 +52,9 @@ vertexBufferLayout.o: render/vertexBufferLayout.c
 render_system.o: render/render_system.c
 	gcc $(CFLAGS) render/render_system.c
 
+inputManager.o: input/inputManager.c
+	gcc $(CFLAGS) input/inputManager.c
+
 math.o: utility/math.c
 	gcc $(CFLAGS) utility/math.c
 
@@ -60,6 +63,3 @@ utility.o: utility/utility.c
 	
 MainMenuState.o: state/MainMenuState.c
 	gcc $(CFLAGS) state/MainMenuState.c
-
-commands.o: commands/commands.o
-	gcc $(CFLAGS) commands/commands.c

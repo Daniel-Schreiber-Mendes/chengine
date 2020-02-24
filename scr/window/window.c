@@ -10,21 +10,9 @@ void window_init(char const* const title, uint16_t const n_width, uint16_t const
 {
     assert(glfwInit());
     monitor = glfwGetPrimaryMonitor();
-    width = n_width;
-    height = n_height;
-
-    assert(window = glfwCreateWindow(width, height, title, NULL, NULL));
-
+    assert(window = glfwCreateWindow(width = n_width, height = n_height, title, NULL, NULL));
     glfwMakeContextCurrent(window);
-
     assert(glewInit() == GLEW_OK);
-
-    commands_init();
-
-
-    //igCreateContext(NULL);
-    //ImGuiIO *io = igGetIO();
-    //ImGui_ImplGlfw_InitForOpenGL(window, true); 
 }
 
 

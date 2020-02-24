@@ -68,9 +68,9 @@ int main(void)
 {
 	systemManager_init(0, 1, 0, 0);
 	entityManager_init();
-	componentManager_init(2, 100, 5);
-	commandManager_init(COMMAND_COUNT);
-	eventManager_init(0);
+	componentManager_init(3, 2, 5);
+	commandManager_init(CommandCount);
+	eventManager_init(EventCount);
 
 	checs_command_subscribe(WindowCloseCommand, window_close_command_callback);
 	checs_command_subscribe(FramebufferSizeCommand, framebuffer_size_command_callback);
@@ -79,12 +79,17 @@ int main(void)
 	checs_command_subscribe(JoystickCommand, joystick_command_callback);
 
 
-	checs_component_register(Renderable, 50, 5);
-	checs_component_register(Transform, 100, 5);
+	checs_component_register(Renderable, 1, 5);
+	checs_component_register(Transform, 2, 5);
+	checs_component_register(InputReceiver, 1, 5);
 
-	checs_system_register(render_system, ON_DRAW, 20, 5, RENDER_SYSTEM_COMPONENTS);
+
+	checs_event_register(KeyEvent, 5);
+	checs_event_register(MouseButtonEvent, 5);
+	checs_event_register(JoystickEvent, 5);
 
 
+	checs_system_register(render_system, ON_DRAW, 1, 5, RENDER_SYSTEM_COMPONENTS);
 	/*
 	checs_event_register(ExitEvent, 2);
 
