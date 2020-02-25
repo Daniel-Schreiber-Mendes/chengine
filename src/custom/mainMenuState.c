@@ -7,6 +7,10 @@ void mainMenuState_construct(MainMenuState *const s)
     inputManager_init();
     window_vsync_set(true);
 
+    uint8_t a;
+    uint32_t b;
+    wavFile_load("../resources/error/errorSound.wav", &a, &b);
+
     render_system_init();
 
     {    
@@ -79,16 +83,6 @@ void mainMenuState_update(State *const state)
 {
     checs_systems_call(ON_UPDATE);
     checs_tasks_call(ON_UPDATE);
-    if (glfwJoystickPresent(GLFW_JOYSTICK_2))
-    {
-        int count;
-        unsigned char const* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &count);
-        printf("%i\n", count);
-        for (int i=0; i < count; ++i)
-        {
-            printf("%u\n", buttons[i]);
-        }
-    }
 }
 
 

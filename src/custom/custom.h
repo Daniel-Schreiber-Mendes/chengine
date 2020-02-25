@@ -1,7 +1,7 @@
 #ifndef CUSTOM_H
 #define CUSTOM_H
 #include "../../engine.h"
-
+#include "../../audio.h"
 
 typedef struct
 {

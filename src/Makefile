@@ -16,8 +16,8 @@ profile:
 profileCache: output
 	valgrind --tool=cachegrind make
 
-OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o render_system.o inputManager.o input_task.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o render_system.o inputManager.o input_task.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs #-lcimgui
+OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o render_system.o inputManager.o input_task.o wav_loader.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o vertexBuffer.o elementBuffer.o program.o vertexBufferLayout.o texture.o file.o render_system.o inputManager.o input_task.o wav_loader.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs #-lcimgui
 
 window.o: window/window.c
 	gcc $(CFLAGS) window/window.c
@@ -58,6 +58,8 @@ math.o: utility/math.c
 utility.o: utility/utility.c
 	gcc $(CFLAGS) utility/utility.c
 
+wav_loader.o: audio/wav_loader.c
+	gcc $(CFLAGS) audio/wav_loader.c
 
 ############################# custom ###############################################################################################
 

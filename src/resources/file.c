@@ -1,6 +1,7 @@
 #include "../../engine.h"
 
 
+//path has to be relative to the executable
 void file_load(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "r");
