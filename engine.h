@@ -9,7 +9,10 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
+//#include <math.h>
 #include <string.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,10 +58,11 @@ typedef struct
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-#define RenderableComponent 0
-#define TransformComponent 1
-#define KeyInputComponent 2
-#define ComponentCount 3
+#define RenderableComponent 	0
+#define TransformComponent 		1
+#define KeyInputComponent 		2
+#define SoundSourceComponent    3
+#define ComponentCount 			4
 
 typedef struct
 {
@@ -70,9 +74,9 @@ Renderable;
 
 typedef struct
 {
-	float rotation;
 	vec3 position;
-	vec3 scale;
+	float rotation;
+	float scale;
 }
 Transform;
 
@@ -81,6 +85,21 @@ typedef struct
 { 
 	int i;	
 }KeyInput;
+
+
+typedef struct
+{
+	ALuint source;
+}SoundSource;
+
+
+
+void soundSource_construct(SoundSource *const s, char const *const path);
+void soundSource_destruct(SoundSource *const s);
+void soundSource_sound_play(SoundSource *const s);
+void soundSource_position_set(SoundSource *const s, vec3 const pos);
+void renderable_construct(Renderable *const r);
+void renderable_destruct(Renderable *const r);
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -110,7 +129,8 @@ typedef struct
 #define KeyCommand 			   2
 #define MouseButtonCommand     3
 #define JoystickCommand        4
-#define CommandCount           5
+#define ScrollCommand 		   5
+#define CommandCount           6
 
 
 typedef struct
@@ -139,6 +159,13 @@ typedef struct
 	int const jid, event;
 }
 JoystickData;
+
+
+typedef struct
+{
+	double yoffset;
+}
+ScrollData;
 
 
 
@@ -301,7 +328,6 @@ void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBuff
 
 
 //render_system.c
-void render_system_init(void);
 void render_system(checs_system_parameters);
 
 
@@ -316,6 +342,20 @@ static void mat4_print(mat4 const m)
 		printf("\n");
 	}
 }
+
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Audio //////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+void     audio_init(void);
+void     audio_terminate(void);
+bool     is_little_endian(void); //returns if the machine stores the bits in gib endian or little endian order
+uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer);
+ALvoid*  wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
+uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
 
 
 #endif

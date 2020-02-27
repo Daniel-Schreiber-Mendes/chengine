@@ -37,8 +37,21 @@ void joystick_command_callback(checs_command_parameters)
 	printf("jid:%i, event: %i\n", cData->jid, cData->event);
 }
 
+
+void scroll_command_callback(checs_command_parameters)
+{
+	#define offset ((ScrollData*)data)
+	checs_component_get_once(Transform, t, checs_entity_get_by_tag(CameraTag));
+	/*the offset can be either -1 or 1*/
+	if (t->scale < 0.11f && offset->yoffset < 0)
+		return;
+	t->scale += offset->yoffset * 0.1f;
+}
+
+
 int main(void)
 {
+	glClearColor(1, 0.4, 0.3, 0);
 	systemManager_init(0, 1, 1, 0);
 	entityManager_init();
 	componentManager_init(ComponentCount, 2, 5);
@@ -51,11 +64,13 @@ int main(void)
 	checs_command_subscribe(KeyCommand, key_command_callback);
 	checs_command_subscribe(MouseButtonCommand, mouse_button_command_callback);
 	checs_command_subscribe(JoystickCommand, joystick_command_callback);
+	checs_command_subscribe(ScrollCommand, scroll_command_callback);
 
 
 	checs_component_register(Renderable, 1, 5);
 	checs_component_register(Transform, 2, 5);
 	checs_component_register(KeyInput, 2, 5);
+	checs_component_register(SoundSource, 1, 5);
 
 
 	checs_event_register(KeyEventData, KeyEvent, 4);
@@ -68,15 +83,6 @@ int main(void)
 
 	checs_task_register(input_task, ON_UPDATE);
 
-	/*
-	checs_event_publish(ExitEvent, event);
-	checs_event_publish(ExitEvent, event);
-
-	checs_events_poll(ExitEventData, ExitEvent, event)
-	{
-		printf("%i\n", ++event->x);
-	}
-	*/
 
 	stateMachine_init();
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);

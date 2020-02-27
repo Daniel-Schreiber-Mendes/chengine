@@ -5,7 +5,10 @@ static bool running = true, validState = true;
 
 void stateMachine_init(void)
 {	 
-    vector_construct(&states, sizeof(State*)); 
+    vector_construct(&states, sizeof(State*));
+    audio_init();
+    window_init("Che Engine Window", 640, 480);
+    inputManager_init();
 }
 
 
@@ -43,6 +46,7 @@ void stateMachine_run(void)
     
     //printf("%f\n", (glfwGetTime() - time) / frames);
     window_terminate();
+    audio_terminate();
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);

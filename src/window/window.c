@@ -13,6 +13,7 @@ void window_init(char const* const title, uint16_t const n_width, uint16_t const
     assert(window = glfwCreateWindow(width = n_width, height = n_height, title, NULL, NULL));
     glfwMakeContextCurrent(window);
     assert(glewInit() == GLEW_OK);
+    glClearColor(1, 0, 1, 1); //set clear color to magenta so it is easyer to see if e.g the background got not rendered correctly
 }
 
 

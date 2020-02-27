@@ -6,6 +6,7 @@ static void framebuffer_size_callback(GLFWwindow *const window, int const width,
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 static void joystick_callback(int jid, int event);
+static void scroll_callback(GLFWwindow* window, double const xoffset, double const yoffset);
 
 
 void inputManager_init(void)
@@ -15,6 +16,7 @@ void inputManager_init(void)
     glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetJoystickCallback(joystick_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 }
 
 
@@ -46,4 +48,11 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
 static void joystick_callback(int jid, int event)
 {
     checs_command_publish(JoystickCommand, (&(JoystickData){jid, event}));
+}
+
+
+static void scroll_callback(GLFWwindow* window, double const xoffset, double const yoffset)
+{
+    /* we dont care about xoffset scrolling, so we are leaving that out */
+    checs_command_publish(ScrollCommand, (&(ScrollData){yoffset}));
 }
