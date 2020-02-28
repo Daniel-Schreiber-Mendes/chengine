@@ -6,12 +6,32 @@
 #include <GLFW/glfw3.h>
 #include <checs/checs.h>
 #include <stdbool.h>
-#include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <AL/al.h>
 #include <AL/alc.h>
+
+
+#define DEBUG
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Debug Utilitys /////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+#ifdef DEBUG
+	#define che_assert(expr)\
+		if (!(expr))\
+		{\
+			printf("Assertion: %s failed. Line: %u, File: %s\n", #expr, __LINE__, __FILE__);\
+			exit(-1);\
+		}
+#else
+	#define che_assert(expr)\
+		(void)0
+#endif
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,6 +46,9 @@
 /////////////////////// Render-Utility-Types ///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+typedef GLuint VertexBuffer;
+typedef GLuint VertexArray;
+typedef GLuint Program;
 
 typedef struct 
 {
@@ -61,11 +84,13 @@ typedef struct
 #define TransformComponent 		1
 #define KeyInputComponent 		2
 #define SoundSourceComponent    3
-#define ComponentCount 			4
+#define CameraComponent			4
+#define ComponentCount 			5
 
 typedef struct
 {
-	GLuint vao, program;
+	VertexArray vao;
+	Program program;
 	ElementBuffer ebo;
 }
 Renderable;
@@ -75,7 +100,6 @@ typedef struct
 {
 	vec3 position;
 	float rotation;
-	float scale;
 }
 Transform;
 
@@ -83,22 +107,39 @@ Transform;
 typedef struct
 { 
 	int i;	
-}KeyInput;
+}
+KeyInput;
 
 
 typedef struct
 {
 	ALuint source;
-}SoundSource;
+}
+SoundSource;
 
 
+typedef struct
+{
+	float aspectRatio;
+	float zoom;
+}
+Camera;
+
+
+
+void renderable_construct(Renderable *const r);
+void renderable_destruct(Renderable *const r);
+
+void transform_construct(Transform *const t);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);
 void soundSource_sound_play(SoundSource *const s);
 void soundSource_position_set(SoundSource *const s, vec3 const pos);
-void renderable_construct(Renderable *const r);
-void renderable_destruct(Renderable *const r);
+
+void camera_construct(Camera *const c);
+void camera_default_zoom(Camera *const c, float const yoffset);
+void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height);
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -287,6 +328,7 @@ void texture_bind(Texture *const texture);
 
 //file.c
 void file_load_text(File *const f, char const *const path);
+void file_load_binary(File *const f, char const *const path);
 void file_destruct(File const *const f);
 
 
@@ -301,8 +343,8 @@ void file_destruct(File const *const f);
 	vertexBuffer_bind(*(vbo_ptr));\
 	glBufferData(GL_ARRAY_BUFFER, sizeof(array), array, GL_STATIC_DRAW);
 
-void 	vertexBuffer_destruct(GLuint const *const vbo);
-void 	vertexBuffer_bind(GLuint const vbo);
+void 	vertexBuffer_destruct(VertexBuffer const *const vbo);
+void 	vertexBuffer_bind(VertexBuffer const vbo);
 
 //elementBuffer.c
 //void	elementBuffer_construct(ElementBuffer *const ebo, GLsizeiptr const size, GLsizei const elementCount, void const *const data);
@@ -319,18 +361,18 @@ void 	elementBuffer_destruct(ElementBuffer const *const ebo);
 void 	elementBuffer_bind(ElementBuffer const *const ebo);
 
 //vertexArray.c
-void	vertexArray_construct(GLuint *const vao);
-void 	vertexArray_destruct(GLuint const *const vao);
-void 	vertexArray_bind(GLuint const vao);
-void    vertexArray_buffer_add(GLuint const vao, GLuint const vbo, VertexBufferLayout const layout);
+void	vertexArray_construct(VertexArray *const vao);
+void 	vertexArray_destruct(VertexArray const *const vao);
+void 	vertexArray_bind(VertexArray const vao);
+void    vertexArray_buffer_add(VertexArray const vao, GLuint const vbo, VertexBufferLayout const layout);
 
 //program.c
-void    program_create(GLuint *const program, char const *const fsPath, char const *const vsPath);
-void    program_destroy(GLuint const program);
-void 	program_bind(GLuint const program);
-void    program_uniform4f_set(GLuint const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
-void    program_uniform1i_set(GLuint const program, char const *const name, GLint const v0);
-void    program_uniformMat4f_set(GLuint const program, char const *const name, mat4 const m0);
+void    program_create(Program *const program, char const *const fsPath, char const *const vsPath);
+void    program_destroy(Program const program);
+void 	program_bind(Program const program);
+void    program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
+void    program_uniform1i_set(Program const program, char const *const name, GLint const v0);
+void    program_uniformMat4f_set(Program const program, char const *const name, mat4 const m0);
 
 
 //vertexBufferLayout.c
@@ -344,17 +386,15 @@ void render_init(void);
 void render_system(checs_system_parameters);
 
 
-static void mat4_print(mat4 const m)
-{
-	for(int i=0; i < 4; ++i)
-	{
-		for(int j=0; j < 4; ++j)
-		{
-			printf("%.2f, ", m[i][j]);
-		}
-		printf("\n");
+#define mat4_print(m)\
+	for(int i=0; i < 4; ++i)\
+	{\
+		for(int j=0; j < 4; ++j)\
+		{\
+			printf("%.2f, ", m[i][j]);\
+		}\
+		printf("\n");\
 	}
-}
 
 
 

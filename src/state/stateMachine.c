@@ -9,7 +9,6 @@ void stateMachine_init(void)
     audio_init();
     window_init("Che Engine Window", 640, 480);
     render_init();
-    inputManager_init();
 }
 
 
@@ -24,11 +23,8 @@ void stateMachine_state_pop(State *const state)
 
 void stateMachine_run(void)
 {
-    double time;
-    int frames;
 	while(running)
 	{                
-        ++frames;
         glfwPollEvents();
         checs_eventBuffers_swap();
         vector_foreach(&states, State*, state)
@@ -44,8 +40,6 @@ void stateMachine_run(void)
             }
         }
 	}
-    
-    //printf("%f\n", (glfwGetTime() - time) / frames);
     window_terminate();
     audio_terminate();
     vector_foreach(&states, State*, state)

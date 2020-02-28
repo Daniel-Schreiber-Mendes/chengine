@@ -1,26 +1,26 @@
 #include "../../engine.h"
 
 
-void vertexArray_construct(GLuint *const vao)
+void vertexArray_construct(VertexArray *const vao)
 {
 	glGenVertexArrays(1, vao);
 	vertexArray_bind(*vao);
 }
 
 
-void vertexArray_destruct(GLuint const *const vao)
+void vertexArray_destruct(VertexArray const *const vao)
 {
 	glDeleteVertexArrays(1, vao);
 }
 
 
-void vertexArray_bind(GLuint const vao)
+void vertexArray_bind(VertexArray const vao)
 {
 	glBindVertexArray(vao);
 }
 
 
-void vertexArray_buffer_add(GLuint const vao, GLuint const vbo, VertexBufferLayout const layout)
+void vertexArray_buffer_add(VertexArray const vao, GLuint const vbo, VertexBufferLayout const layout)
 {
 	vertexArray_bind(vao);
 	vertexBuffer_bind(vbo);

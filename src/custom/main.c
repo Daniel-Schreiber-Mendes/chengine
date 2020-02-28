@@ -1,52 +1,12 @@
 #include "custom.h"
 
 
-void window_close_command_callback(checs_command_parameters)
-{
-	stateMachine_running_set(false);
-}
-
-
-void framebuffer_size_command_callback(checs_command_parameters)
-{
-	#define sizeData ((FramebufferSizeData*)data)
-	glViewport(0, 0, sizeData->width, sizeData->height);
-	
-}
-
-
-void key_command_callback(checs_command_parameters)
-{
-	#define keyData ((KeyData*)data)
-	if (keyData->key == GLFW_KEY_F11 && keyData->action == GLFW_PRESS)
-	{
-		window_fullscreen_switch();
-	}
-}
-
-
-void mouse_button_command_callback(checs_command_parameters)
-{
-	#define buttonData ((MouseButtonData*)data)
-}
-
-
-void joystick_command_callback(checs_command_parameters)
-{
-	#define cData ((JoystickData*)data)
-	printf("jid:%i, event: %i\n", cData->jid, cData->event);
-}
-
-
-void scroll_command_callback(checs_command_parameters)
-{
-	#define offset ((ScrollData*)data)
-	checs_component_get_once(Transform, t, checs_entity_get_by_tag(CameraTag));
-	/*the offset can be either -1 or 1*/
-	if (t->scale < 0.11f && offset->yoffset < 0)
-		return;
-	t->scale += offset->yoffset * 0.1f;
-}
+static void window_close_command_callback(checs_command_parameters);
+static void framebuffer_size_command_callback(checs_command_parameters);
+static void key_command_callback(checs_command_parameters);
+static void mouse_button_command_callback(checs_command_parameters);
+static void joystick_command_callback(checs_command_parameters);
+static void scroll_command_callback(checs_command_parameters);
 
 
 int main(void)
@@ -54,7 +14,7 @@ int main(void)
 	glClearColor(1, 0.4, 0.3, 0);
 	systemManager_init(0, 1, 1, 0);
 	entityManager_init();
-	componentManager_init(ComponentCount, 2, 5);
+	componentManager_init(ComponentCount, 3, 5);
 	commandManager_init(CommandCount);
 	eventManager_init(EventCount);
 
@@ -67,10 +27,11 @@ int main(void)
 	checs_command_subscribe(ScrollCommand, scroll_command_callback);
 
 
-	checs_component_register(Renderable, 1, 5);
-	checs_component_register(Transform, 2, 5);
+	checs_component_register(Renderable, 2, 5);
+	checs_component_register(Transform, 3, 5);
 	checs_component_register(KeyInput, 2, 5);
 	checs_component_register(SoundSource, 1, 5);
+	checs_component_register(Camera, 1, 5);
 
 
 	checs_event_register(KeyEventData, KeyEvent, 4);
@@ -89,4 +50,48 @@ int main(void)
     stateMachine_run();
 
     return 0;
+}
+
+
+static void window_close_command_callback(checs_command_parameters)
+{
+	stateMachine_running_set(false);
+}
+
+
+static void framebuffer_size_command_callback(checs_command_parameters)
+{
+	#define sizeData ((FramebufferSizeData*)data)
+	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
+	camera_default_resize(c, sizeData->width, sizeData->height);
+}
+
+
+static void key_command_callback(checs_command_parameters)
+{
+	#define keyData ((KeyData*)data)
+	if (keyData->key == GLFW_KEY_F11 && keyData->action == GLFW_PRESS)
+	{
+		window_fullscreen_switch();
+	}
+}
+
+
+static void mouse_button_command_callback(checs_command_parameters)
+{
+	#define buttonData ((MouseButtonData*)data)
+}
+
+
+static void joystick_command_callback(checs_command_parameters)
+{
+	#define cData ((JoystickData*)data)
+}
+
+
+static void scroll_command_callback(checs_command_parameters)
+{
+	#define offset ((ScrollData*)data)
+	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
+	camera_default_zoom(c, offset->yoffset);
 }

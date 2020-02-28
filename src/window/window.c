@@ -6,14 +6,29 @@ static bool fullscreen;
 GLFWwindow* window;
 
 
+static void window_close_callback(GLFWwindow* _window);
+static void framebuffer_size_callback(GLFWwindow *const _window, int const _width, int const _height);
+static void key_callback(GLFWwindow* _window, int key, int scancode, int action, int mods);
+static void mouse_button_callback(GLFWwindow* _window, int button, int action, int mods);
+static void joystick_callback(int jid, int event);
+static void scroll_callback(GLFWwindow* _window, double const xoffset, double const yoffset);
+
+
 void window_init(char const* const title, uint16_t const n_width, uint16_t const n_height)
 {
-    assert(glfwInit());
+    che_assert(glfwInit());
     monitor = glfwGetPrimaryMonitor();
-    assert(window = glfwCreateWindow(width = n_width, height = n_height, title, NULL, NULL));
+    che_assert(window = glfwCreateWindow(width = n_width, height = n_height, title, NULL, NULL));
     glfwMakeContextCurrent(window);
-    assert(glewInit() == GLEW_OK);
+    che_assert(glewInit() == GLEW_OK);
     glClearColor(1, 0, 1, 1); //set clear color to magenta so it is easyer to see if e.g the background got not rendered correctly
+
+    glfwSetWindowCloseCallback(window, window_close_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetJoystickCallback(joystick_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 }
 
 
@@ -26,13 +41,11 @@ void window_terminate(void)
 
 void window_fullscreen_set(bool const set)
 {
-    if (fullscreen = set)
+    if ((fullscreen = set))
     {
         int videoModeCount;
         GLFWvidmode const *const mode = &glfwGetVideoModes(monitor, &videoModeCount)[videoModeCount - 1];
-        width = mode->width;
-        height = mode->height;
-        glfwSetWindowMonitor(window, monitor, 0, 0, width, height, mode->refreshRate);
+        glfwSetWindowMonitor(window, monitor, 0, 0, (width = mode->width), (height = mode->height), mode->refreshRate);
     }
     else
     {
@@ -50,4 +63,42 @@ void window_fullscreen_switch(void)
 void window_vsync_set(bool const set)
 {
     glfwSwapInterval(set);
+}
+
+
+static void window_close_callback(GLFWwindow* _window)
+{
+    checs_command_publish(WindowCloseCommand, NULL);
+}
+
+
+static void framebuffer_size_callback(GLFWwindow *const _window, int const _width, int const _height)
+{
+    checs_command_publish(FramebufferSizeCommand, (&(FramebufferSizeData){_width, _height}));
+}
+
+
+static void key_callback(GLFWwindow* _window, int key, int scancode, int action, int mods)
+{
+    checs_command_publish(KeyCommand, (&(KeyData){key, scancode, action, mods}));
+    checs_event_publish(KeyEventData, KeyEvent, ((KeyEventData){key, scancode, action, mods}));
+}
+
+
+static void mouse_button_callback(GLFWwindow* _window, int button, int action, int mods)
+{
+    checs_command_publish(MouseButtonCommand, (&(MouseButtonData){button, action, mods}));
+}
+
+
+static void joystick_callback(int jid, int event)
+{
+    checs_command_publish(JoystickCommand, (&(JoystickData){jid, event}));
+}
+
+
+static void scroll_callback(GLFWwindow* _window, double const xoffset, double const yoffset)
+{
+    /* we dont care about xoffset scrolling, so we are leaving that out */
+    checs_command_publish(ScrollCommand, (&(ScrollData){yoffset}));
 }

@@ -2,7 +2,6 @@
 
 out mediump vec4 color;
 in mediump vec2 v_texCoord;
-in mediump vec3 v_position;
 
 uniform sampler2D u_texture;
 

@@ -1,6 +1,12 @@
 #include "../../engine.h"
 
 
+void transform_construct(Transform *const t)
+{
+    memset(t, 0, sizeof(Transform));
+}
+
+
 
 void soundSource_construct(SoundSource *const s, char const *const path)
 {
@@ -49,4 +55,26 @@ void renderable_construct(Renderable *const r)
 void renderable_destruct(Renderable *const r)
 {
 
+}
+
+
+void camera_construct(Camera *const c)
+{
+    c->zoom = 1;
+    c->aspectRatio = 1;
+}
+
+
+void camera_default_zoom(Camera *const c, float const yoffset)
+{
+    /*the offset has to be between -1 and 1*/
+    c->zoom += yoffset * 0.05f;
+    c->zoom = fmaxf(c->zoom, 0.05f);
+}
+
+
+void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height)
+{
+    glViewport(0, 0, width, height);
+    c->aspectRatio = width / (float)height;
 }

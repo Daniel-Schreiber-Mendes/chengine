@@ -14,7 +14,8 @@ typedef struct
 {
     uint8_t val, min, max;
     int16_t d;
-}Alternator;
+}
+Alternator;
 
 
 //utility.c
@@ -23,6 +24,7 @@ uint8_t  alternator_alternate(Alternator *const alt);
 uint8_t  typeGL_size_get(GLuint const type);
 
 //math.c
+uint16_t sr_init(void);
 uint8_t  limitUint8(uint8_t const val, uint8_t const min, uint8_t const max);
 float    limitF(float const val, float const min, float const max);
 uint16_t getRandUint16(uint16_t const min, uint16_t const max);

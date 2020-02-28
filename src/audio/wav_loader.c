@@ -10,7 +10,7 @@ void audio_init(void)
 {
 	/* device is just a soundcard*/
 	device = alcOpenDevice(NULL);
-	assert(device);
+	che_assert(device);
 	ALCcontext* context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
 }
@@ -61,13 +61,13 @@ ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *
 	uint8_t buffer[4];
 
 	FILE *file = fopen(path, "rb"); //r for read and b for binary
-	assert(file);
+	che_assert(file);
 
 
 	/*first 4 bytes in the wav header is chunk ID and have to be "RIFF". we check this to make sure the file has the right format.
 	The RIFF format acts as a "wrapper" for various audio coding formats. */
 	fread(buffer, 4, 1, file);
-	assert(memcmp(buffer, "RIFF", 4) == 0); /*if return value is zero that means the memory is the same*/
+	che_assert(memcmp(buffer, "RIFF", 4) == 0); /*if return value is zero that means the memory is the same*/
 
 
 	/*next 4 bytes specify the size of the whole header and are called chunk size. since we dont't care what the header size is we can just move 
@@ -77,21 +77,21 @@ ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *
 
 	/*the next 4 bytes specify the format. they should be "WAVE".*/
 	fread(buffer, 4, 1, file);
-	assert(memcmp(buffer, "WAVE", 4) == 0);/*"WAVE" specifies that the format we want is wave. if the format is something else, assert.
+	che_assert(memcmp(buffer, "WAVE", 4) == 0);/*"WAVE" specifies that the format we want is wave. if the format is something else, che_assert.*/
 	/*this subchunk describes the audio's format. it begins with 4 bytes which should be "fmt "*/
 	fread(buffer, 4, 1, file);
-	assert(memcmp(buffer, "fmt ", 4) == 0);
+	che_assert(memcmp(buffer, "fmt ", 4) == 0);
 
 
 	/* this should contain the size of this subchunk. it should always be 16. because the number 16 is stored in the first byte, we compare
 	the first element in the buffer with 16*/
 	fread(buffer, 4, 1, file);
-	assert(buffer[0] == 16);
+	che_assert(buffer[0] == 16);
 
 
 	/*advance 2 bytes. these two bytes specify if the wav file is compressed in some way. if it is not compressed, the first byte should be 1*/
 	fread(buffer, 2, 1, file);
-	assert(buffer[0] == 1);
+	che_assert(buffer[0] == 1);
 
 
 	/* the number of channels specify if sound is played e.g mono(1 channel) or stereo (2 channels)*/
@@ -117,7 +117,7 @@ ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *
 
 	/*now the data subchunk begins. to make sure everything is correct we check if the next 4 bytes contain the letters "data".*/
 	fread(buffer, 4, 1, file);
-	//assert(memcmp(buffer, "data", 4) == 0);
+	//che_assert(memcmp(buffer, "data", 4) == 0);
 
 
 	/*this contains the size of the data*/
@@ -126,7 +126,7 @@ ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *
 
 	/*copys the data out of the file into the data buffer*/
 	ALvoid *data = malloc(*size);
-	assert(data);
+	che_assert(data);
 	fread(data, *size, 1, file);
 
 

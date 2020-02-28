@@ -6,7 +6,7 @@ void file_load_text(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "r");
 
-    assert(file);
+    che_assert(file);
 
     fseek(file, 0, SEEK_END); //move file pointer to end of file
     f->bufferSize = ftell(file); //tell position of pointer which means length of string
@@ -24,7 +24,7 @@ void file_load_binary(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "rb");
 
-    assert(file);
+    che_assert(file);
 
     fseek(file, 0, SEEK_END); //move file pointer to end of file
     f->bufferSize = ftell(file); //tell position of pointer which means length of string

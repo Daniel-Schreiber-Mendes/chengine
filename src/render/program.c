@@ -2,7 +2,7 @@
 
 static GLuint createShader(GLenum const type, char const *const path);
 
-void program_create(GLuint *const program, char const *const vsPath, char const *const fsPath)
+void program_create(Program *const program, char const *const vsPath, char const *const fsPath)
 {
     //it is important that the source is relative to the .o file not relative to the .c file
     *program = glCreateProgram();
@@ -24,39 +24,39 @@ void program_create(GLuint *const program, char const *const vsPath, char const 
 }
 
 
-void program_destroy(GLuint const program)
+void program_destroy(Program const program)
 {
     glDeleteProgram(program);
 }
 
 
-void program_bind(GLuint const program)
+void program_bind(Program const program)
 {
 	glUseProgram(program);
 }
 
 
-void program_uniform4f_set(GLuint const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3)
+void program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3)
 {
     GLint location = glGetUniformLocation(program, name);
-    assert(location != -1);
+    che_assert(location != -1);
 	glUniform4f(location, v0, v1, v2, v2);
 }
 
 
-void program_uniform1i_set(GLuint const program, char const *const name, GLint const v0)
+void program_uniform1i_set(Program const program, char const *const name, GLint const v0)
 {
     GLint location = glGetUniformLocation(program, name);
-    assert(location != -1);
+    che_assert(location != -1);
     glUniform1i(location, v0);
 }
 
 
-void program_uniformMat4f_set(GLuint const program, char const *const name, mat4 const m0)
+void program_uniformMat4f_set(Program const program, char const *const name, mat4 const m0)
 {
     // GL_FALSE because layout is already row major
     GLint location = glGetUniformLocation(program, name);
-    assert(location != -1);
+    che_assert(location != -1);
     glUniformMatrix4fv(location, 1, GL_FALSE, m0[0]);
 }
 

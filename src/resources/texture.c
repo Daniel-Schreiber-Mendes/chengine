@@ -20,7 +20,7 @@ void texture_construct(Texture *const texture, char const *const path)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //makes the image sharper instead of interpolating
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texture->buffer);
 	
-	assert(texture->buffer);
+	che_assert(texture->buffer);
 	stbi_image_free(texture->buffer);
 }
 

@@ -1,6 +1,9 @@
 #include "utility.h"
 
 
+static uint8_t bit;
+
+
 uint8_t limitUint8(uint8_t const val, uint8_t const min, uint8_t const max)
 {
     return val < min ? min : val > max ? max : val;
@@ -12,8 +15,6 @@ float limitF(float const val, float const min, float const max)
 }
 
 
-static uint8_t bit;
-// shift register gets seeded
 uint16_t sr_init(void)
 {
     srand(time(0));

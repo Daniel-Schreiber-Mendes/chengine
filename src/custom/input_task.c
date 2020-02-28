@@ -10,23 +10,26 @@ void input_task(void)
 		checs_component_get(Transform, t, entity);
 		checs_events_poll(KeyEventData, KeyEvent, event)
 		{
-			switch (event->key)
+			if(event->action == GLFW_PRESS || event->action == GLFW_REPEAT)
 			{
-				case GLFW_KEY_A:
-					t->position[0] -= 0.1;
-					break;
+				switch (event->key)
+				{
+					case GLFW_KEY_W:
+						t->position[1] += 0.01;
+						break;
 
-				case GLFW_KEY_D:
-					t->position[0] += 0.1;
-					break;
+					case GLFW_KEY_A:
+						t->position[0] -= 0.01;
+						break;
 
-				case GLFW_KEY_S:
-					t->rotation += 0.1f;
-					break;
+					case GLFW_KEY_S:
+						t->position[1] -= 0.01;
+						break;
 
-				case GLFW_KEY_W:
-					t->rotation -= 0.1f;
-					break;
+					case GLFW_KEY_D:
+						t->position[0] += 0.01;
+						break;
+				}
 			}
 		}
 	}

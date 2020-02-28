@@ -11,56 +11,95 @@ void mainMenuState_construct(MainMenuState *const s)
         s->b.updating = true;
     }
 
+
     window_vsync_set(true);
 
-
-    EntityId camera = checs_entity_generate(Transform, KeyInput);
-    checs_component_get_once(Transform, t, camera);
-    checs_entity_tag_add(camera, CameraTag);
-    memset(t, 0, sizeof(Transform));
-    t->scale = 1;
-
-
-    EntityId player = checs_entity_generate(Renderable, Transform, SoundSource);
-    checs_component_get_once(Renderable, r, player);
-    checs_component_get_once(SoundSource, src, player);
-    //soundSource_construct(src, "../resources/error/errorMusic.wav");
-    //soundSource_sound_play(src);
-
-
-    GLfloat positions[5 * 4] = 
     {
-    /*   3 x position  2 x tex  */
-        -0.3, -0.3, 0, 0, 0,
-         0.3, -0.3, 0, 1, 0,
-         0.3,  0.3, 0, 1, 1,
-        -0.3,  0.3, 0, 0, 1
-    };
+        EntityId camera = checs_entity_generate(Transform, KeyInput, Camera);
+        checs_component_get_once(Transform, t, camera);
+        checs_component_get_once(Camera, c, camera);
+        checs_entity_tag_add(camera, CameraTag);
+        transform_construct(t);
+        camera_construct(c);
+    }
 
-    GLuint elements[6] = 
+
+    GLuint program;
+    texture_construct(&s->tex, "../resources/textures/ui.png");
+    program_create(&program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
+    program_uniform1i_set(program, "u_texture", 0);
+
+    
     {
-        0, 1, 2,
-        2, 3, 0
-    };
+        EntityId player = checs_entity_generate(Renderable, Transform);
+        checs_component_get_once(Renderable, r, player);
+        checs_component_get_once(Transform, t, player);
+        transform_construct(t);
 
 
-    GLuint vbo;
-    VertexBufferLayout vbl;
-    vertexArray_construct(&r->vao);
-    elementBuffer_construct(&r->ebo, elements);
-    vertexBuffer_construct(&vbo, positions);
-    vertexBufferLayout_construct(&vbl, 2);
+        GLfloat positions[5 * 4] = 
+        {
+        //   3 x position  2 x tex
+            -0.3, -0.3, 0, 0, 0,
+             0.3, -0.3, 0, 1, 0,
+             0.3,  0.3, 0, 1, 1,
+            -0.3,  0.3, 0, 0, 1
+        };
+
+        GLuint elements[6] = 
+        {
+            0, 1, 2,
+            2, 3, 0
+        };
 
 
-    vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
-    vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+        GLuint vbo;
+        VertexBufferLayout vbl;
+        vertexArray_construct(&r->vao);
+        elementBuffer_construct(&r->ebo, elements);
+        vertexBuffer_construct(&vbo, positions);
+        vertexBufferLayout_construct(&vbl, 2);
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+        vertexArray_buffer_add(r->vao, vbo, vbl);
+        r->program = program;
+    }
 
-    vertexArray_buffer_add(r->vao, vbo, vbl);
+    
+    {
+        EntityId player = checs_entity_generate(Renderable, Transform);
+        checs_component_get_once(Renderable, r, player);
+        checs_component_get_once(Transform, t, player);
+        transform_construct(t);
 
-    texture_construct(&s->tex, "../resources/textures/tilemap.png");
 
-    program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
-    program_uniform1i_set(r->program, "u_texture", 0);
+        GLfloat positions[5 * 4] = 
+        {
+        //   3 x position  2 x tex
+            0, 0, 0, 0.0, 0.0,
+            1, 0, 0, 0.5, 0.0,
+            1, 1, 0, 0.5, 0.5,
+            0, 1, 0, 0.0, 0.5
+        };
+
+        GLuint elements[6] = 
+        {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+
+        VertexBuffer vbo;
+        VertexBufferLayout vbl;
+        vertexArray_construct(&r->vao);
+        elementBuffer_construct(&r->ebo, elements);
+        vertexBuffer_construct(&vbo, positions);
+        vertexBufferLayout_construct(&vbl, 2);
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+        vertexArray_buffer_add(r->vao, vbo, vbl);
+        r->program = program;
+    }
 }
 
 
