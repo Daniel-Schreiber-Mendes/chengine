@@ -8,6 +8,7 @@ void stateMachine_init(void)
     vector_construct(&states, sizeof(State*));
     audio_init();
     window_init("Che Engine Window", 640, 480);
+    render_init();
     inputManager_init();
 }
 

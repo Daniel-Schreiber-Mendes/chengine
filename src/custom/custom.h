@@ -5,9 +5,6 @@
 typedef struct
 {
 	State b;
-
-	GLuint vbo;
-	VertexBufferLayout vbl;
 	Texture tex;
 }
 MainMenuState;

@@ -1,6 +1,13 @@
 #include "../../engine.h"
 
 
+void render_init(void)
+{
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+
 void render_system(checs_system_parameters)
 {
 	checs_component_use(Renderable, r);

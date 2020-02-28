@@ -30,6 +30,7 @@ void mainMenuState_construct(MainMenuState *const s)
 
     GLfloat positions[5 * 4] = 
     {
+    /*   3 x position  2 x tex  */
         -0.3, -0.3, 0, 0, 0,
          0.3, -0.3, 0, 1, 0,
          0.3,  0.3, 0, 1, 1,
@@ -42,19 +43,23 @@ void mainMenuState_construct(MainMenuState *const s)
         2, 3, 0
     };
 
+
+    GLuint vbo;
+    VertexBufferLayout vbl;
     vertexArray_construct(&r->vao);
-    elementBuffer_construct(&r->ebo, sizeof(GLuint) * 6, 6, elements);
+    elementBuffer_construct(&r->ebo, elements);
+    vertexBuffer_construct(&vbo, positions);
+    vertexBufferLayout_construct(&vbl, 2);
+
+
+    vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
+    vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+
+    vertexArray_buffer_add(r->vao, vbo, vbl);
+
+    texture_construct(&s->tex, "../resources/textures/tilemap.png");
+
     program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
-
-    vertexBuffer_construct(&s->vbo, sizeof(GLfloat) * 5 * 4, positions);
-    texture_construct(&s->tex, "../resources/textures/cobble.png");
-
-    vertexBufferLayout_construct(&s->vbl, 2);
-    vertexBufferLayout_element_add(&s->vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
-    vertexBufferLayout_element_add(&s->vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
-
-    vertexArray_buffer_add(r->vao, s->vbo, s->vbl);
-
     program_uniform1i_set(r->program, "u_texture", 0);
 }
 
@@ -69,8 +74,6 @@ void mainMenuState_destruct(State *const state)
     vertexArray_destruct(&r->vao);
     program_destroy(r->program);
 
-    vertexBuffer_destruct(&s->vbo);
-    vertexBufferLayout_destruct(&s->vbl);
     texture_destruct(&s->tex);
 }
 

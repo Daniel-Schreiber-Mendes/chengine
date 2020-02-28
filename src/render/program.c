@@ -66,7 +66,7 @@ static GLuint createShader(GLenum const type, char const *const path)
     GLuint const shader = glCreateShader(type);
     {
         File file;
-        file_load(&file, path);
+        file_load_text(&file, path);
         glShaderSource(shader, 1, (char const *const *)&file.buffer, NULL);
         file_destruct(&file);
     }

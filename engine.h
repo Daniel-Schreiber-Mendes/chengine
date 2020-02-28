@@ -9,7 +9,6 @@
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
-//#include <math.h>
 #include <string.h>
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -223,7 +222,7 @@ struct State
 
 typedef struct
 {
-	int width, height, bbp; //bits per pixel
+	int width, height, channels;
 	uint8_t *buffer;
 	GLuint id;
 }
@@ -232,7 +231,7 @@ Texture;
 
 typedef struct
 {
-	char *buffer;
+	void *buffer;
 	uint16_t bufferSize; //size in bytes
 }
 File;
@@ -287,7 +286,7 @@ void texture_bind(Texture *const texture);
 
 
 //file.c
-void file_load(File *restrict f, char const *const path);
+void file_load_text(File *const f, char const *const path);
 void file_destruct(File const *const f);
 
 
@@ -297,12 +296,25 @@ void file_destruct(File const *const f);
 
 
 //vertexBuffer.c
-void	vertexBuffer_construct(GLuint *const vbo, GLsizeiptr const size, void const *const data);
+#define vertexBuffer_construct(vbo_ptr, array)\
+	glGenBuffers(1, (vbo_ptr));\
+	vertexBuffer_bind(*(vbo_ptr));\
+	glBufferData(GL_ARRAY_BUFFER, sizeof(array), array, GL_STATIC_DRAW);
+
 void 	vertexBuffer_destruct(GLuint const *const vbo);
 void 	vertexBuffer_bind(GLuint const vbo);
 
 //elementBuffer.c
-void	elementBuffer_construct(ElementBuffer *const ebo, GLsizeiptr const size, GLsizei const elementCount, void const *const data);
+//void	elementBuffer_construct(ElementBuffer *const ebo, GLsizeiptr const size, GLsizei const elementCount, void const *const data);
+
+
+#define elementBuffer_construct(ebo_ptr, array)\
+	glGenBuffers(1, &(ebo_ptr)->id);\
+	elementBuffer_bind((ebo_ptr));\
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(array), array, GL_STATIC_DRAW);\
+	(ebo_ptr)->elementCount = sizeof(array) / sizeof(array[0]);
+	//get number of element in array
+
 void 	elementBuffer_destruct(ElementBuffer const *const ebo);
 void 	elementBuffer_bind(ElementBuffer const *const ebo);
 
@@ -328,6 +340,7 @@ void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBuff
 
 
 //render_system.c
+void render_init(void);
 void render_system(checs_system_parameters);
 
 

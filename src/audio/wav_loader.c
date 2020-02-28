@@ -78,8 +78,6 @@ ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *
 	/*the next 4 bytes specify the format. they should be "WAVE".*/
 	fread(buffer, 4, 1, file);
 	assert(memcmp(buffer, "WAVE", 4) == 0);/*"WAVE" specifies that the format we want is wave. if the format is something else, assert.
-
-
 	/*this subchunk describes the audio's format. it begins with 4 bytes which should be "fmt "*/
 	fread(buffer, 4, 1, file);
 	assert(memcmp(buffer, "fmt ", 4) == 0);
@@ -135,7 +133,6 @@ ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *
 	fclose(file);
 	return data;
 }
-
 
 uint16_t wav_format_get(uint8_t const channels, uint8_t const bps)
 {
