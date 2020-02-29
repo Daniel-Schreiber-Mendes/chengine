@@ -3,27 +3,28 @@
 
 void vertexArray_construct(VertexArray *const vao)
 {
-	glGenVertexArrays(1, vao);
-	vertexArray_bind(*vao);
+	glGenVertexArrays(1, &vao->id);
+	glBindVertexArray(vao->id);
 }
 
 
 void vertexArray_destruct(VertexArray const *const vao)
 {
-	glDeleteVertexArrays(1, vao);
+	glDeleteVertexArrays(1, &vao->id);
 }
 
 
-void vertexArray_bind(VertexArray const vao)
+void vertexArray_bind(VertexArray const *const vao)
 {
-	glBindVertexArray(vao);
+	glBindVertexArray(vao->id);
 }
 
 
-void vertexArray_buffer_add(VertexArray const vao, GLuint const vbo, VertexBufferLayout const layout)
+void vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout)
 {
-	vertexArray_bind(vao);
+	glBindVertexArray(vao->id);
 	vertexBuffer_bind(vbo);
+
 	//each layout of the attributes a the vbo is getting enabled and specified.
 	//should be of type uint but glVertexAttribPointer takes a void* where the adress is used as the actual value
 	void const *offset = 0;

@@ -7,6 +7,13 @@ void transform_construct(Transform *const t)
 }
 
 
+void transform_transform_calculate(Transform *const t, mat4 transform)
+{
+    glm_mat4_identity(transform);
+    glm_translate(transform, t->position);
+    glm_rotate_z(transform, t->rotation, transform);
+}
+
 
 void soundSource_construct(SoundSource *const s, char const *const path)
 {
@@ -77,4 +84,21 @@ void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const
 {
     glViewport(0, 0, width, height);
     c->aspectRatio = width / (float)height;
+}
+
+
+void camera_default_vp_recalculate(Camera *const c)
+{
+    mat4 view, proj; 
+    checs_component_get_once(Transform, t, checs_entity_get_by_tag(CameraTag));
+
+    glm_mat4_identity(view); //reset the view matrix
+    glm_ortho(-c->zoom * c->aspectRatio, c->zoom * c->aspectRatio, -c->zoom, c->zoom, -1.f, 1.f, proj); 
+    /* by setting the projection always according to the aspect ratio if the window gets resized everything still gets rendered correctly*/
+
+    glm_translate(view, t->position); //moving the camera
+    glm_scale_uni(view, c->zoom);
+    glm_rotate_z(view, t->rotation, view);  //rotate it
+    glm_mat4_inv(view, view);
+    glm_mat4_mul(proj, view, c->vp);
 }

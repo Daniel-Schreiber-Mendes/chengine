@@ -23,12 +23,16 @@ void window_init(char const* const title, uint16_t const n_width, uint16_t const
     che_assert(glewInit() == GLEW_OK);
     glClearColor(1, 0, 1, 1); //set clear color to magenta so it is easyer to see if e.g the background got not rendered correctly
 
+
     glfwSetWindowCloseCallback(window, window_close_callback);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetJoystickCallback(joystick_callback);
     glfwSetScrollCallback(window, scroll_callback);
+
+    framebuffer_size_callback(window, width, height + 1);
+    //we have to call this manually once after the window was created because it does not call this on creation
 }
 
 

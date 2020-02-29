@@ -47,8 +47,16 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 typedef GLuint VertexBuffer;
-typedef GLuint VertexArray;
 typedef GLuint Program;
+
+
+typedef struct
+{
+	GLuint id;
+	uint16_t count;
+}
+VertexArray;
+
 
 typedef struct 
 {
@@ -120,6 +128,7 @@ SoundSource;
 
 typedef struct
 {
+	mat4 vp;
 	float aspectRatio;
 	float zoom;
 }
@@ -131,6 +140,7 @@ void renderable_construct(Renderable *const r);
 void renderable_destruct(Renderable *const r);
 
 void transform_construct(Transform *const t);
+void transform_transform_calculate(Transform *const t, mat4 transform);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);
@@ -140,6 +150,7 @@ void soundSource_position_set(SoundSource *const s, vec3 const pos);
 void camera_construct(Camera *const c);
 void camera_default_zoom(Camera *const c, float const yoffset);
 void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height);
+void camera_default_vp_recalculate(Camera *const c);
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,9 +332,12 @@ void  stateMachine_running_set(bool const n_running);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-void texture_construct(Texture *const texture, char const *const path);
-void texture_destruct(Texture const* texture);
-void texture_bind(Texture *const texture);
+void texture_construct_from_file(Texture *const t, char const *const path);
+void texture_construct(Texture *const t, uint16_t const width, uint16_t const height);
+void texture_update_from_buffer(Texture *const t, void* buffer);
+void texture_rect_update_from_buffer(Texture *const t, uint16_t const xoffset, uint16_t const yoffset, uint16_t const width, uint16_t const height, void *buffer);
+void texture_destruct(Texture const* t);
+void texture_bind(Texture *const t);
 
 
 //file.c
@@ -363,8 +377,8 @@ void 	elementBuffer_bind(ElementBuffer const *const ebo);
 //vertexArray.c
 void	vertexArray_construct(VertexArray *const vao);
 void 	vertexArray_destruct(VertexArray const *const vao);
-void 	vertexArray_bind(VertexArray const vao);
-void    vertexArray_buffer_add(VertexArray const vao, GLuint const vbo, VertexBufferLayout const layout);
+void 	vertexArray_bind(VertexArray const *const vao);
+void    vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout);
 
 //program.c
 void    program_create(Program *const program, char const *const fsPath, char const *const vsPath);
@@ -372,7 +386,8 @@ void    program_destroy(Program const program);
 void 	program_bind(Program const program);
 void    program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
 void    program_uniform1i_set(Program const program, char const *const name, GLint const v0);
-void    program_uniformMat4f_set(Program const program, char const *const name, mat4 const m0);
+void    program_uniformMat4_set(Program const program, char const *const name, mat4 const m0);
+void    program_uniform4fv_set(Program const program, char const *const name, vec4 const v);
 
 
 //vertexBufferLayout.c
@@ -384,6 +399,8 @@ void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBuff
 //render_system.c
 void render_init(void);
 void render_system(checs_system_parameters);
+void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void));
+void render_system_imm_rectangle_draw(vec4 const color, vec3 position, vec2 const size);
 
 
 #define mat4_print(m)\

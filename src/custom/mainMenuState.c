@@ -1,5 +1,13 @@
 #include "custom.h"
 
+void draw_callback(void);
+
+void draw_callback(void)
+{
+    render_system_imm_rectangle_draw((vec4){0.0f, 0.0f, 1.0f, 1.0f}, (vec3){0.0f, 0.0f, -0.1f}, (vec2){0.3f, 0.3f});
+    render_system_imm_rectangle_draw((vec4){1.0f, 0.0f, 0.0f, 1.0f}, (vec3){-1.0f, -1.0f, 1.0f}, (vec2){0.2f, 0.2f});
+}
+
 
 void mainMenuState_construct(MainMenuState *const s)
 {
@@ -16,18 +24,21 @@ void mainMenuState_construct(MainMenuState *const s)
 
     {
         EntityId camera = checs_entity_generate(Transform, KeyInput, Camera);
+        checs_entity_tag_add(camera, CameraTag);
         checs_component_get_once(Transform, t, camera);
         checs_component_get_once(Camera, c, camera);
-        checs_entity_tag_add(camera, CameraTag);
         transform_construct(t);
         camera_construct(c);
     }
 
 
-    GLuint program;
-    texture_construct(&s->tex, "../resources/textures/ui.png");
+    Program program;
+    texture_construct_from_file(&s->tex, "../resources/textures/cobble.png");
     program_create(&program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     program_uniform1i_set(program, "u_texture", 0);
+
+
+    render_system_custom_draw_callback_set(draw_callback);
 
     
     {
@@ -38,8 +49,7 @@ void mainMenuState_construct(MainMenuState *const s)
 
 
         GLfloat positions[5 * 4] = 
-        {
-        //   3 x position  2 x tex
+        {//  3 x position  2 x tex
             -0.3, -0.3, 0, 0, 0,
              0.3, -0.3, 0, 1, 0,
              0.3,  0.3, 0, 1, 1,
@@ -53,7 +63,7 @@ void mainMenuState_construct(MainMenuState *const s)
         };
 
 
-        GLuint vbo;
+        VertexBuffer vbo;
         VertexBufferLayout vbl;
         vertexArray_construct(&r->vao);
         elementBuffer_construct(&r->ebo, elements);
@@ -61,7 +71,7 @@ void mainMenuState_construct(MainMenuState *const s)
         vertexBufferLayout_construct(&vbl, 2);
         vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
         vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
-        vertexArray_buffer_add(r->vao, vbo, vbl);
+        vertexArray_buffer_add(&r->vao, vbo, vbl);
         r->program = program;
     }
 
@@ -95,9 +105,10 @@ void mainMenuState_construct(MainMenuState *const s)
         elementBuffer_construct(&r->ebo, elements);
         vertexBuffer_construct(&vbo, positions);
         vertexBufferLayout_construct(&vbl, 2);
+        
         vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
         vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
-        vertexArray_buffer_add(r->vao, vbo, vbl);
+        vertexArray_buffer_add(&r->vao, vbo, vbl);
         r->program = program;
     }
 }
