@@ -51,8 +51,7 @@ void render_system(checs_system_parameters)
 
 	checs_component_get(Camera, c, checs_entity_get_by_tag(CameraTag));
 	camera_default_vp_recalculate(c);
-	checs_component_get(Renderable, r, 0);
-	program_uniformMat4_set(r->program, "u_camera_vp", c->vp);
+
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	checs_entity_foreach(entity)
@@ -64,16 +63,23 @@ void render_system(checs_system_parameters)
 		//apply transforms of the entity and upload them to the shader uniforms
 		mat4 transform;
 		transform_transform_calculate(t, transform);
-		program_uniformMat4_set(r->program, "u_transform", transform);
 
-		vertexArray_bind(&r->vao);
+
 		program_bind(r->program);
+		program_uniformMat4_set(r->program, "u_transform", transform);
+		program_uniformMat4_set(r->program, "u_camera_vp", c->vp);
+		vertexArray_bind(&r->vao);
 
-		glDrawElements(GL_TRIANGLES, r->ebo.elementCount, GL_UNSIGNED_INT, NULL);
+		if (r->instanced)
+		{
+			glDrawArraysInstanced(GL_TRIANGLES, 0, r->vertexCount, r->primCount);
+		}
+		else
+		{
+			glDrawElements(GL_TRIANGLES, r->ebo.elementCount, GL_UNSIGNED_INT, NULL);
+		}
 	}
-	//render tiles
-	//checs_component_get(Renderable, r, 1);
-	//glDrawElementsInstanced(GL_TRIANGLES, 0, r->vao.count)
+	
 	if (custom_draw_callback) //used for imediate mode and debugging purposes
 	{
 		custom_draw_callback();

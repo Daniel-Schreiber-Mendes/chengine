@@ -32,6 +32,7 @@ int main(void)
 	checs_component_register(KeyInput, 2, 5);
 	checs_component_register(SoundSource, 1, 5);
 	checs_component_register(Camera, 1, 5);
+	checs_component_register(Chunk, 1, 5);
 
 
 	checs_event_register(KeyEventData, KeyEvent, 4);

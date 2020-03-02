@@ -93,15 +93,35 @@ typedef struct
 #define KeyInputComponent 		2
 #define SoundSourceComponent    3
 #define CameraComponent			4
-#define ComponentCount 			5
+#define ChunkComponent			5
+#define ComponentCount 			6
+
 
 typedef struct
 {
 	VertexArray vao;
 	Program program;
+	bool instanced;
 	ElementBuffer ebo;
+	uint16_t primCount;
+	uint8_t vertexCount;
 }
 Renderable;
+
+
+typedef struct
+{
+	ElementBuffer ebo;
+}
+ElementRenderable;
+
+
+typedef struct
+{
+	uint16_t primCount;
+	uint8_t vertexCount;
+}
+InstancedRenerable;
 
 
 typedef struct
@@ -133,6 +153,14 @@ typedef struct
 	float zoom;
 }
 Camera;
+
+
+typedef struct
+{
+	uint16_t id;
+	EntityId tiles[32 * 32];
+}
+Chunk;
 
 
 
@@ -388,6 +416,7 @@ void    program_uniform4f_set(Program const program, char const *const name, GLf
 void    program_uniform1i_set(Program const program, char const *const name, GLint const v0);
 void    program_uniformMat4_set(Program const program, char const *const name, mat4 const m0);
 void    program_uniform4fv_set(Program const program, char const *const name, vec4 const v);
+void    program_uniform1f_set(Program const program, char const *const name, float const v0);
 
 
 //vertexBufferLayout.c

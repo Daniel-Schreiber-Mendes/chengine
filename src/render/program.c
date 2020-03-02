@@ -73,6 +73,16 @@ void program_uniform4fv_set(Program const program, char const *const name, vec4 
 }
 
 
+void program_uniform1f_set(Program const program, char const *const name, float const v0)
+{
+    glUseProgram(program);
+    GLint location = glGetUniformLocation(program, name);
+    che_assert(location != -1);
+    glUniform1f(location, v0);
+}
+
+
+
 static GLuint createShader(GLenum const type, char const *const path)
 {
     GLuint const shader = glCreateShader(type);
