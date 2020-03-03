@@ -46,14 +46,13 @@
 /////////////////////// Render-Utility-Types ///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-typedef GLuint VertexBuffer;
+typedef GLuint VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 typedef GLuint Program;
 
 
 typedef struct
 {
 	GLuint id;
-	uint16_t count;
 }
 VertexArray;
 
@@ -64,7 +63,7 @@ typedef struct
 	GLenum type;
 	GLboolean normalized;
 }
-VertexBufferLayoutElement;
+VertexBufferLayoutElement; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 
 
 typedef struct
@@ -73,7 +72,7 @@ typedef struct
 	uint8_t elementCount;
 	GLsizei stride;
 }
-VertexBufferLayout;
+VertexBufferLayout; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 
 
 typedef struct
@@ -99,29 +98,25 @@ typedef struct
 
 typedef struct
 {
-	VertexArray vao;
 	Program program;
-	bool instanced;
-	ElementBuffer ebo;
-	uint16_t primCount;
-	uint8_t vertexCount;
+	VertexArray vao;
+	GLenum mode; //can be primitve mode like e.g GL_TRIANGLES or GL_TRIANGLE_STRIP
+	uint16_t primitiveCount; //only used if renderableType is one of the two instanced types
+	union
+	{
+		uint16_t vertexCount;
+		uint16_t elementCount;
+	};
+	enum
+	{
+		ARRAYS,
+		ARRAYS_INSTANCED,
+		ELEMENTS,
+		ELEMENTS_INSTANCED
+	}
+	renderableType;
 }
 Renderable;
-
-
-typedef struct
-{
-	ElementBuffer ebo;
-}
-ElementRenderable;
-
-
-typedef struct
-{
-	uint16_t primCount;
-	uint8_t vertexCount;
-}
-InstancedRenerable;
 
 
 typedef struct
@@ -417,6 +412,7 @@ void    program_uniform1i_set(Program const program, char const *const name, GLi
 void    program_uniformMat4_set(Program const program, char const *const name, mat4 const m0);
 void    program_uniform4fv_set(Program const program, char const *const name, vec4 const v);
 void    program_uniform1f_set(Program const program, char const *const name, float const v0);
+void    program_uniform1u_set(Program const program, char const *const name, float const v0);
 
 
 //vertexBufferLayout.c

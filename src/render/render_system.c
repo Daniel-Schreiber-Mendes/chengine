@@ -65,18 +65,28 @@ void render_system(checs_system_parameters)
 		transform_transform_calculate(t, transform);
 
 
+		vertexArray_bind(&r->vao);
 		program_bind(r->program);
 		program_uniformMat4_set(r->program, "u_transform", transform);
 		program_uniformMat4_set(r->program, "u_camera_vp", c->vp);
-		vertexArray_bind(&r->vao);
 
-		if (r->instanced)
+		switch (r->renderableType)
 		{
-			glDrawArraysInstanced(GL_TRIANGLES, 0, r->vertexCount, r->primCount);
-		}
-		else
-		{
-			glDrawElements(GL_TRIANGLES, r->ebo.elementCount, GL_UNSIGNED_INT, NULL);
+			case ARRAYS:
+				glDrawArrays(r->mode, 0, r->vertexCount);
+				break;
+
+			case ARRAYS_INSTANCED:
+				glDrawArraysInstanced(r->mode, 0, r->vertexCount, r->primitiveCount);
+				break;
+
+			case ELEMENTS:
+				glDrawElements(r->mode, r->elementCount, GL_UNSIGNED_INT, NULL);
+				break;
+
+			case ELEMENTS_INSTANCED:
+				glDrawElementsInstanced(r->mode, r->elementCount, GL_UNSIGNED_INT, NULL, r->primitiveCount);
+				break;
 		}
 	}
 	

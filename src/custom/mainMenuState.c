@@ -4,7 +4,7 @@ void draw_callback(void);
 
 void draw_callback(void)
 {
-    //render_system_imm_rectangle_draw((vec4){0.0f, 0.0f, 1.0f, 1.0f}, (vec3){0.0f, 0.0f, -0.1f}, (vec2){0.3f, 0.3f});
+    //render_system_imm_rectangle_draw((vec4){0.0f, 0.0f, 1.0f, 1.0f}, (vec3){0.0f, 0.0f, 0.1f}, (vec2){0.3f, 0.3f});
     //render_system_imm_rectangle_draw((vec4){1.0f, 0.0f, 0.0f, 1.0f}, (vec3){-1.0f, -1.0f, 1.0f}, (vec2){0.2f, 0.2f});
 }
 
@@ -33,10 +33,7 @@ void mainMenuState_construct(MainMenuState *const s)
     }
 
 
-    Program program;
-    texture_construct_from_file(&s->tex, "../resources/textures/cobble.png");
-    program_create(&program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
-    program_uniform1i_set(program, "u_texture", 0);
+    texture_construct_from_file(&s->tex, "../resources/textures/tilemap.png");
 
 
     render_system_custom_draw_callback_set(draw_callback);
@@ -47,7 +44,6 @@ void mainMenuState_construct(MainMenuState *const s)
         checs_component_get_once(Renderable, r, player);
         checs_component_get_once(Transform, t, player);
         transform_construct(t);
-        r->instanced = false;
 
 
         GLfloat positions[5 * 4] = 
@@ -67,48 +63,49 @@ void mainMenuState_construct(MainMenuState *const s)
 
         VertexBuffer vbo;
         VertexBufferLayout vbl;
+        ElementBuffer ebo;
         vertexArray_construct(&r->vao);
-        elementBuffer_construct(&r->ebo, elements);
+        elementBuffer_construct(&ebo, elements);
         vertexBuffer_construct(&vbo, positions);
         vertexBufferLayout_construct(&vbl, 2);
         vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
         vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
         vertexArray_buffer_add(&r->vao, vbo, vbl);
-        r->program = program;
+        r->mode = GL_TRIANGLES;
+        r->renderableType = ELEMENTS;
+        r->elementCount = 6;
+
+        program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
 
     
     {
-        EntityId player = checs_entity_generate(Renderable, Transform);
-        checs_component_get_once(Renderable, r, player);
-        checs_component_get_once(Transform, t, player);
+        EntityId chunk = checs_entity_generate(Renderable, Transform);
+        checs_component_get_once(Renderable, r, chunk);
+        checs_component_get_once(Transform, t, chunk);
         transform_construct(t);
-        r->instanced = true;
 
 
-        GLfloat positions[3 * 6] = 
+        GLfloat positions[6] = 
         {//  3 x position  2 x tex
-            -0.3, -0.3, 0,
-             0.3, -0.3, 0,
-             0.3,  0.3, 0,
-             0.3,  0.3, 0,
-             0.0,  0.0, 0,
-             0.0,  0.0, 0
+             0, 0, 0, 0, 0, 0
         };
 
         VertexBuffer vbo;
         VertexBufferLayout vbl;
         vertexArray_construct(&r->vao);
         vertexBuffer_construct(&vbo, positions);
-        vertexBufferLayout_construct(&vbl, 2);
-        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
+        vertexBufferLayout_construct(&vbl, 1);
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){1, GL_FLOAT, GL_FALSE}); //pos coords
         vertexArray_buffer_add(&r->vao, vbo, vbl);
-        r->program = program;
         r->vertexCount = 6;
-        r->primCount = 1;
+        r->primitiveCount = 1;
+        r->mode = GL_TRIANGLES;
+        r->renderableType = ARRAYS_INSTANCED;
         program_create(&r->program, "../resources/shader/instanced_vertex.glsl", "../resources/shader/instanced_fragment.glsl");
-        program_uniform1f_set(r->program, "u_texture_size", 32);
-        program_uniform1f_set(r->program, "u_tile_size", 16);
+        program_uniform1f_set(r->program, "u_texture_size", (float)s->tex.width);
+        program_uniform1f_set(r->program, "u_tile_size", 32.0f);
+        program_uniform1u_set(r->program, "u_texture_index", 4);
     }
 }
 
@@ -116,13 +113,6 @@ void mainMenuState_construct(MainMenuState *const s)
 void mainMenuState_destruct(State *const state)
 {
     MainMenuState *const s = (MainMenuState*)state;
-
-    checs_component_get_once(Renderable, r, 0);
-
-    elementBuffer_destruct(&r->ebo);
-    vertexArray_destruct(&r->vao);
-    program_destroy(r->program);
-
     texture_destruct(&s->tex);
 }
 
