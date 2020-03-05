@@ -8,7 +8,7 @@ void texture_construct_from_file(Texture *const t, char const *const path)
 {
 	/*opengl expects us to provide the image data in reverse order, but stbi by default loads the data in normal order.
 	because of this we have to tell it explicitly to flip the image when loading it*/
-	stbi_set_flip_vertically_on_load(true);
+	//stbi_set_flip_vertically_on_load(true);
 	if (!(t->buffer = stbi_load(path, &t->width, &t->height, &t->channels, 4)))//4 because RGBA
 	{
 		t->buffer = stbi_load("../resources/error/errorTexture.png", &t->width, &t->height, &t->channels, 4); //4 because RGBA
