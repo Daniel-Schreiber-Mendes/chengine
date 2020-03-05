@@ -78,35 +78,7 @@ void mainMenuState_construct(MainMenuState *const s)
         program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
 
-    
-    {
-        EntityId chunk = checs_entity_generate(Renderable, Transform);
-        checs_component_get_once(Renderable, r, chunk);
-        checs_component_get_once(Transform, t, chunk);
-        transform_construct(t);
-
-        
-        GLfloat positions[6] = 
-        {//  3 x position  2 x tex
-             0, 0, 0, 0, 0, 0
-        };
-
-        VertexBuffer vbo;
-        VertexBufferLayout vbl;
-        vertexArray_construct(&r->vao);
-        vertexBuffer_construct(&vbo, positions);
-        vertexBufferLayout_construct(&vbl, 1);
-        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){1, GL_FLOAT, GL_FALSE}); //pos coords
-        vertexArray_buffer_add(&r->vao, vbo, vbl);
-        r->vertexCount = 6;
-        r->primitiveCount = 32 * 32;
-        r->mode = GL_TRIANGLES;
-        r->renderableType = ARRAYS_INSTANCED;
-        program_create(&r->program, "../resources/shader/instanced_vertex.glsl", "../resources/shader/instanced_fragment.glsl");
-        program_uniform1f_set(r->program, "u_tile_size", 32.0f / (float)s->tex.width);
-        program_uniform1u_set(r->program, "u_texture_index", 4);
-        program_uniform1u_set(r->program, "u_chunk_size", 32);
-    }
+    chunk_construct(checs_entity_generate(Chunk, Renderable, Transform), 32, s->tex.width);
 }
 
 

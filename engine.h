@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 
@@ -92,8 +93,7 @@ typedef struct
 #define KeyInputComponent 		2
 #define SoundSourceComponent    3
 #define CameraComponent			4
-#define ChunkComponent			5
-#define ComponentCount 			6
+#define StandardComponentCount  5
 
 
 typedef struct
@@ -150,20 +150,12 @@ typedef struct
 Camera;
 
 
-typedef struct
-{
-	uint16_t id;
-	EntityId tiles[32 * 32];
-}
-Chunk;
-
-
-
 void renderable_construct(Renderable *const r);
 void renderable_destruct(Renderable *const r);
 
-void transform_construct(Transform *const t);
-void transform_transform_calculate(Transform *const t, mat4 transform);
+void  transform_construct(Transform *const t);
+void  transform_transform_calculate(Transform *const t, mat4 transform);
+float transform_distance_get(Transform *restrict t, Transform *restrict t2);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);
@@ -204,7 +196,7 @@ void camera_default_vp_recalculate(Camera *const c);
 #define MouseButtonCommand     3
 #define JoystickCommand        4
 #define ScrollCommand 		   5
-#define CommandCount           6
+#define StandardCommandCount   6
 
 
 typedef struct
@@ -244,14 +236,14 @@ ScrollData;
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Commands ///////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Events ///////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-#define KeyEvent 		 0
-#define MouseButtonEvent 1
-#define JoystickEvent    2
-#define EventCount       3
+#define KeyEvent 		   0
+#define MouseButtonEvent   1
+#define JoystickEvent      2
+#define StandardEventCount 3
 
 
 typedef struct

@@ -7,16 +7,16 @@ static void key_command_callback(checs_command_parameters);
 static void mouse_button_command_callback(checs_command_parameters);
 static void joystick_command_callback(checs_command_parameters);
 static void scroll_command_callback(checs_command_parameters);
+static void chunk_unload_callback(Chunk const *const c);
 
 
 int main(void)
 {
-	glClearColor(1, 0.4, 0.3, 0);
-	systemManager_init(0, 1, 1, 0);
+	systemManager_init(1, 1, 1, 0);
 	entityManager_init();
 	componentManager_init(ComponentCount, 3, 5);
-	commandManager_init(CommandCount);
-	eventManager_init(EventCount);
+	commandManager_init(StandardCommandCount);
+	eventManager_init(StandardEventCount);
 
 
 	checs_command_subscribe(WindowCloseCommand, window_close_command_callback);
@@ -41,9 +41,13 @@ int main(void)
 
 
 	checs_system_register(render_system, ON_DRAW, 1, 5, RENDER_SYSTEM_COMPONENTS);
+	checs_system_register(chunk_loading_system, ON_UPDATE, 1, 5, CHUNK_LOADING_SYSTEM_COMPONENTS);
 
 
 	checs_task_register(input_task, ON_UPDATE);
+
+
+	chunk_loading_system_init(chunk_unload_callback, 1.0f);
 
 
 	stateMachine_init();
@@ -51,6 +55,12 @@ int main(void)
     stateMachine_run();
 
     return 0;
+}
+
+
+static void chunk_unload_callback(Chunk const *const c)
+{
+	printf("Hallo\n");
 }
 
 

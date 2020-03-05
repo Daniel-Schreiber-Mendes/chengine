@@ -1,6 +1,5 @@
 #version 300 es
 
-layout(location = 0) in float unused_attributes;
 
 uniform mat4 u_transform;
 uniform mat4 u_camera_vp; 
@@ -27,6 +26,6 @@ void main()
 {
 	float column = mod(float(gl_InstanceID), float(u_chunk_size));
 	float row = float(gl_InstanceID / int(u_chunk_size));
-    gl_Position = u_camera_vp * u_transform * vec4(positions[gl_VertexID].x + column, positions[gl_VertexID].y - row, 0, 1);
+    gl_Position = u_camera_vp * u_transform * vec4(0.1 * (positions[gl_VertexID].x + column), 0.1 * (positions[gl_VertexID].y - row), 0, 1);
     texture_pos = vec2((u_tile_size) * (positions[gl_VertexID].x + float(u_texture_index)), (u_tile_size) * positions[gl_VertexID].y);
 }

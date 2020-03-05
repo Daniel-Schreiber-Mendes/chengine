@@ -1,6 +1,12 @@
 #ifndef CUSTOM_H
 #define CUSTOM_H
-#include "../../engine.h"
+//#include "../../engine.h"
+#include "../tiles_chext/tiles.h"
+
+
+//components defined by extensions:
+#define ChunkComponent StandardComponentCount
+#define ComponentCount StandardComponentCount + 1
 
 typedef struct
 {

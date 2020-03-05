@@ -1,6 +1,6 @@
 
 
-ERRORS = -Wall -Wstrict-prototypes -Wmissing-prototypes -Wshadow
+ERRORS = -Wall -Wstrict-prototypes
 
 #flags for linking
 LFLAGS = -pg -o
@@ -18,8 +18,8 @@ profile:
 profileCache: output
 	valgrind --tool=cachegrind make
 
-OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal #-lcimgui
+OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal #-lcimgui
 
 window.o: window/window.c
 	gcc $(CFLAGS) window/window.c
@@ -68,3 +68,8 @@ main.o: custom/main.c
 
 input_task.o: custom/input_task.c
 	gcc $(CFLAGS) custom/input_task.c
+
+
+########################### extensions ##################################################################################################
+chunk_loading_system.o: tiles_chext/chunk_loading_system.c
+	gcc $(CFLAGS) tiles_chext/chunk_loading_system.c

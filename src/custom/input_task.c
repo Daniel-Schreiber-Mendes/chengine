@@ -15,19 +15,19 @@ void input_task(void)
 				switch (event->key)
 				{
 					case GLFW_KEY_W:
-						t->position[1] += 0.01;
+						t->position[1] += 0.1;
 						break;
 
 					case GLFW_KEY_A:
-						t->position[0] -= 0.01;
+						t->position[0] -= 0.1;
 						break;
 
 					case GLFW_KEY_S:
-						t->position[1] -= 0.01;
+						t->position[1] -= 0.1;
 						break;
 
 					case GLFW_KEY_D:
-						t->position[0] += 0.01;
+						t->position[0] += 0.1;
 						break;
 				}
 			}

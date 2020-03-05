@@ -15,6 +15,13 @@ void transform_transform_calculate(Transform *const t, mat4 transform)
 }
 
 
+float transform_distance_get(Transform *restrict t, Transform *restrict t2)
+{
+    //calculating distance with pythagoreas
+    return sqrt(pow(t->position[0] - t2->position[0], 2) + pow(t->position[0] - t2->position[1], 2));
+}
+
+
 void soundSource_construct(SoundSource *const s, char const *const path)
 {
 	uint8_t channels, bps;
