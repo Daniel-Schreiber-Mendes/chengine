@@ -2,27 +2,19 @@
 #define ENGINE_H
 #include "./src/utility/utility.h"
 #include <cglm/cglm.h>
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <checs/checs.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <AL/al.h>
-#include <AL/alc.h>
-
-
-#define DEBUG
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////// Debug Utilitys /////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-
-#ifdef DEBUG
+#define CHE_DEBUG
+#ifdef CHE_DEBUG
 	#define che_assert(expr)\
 		if (!(expr))\
 		{\
@@ -40,7 +32,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
+//#define CIMGUI_DEFINE_ENUMS_AND_STRUCTS
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,11 +80,6 @@ typedef struct
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-#define RenderableComponent 	0
-#define TransformComponent 		1
-#define KeyInputComponent 		2
-#define SoundSourceComponent    3
-#define CameraComponent			4
 #define StandardComponentCount  5
 
 
@@ -136,7 +123,7 @@ KeyInput;
 
 typedef struct
 {
-	ALuint source;
+	uint32_t source;
 }
 SoundSource;
 
@@ -441,7 +428,7 @@ void     audio_init(void);
 void     audio_terminate(void);
 bool     is_little_endian(void); //returns if the machine stores the bits in gib endian or little endian order
 uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer);
-ALvoid*  wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
+void*  wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
 uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
 
 

@@ -1,4 +1,6 @@
 #include "../../engine.h"
+#include <AL/al.h>
+#include <AL/alc.h>
 
 
 void transform_construct(Transform *const t)

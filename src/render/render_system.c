@@ -54,6 +54,7 @@ void render_system(checs_system_parameters)
 
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	checs_entity_foreach(entity)
 	{
 		checs_component_get(Renderable, r, entity);

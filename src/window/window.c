@@ -1,4 +1,6 @@
 #include "../../engine.h"
+#include <GL/glew.h>
+
 
 static uint16_t width, height;
 static GLFWmonitor *monitor;

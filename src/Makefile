@@ -1,12 +1,12 @@
 
 
-ERRORS = -Wall -Wstrict-prototypes
+ERRORS = -Wall
 
 #flags for linking
-LFLAGS = -pg -o
+LFLAGS = -o
 
 #flags for compilation
-CFLAGS = $(ERRORS) -pipe -c -pg -g -std=c99
+CFLAGS = $(ERRORS) -c -g -std=c99
 
 make: OUTPUT
 	./output
@@ -15,8 +15,11 @@ profile:
 	gprof output gmon.out > profile.txt
 	gedit profile.txt
 
-profileCache: output
+cache_profile: output
 	valgrind --tool=cachegrind make
+
+memcheck: output
+	valgrind --tool=memcheck --leak-check=full make
 
 OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o
 	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal #-lcimgui

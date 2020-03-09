@@ -5,6 +5,7 @@ void input_task(void)
 {	
 	checs_component_use(Transform, t);
 
+
 	checs_components_foreach(KeyInput, k, entity)
 	{
 		checs_component_get(Transform, t, entity);

@@ -1,4 +1,6 @@
 #include "../../engine.h"
+#include <AL/al.h>
+#include <AL/alc.h>
 
 //according to wav standard all bits in a wav file are stored in little endian order
 //big endian: most significant bit on the left
@@ -56,7 +58,7 @@ uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer)
 }
 
 
-ALvoid* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size)
+void* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size)
 {
 	uint8_t buffer[4];
 

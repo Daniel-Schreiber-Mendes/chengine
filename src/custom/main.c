@@ -25,7 +25,7 @@ int main(void)
 	checs_command_subscribe(MouseButtonCommand, mouse_button_command_callback);
 	checs_command_subscribe(JoystickCommand, joystick_command_callback);
 	checs_command_subscribe(ScrollCommand, scroll_command_callback);
-
+	
 
 	checs_component_register(Renderable, 2, 5);
 	checs_component_register(Transform, 3, 5);
@@ -60,7 +60,7 @@ int main(void)
 
 static void chunk_unload_callback(Chunk const *const c)
 {
-	printf("Hallo\n");
+	
 }
 
 

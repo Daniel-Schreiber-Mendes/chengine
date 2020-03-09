@@ -2,9 +2,7 @@
 
 
 static float chunk_unload_threshold; //the distance that if exceeded lets the chunk beeing unloaded
-static void(chunk_unload_callback)(Chunk const *const);
-static uint8_t chunk_component_id; //because the extension doesn't know as what the user is defining the chunk component, we have to get it explicitely
-
+static void(*chunk_unload_callback)(Chunk const *const);
 //this unloads a chunk if it is too far away
 void chunk_loading_system(checs_system_parameters)
 {
@@ -19,7 +17,7 @@ void chunk_loading_system(checs_system_parameters)
 
 		if (transform_distance_get(t, camera_t) > chunk_unload_threshold)
 		{
-			//chunk_unload_callback(c);
+			chunk_unload_callback(c);
 		}
 	}
 }
@@ -28,7 +26,7 @@ void chunk_loading_system(checs_system_parameters)
 void chunk_loading_system_init(void(*callback)(Chunk const *const), float const unload_threshold)
 {
 	chunk_unload_threshold = unload_threshold;
-	//chunk_unload_callback = callback;
+	chunk_unload_callback = callback;
 }
 
 
