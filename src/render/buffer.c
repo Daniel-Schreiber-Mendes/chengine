@@ -19,7 +19,7 @@ A VertexBufferLayoutElement is the layout of one attribute of a vbo. A VertexBuf
 
 void vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const size)
 {
-	vbl->elements = (VertexBufferLayoutElement*)malloc(sizeof(VertexBufferLayoutElement) * size);
+	vbl->elements = (VertexBufferLayoutElement*)che_malloc(sizeof(VertexBufferLayoutElement) * size);
 	vbl->elementCount = 0;
 	vbl->stride = 0;
 }
@@ -27,7 +27,7 @@ void vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const s
 
 void vertexBufferLayout_destruct(VertexBufferLayout const *const vbl)
 {
-	free(vbl->elements);
+	che_free(vbl->elements);
 }
 
 

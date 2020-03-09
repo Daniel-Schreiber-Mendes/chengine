@@ -127,7 +127,7 @@ void* wavFile_load(char const *const path, uint8_t *const channels, uint32_t *co
 
 
 	/*copys the data out of the file into the data buffer*/
-	ALvoid *data = malloc(*size);
+	ALvoid *data = che_malloc(*size);
 	che_assert(data);
 	fread(data, *size, 1, file);
 

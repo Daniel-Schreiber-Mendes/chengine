@@ -32,9 +32,9 @@ void texture_construct(Texture *const t, uint16_t const width, uint16_t const he
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //makes the image sharper instead of interpolating
 
-	void *buffer = malloc(width * height * 4); //4 because 4 bytes per pixel. RGBA 
+	void *buffer = che_malloc(width * height * 4); //4 because 4 bytes per pixel. RGBA 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (t->width = width), (t->height = height), 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-	free(buffer);
+	che_free(buffer);
 }
 
 

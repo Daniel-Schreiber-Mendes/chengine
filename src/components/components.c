@@ -40,7 +40,7 @@ void soundSource_construct(SoundSource *const s, char const *const path)
     alSourcei(s->source, AL_BUFFER, buffer);
 
     alDeleteBuffers(1, &buffer);
-    free(data);
+    che_free(data);
 }
 
 

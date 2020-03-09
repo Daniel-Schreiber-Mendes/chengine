@@ -16,7 +16,7 @@ void stateMachine_state_pop(State *const state)
 {
     vector_element_erase(&states, State*, state);
     state->destruct(state);
-    free(state);
+    che_free(state);
     validState = false;
 }
 
@@ -45,7 +45,7 @@ void stateMachine_run(void)
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);
-        free(state);
+        che_free(state);
     }
     checs_terminate();
     vector_destruct(&states);

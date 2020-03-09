@@ -12,7 +12,7 @@ void file_load_text(File *const f, char const *const path)
     f->bufferSize = ftell(file); //tell position of pointer which means length of string
     fseek(file, 0, SEEK_SET); //move file pointer back to file begin
 
-    f->buffer = malloc(f->bufferSize);
+    f->buffer = che_malloc(f->bufferSize);
     fread(f->buffer, f->bufferSize, 1, file); //copy memory in file to buffer
     ((char*)f->buffer)[f->bufferSize] = '\0'; //the string has to end with a null terminator, so put it at the end of it
 
@@ -30,7 +30,7 @@ void file_load_binary(File *const f, char const *const path)
     f->bufferSize = ftell(file); //tell position of pointer which means length of string
     fseek(file, 0, SEEK_SET); //move file pointer back to file begin
 
-    f->buffer = malloc(f->bufferSize);
+    f->buffer = che_malloc(f->bufferSize);
     fread(f->buffer, f->bufferSize, 1, file); //copy memory in file to buffer
 
     fclose(file);
@@ -39,5 +39,5 @@ void file_load_binary(File *const f, char const *const path)
 
 void file_destruct(File const *const f)
 {
-	free(f->buffer);
+	che_free(f->buffer);
 }

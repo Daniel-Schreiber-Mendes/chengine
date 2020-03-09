@@ -13,7 +13,7 @@ void chunk_loading_system(checs_system_parameters)
 	checs_entity_foreach(entity)
 	{
 		checs_component_get(Transform, t, entity);
-		//checs_component_get(Chunk, c, entity);
+		checs_component_get(Chunk, c, entity);
 
 		if (transform_distance_get(t, camera_t) > chunk_unload_threshold)
 		{
