@@ -1,9 +1,13 @@
 #include "tiles.h"
 
 
-static float chunk_unload_threshold; //the distance that if exceeded lets the chunk beeing unloaded
+static uint8_t chunk_unload_threshold; //the distance that if exceeded lets the chunk beeing unloaded
+static uint8_t chunk_load_threshold;
 static void(*chunk_unload_callback)(Chunk const *const);
+static void(*chunk_load_callback)(Chunk *const);
+static bool *chunk_loaded; //represents a two dimensional array
 //this unloads a chunk if it is too far away
+//should be updated at max once every 4 seconds
 void chunk_loading_system(checs_system_parameters)
 {
 	checs_component_use(Chunk, c);
@@ -15,6 +19,11 @@ void chunk_loading_system(checs_system_parameters)
 		checs_component_get(Transform, t, entity);
 		checs_component_get(Chunk, c, entity);
 
+
+		if (transform_distance_get(t, camera_t) < chunk_load_threshold)
+		{
+			chunk_load_callback(c);
+		}
 		if (transform_distance_get(t, camera_t) > chunk_unload_threshold)
 		{
 			chunk_unload_callback(c);
@@ -23,10 +32,19 @@ void chunk_loading_system(checs_system_parameters)
 }
 
 
-void chunk_loading_system_init(void(*callback)(Chunk const *const), float const unload_threshold)
+void chunk_loading_system_init(void(*load_callback)(Chunk *const), void(*unload_callback)(Chunk const *const), uint8_t const unload_threshold, uint8_t const load_threshold)
 {
 	chunk_unload_threshold = unload_threshold;
-	chunk_unload_callback = callback;
+	chunk_load_threshold = load_threshold;
+	chunk_unload_callback = unload_callback;
+	chunk_load_callback = load_callback;
+	chunk_loaded = che_calloc(unload_threshold, unload_threshold);
+}
+
+
+void chunk_loading_system_terminate(void)
+{
+	che_free(chunk_loaded);
 }
 
 

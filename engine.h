@@ -171,6 +171,7 @@ typedef struct
 	mat4 vp;
 	float aspectRatio;
 	float zoom;
+	Transform *target; //this is optionally. of it is null, don't follow anything and just wait for a direct command to move the camera
 }
 Camera;
 
@@ -190,6 +191,7 @@ void soundSource_position_set(SoundSource *const s, vec3 const pos);
 void camera_construct(Camera *const c);
 void camera_default_zoom(Camera *const c, float const yoffset);
 void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height);
+void camera_target_set(Camera *const c, Transform *const t);
 void camera_default_vp_recalculate(Camera *const c);
 
 
@@ -362,7 +364,7 @@ void  stateMachine_running_set(bool const n_running);
 
 
 #define stateMachine_state_push(StateType, stateConstructFunction)\
-	State *const state = malloc(sizeof(StateType));\
+	State *const state = che_malloc(sizeof(StateType));\
 	stateConstructFunction((StateType*)state);\
 	_stateMachine_state_push(state);
 

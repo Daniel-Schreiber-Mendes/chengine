@@ -24,7 +24,7 @@ void mainMenuState_construct(MainMenuState *const s)
     window_fullscreen_set(true);
 
     {
-        EntityId camera = checs_entity_generate(Transform, KeyInput, Camera);
+        EntityId camera = checs_entity_generate(Transform, Camera);
         checs_entity_tag_add(camera, CameraTag);
         checs_component_get_once(Transform, t, camera);
         checs_component_get_once(Camera, c, camera);
@@ -33,17 +33,22 @@ void mainMenuState_construct(MainMenuState *const s)
     }
 
 
-    texture_construct_from_file(&s->tex, "../resources/textures/tilemap.png");
+    texture_construct_from_file(&s->tex, "../resources/textures/cobble.png");
 
 
     render_system_custom_draw_callback_set(draw_callback);
 
     
     {
-        EntityId player = checs_entity_generate(Renderable, Transform);
+        EntityId player = checs_entity_generate(Renderable, Transform, KeyInput);
         checs_component_get_once(Renderable, r, player);
         checs_component_get_once(Transform, t, player);
         transform_construct(t);
+
+        {
+            checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
+            camera_target_set(c, t);
+        }
 
 
         GLfloat positions[5 * 4] = 
@@ -86,6 +91,7 @@ void mainMenuState_destruct(State *const state)
 {
     MainMenuState *const s = (MainMenuState*)state;
     texture_destruct(&s->tex);
+    chunk_loading_system_terminate();
 }
 
 
@@ -98,6 +104,6 @@ void mainMenuState_update(State *const state)
 
 void mainMenuState_draw(State *const state)
 {
-    checs_systems_call(ON_DRAW);
     checs_tasks_call(ON_DRAW);
+    checs_systems_call(ON_DRAW);
 }

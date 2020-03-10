@@ -8,6 +8,7 @@ static void mouse_button_command_callback(checs_command_parameters);
 static void joystick_command_callback(checs_command_parameters);
 static void scroll_command_callback(checs_command_parameters);
 static void chunk_unload_callback(Chunk const *const c);
+static void chunk_load_callback(Chunk *const c);
 
 
 int main(void)
@@ -47,7 +48,7 @@ int main(void)
 	checs_task_register(input_task, ON_UPDATE);
 
 
-	chunk_loading_system_init(chunk_unload_callback, 1.0f);
+	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1);
 
 
 	stateMachine_init();
@@ -60,7 +61,13 @@ int main(void)
 
 static void chunk_unload_callback(Chunk const *const c)
 {
-	
+	//printf("chunk unloaded\n");
+}
+
+
+static void chunk_load_callback(Chunk *const c)
+{
+	//printf("chunk loaded\n");
 }
 
 
