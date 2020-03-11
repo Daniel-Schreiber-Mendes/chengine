@@ -22,6 +22,7 @@ void mainMenuState_draw(State *const state);
 
 
 void input_task(void);
+void movement_task(void);
 
 
 #endif

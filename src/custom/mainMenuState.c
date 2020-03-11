@@ -24,26 +24,31 @@ void mainMenuState_construct(MainMenuState *const s)
     window_fullscreen_set(true);
 
     {
-        EntityId camera = checs_entity_generate(Transform, Camera);
+        EntityId camera = checs_entity_generate(Transform, Camera, Velocity);
         checs_entity_tag_add(camera, CameraTag);
         checs_component_get_once(Transform, t, camera);
         checs_component_get_once(Camera, c, camera);
+        checs_component_get_once(Velocity, v, camera);
         transform_construct(t);
         camera_construct(c);
+        velocity_construct(v);
     }
 
 
-    texture_construct_from_file(&s->tex, "../resources/textures/cobble.png");
+    texture_construct_from_file(&s->tex, "../resources/textures/tilemap.png");
 
 
     render_system_custom_draw_callback_set(draw_callback);
 
     
     {
-        EntityId player = checs_entity_generate(Renderable, Transform, KeyInput);
+        EntityId player = checs_entity_generate(Renderable, Transform, Velocity, KeyInput);
         checs_component_get_once(Renderable, r, player);
         checs_component_get_once(Transform, t, player);
+        checs_component_get_once(Velocity, v, player);
         transform_construct(t);
+        velocity_construct(v);
+
 
         {
             checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
@@ -53,10 +58,10 @@ void mainMenuState_construct(MainMenuState *const s)
 
         GLfloat positions[5 * 4] = 
         {//  3 x position  2 x tex
-            -0.3, -0.3, 0, 0, 0,
-             0.3, -0.3, 0, 1, 0,
-             0.3,  0.3, 0, 1, 1,
-            -0.3,  0.3, 0, 0, 1
+            -0.1, -0.1, 0, 0, 0,
+             0.1, -0.1, 0, 1, 0,
+             0.1,  0.1, 0, 1, 1,
+            -0.1,  0.1, 0, 0, 1
         };
 
         GLuint elements[6] = 
@@ -97,8 +102,8 @@ void mainMenuState_destruct(State *const state)
 
 void mainMenuState_update(State *const state)
 {
-    checs_systems_call(ON_UPDATE);
     checs_tasks_call(ON_UPDATE);
+    checs_systems_call(ON_UPDATE);
 }
 
 

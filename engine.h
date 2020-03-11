@@ -118,7 +118,7 @@ typedef struct
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-#define StandardComponentCount  5
+#define StandardComponentCount  6
 
 
 typedef struct
@@ -153,6 +153,13 @@ Transform;
 
 
 typedef struct
+{
+	vec3 vel;
+}
+Velocity;
+
+
+typedef struct
 { 
 	int i;	
 }
@@ -182,6 +189,8 @@ void renderable_destruct(Renderable *const r);
 void  transform_construct(Transform *const t);
 void  transform_transform_calculate(Transform *const t, mat4 transform);
 float transform_distance_get(Transform *restrict t, Transform *restrict t2);
+
+void velocity_construct(Velocity *const v);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);

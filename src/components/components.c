@@ -24,6 +24,12 @@ float transform_distance_get(Transform *restrict t, Transform *restrict t2)
 }
 
 
+void velocity_construct(Velocity *const v)
+{
+    memset(v, 0, sizeof(float) * 3);
+}
+
+
 void soundSource_construct(SoundSource *const s, char const *const path)
 {
 	uint8_t channels, bps;
@@ -116,7 +122,6 @@ void camera_default_vp_recalculate(Camera *const c)
     glm_mat4_identity(view); //reset the view matrix
     glm_ortho(-c->zoom * c->aspectRatio, c->zoom * c->aspectRatio, -c->zoom, c->zoom, -1.f, 1.f, proj); 
     /* by setting the projection always according to the aspect ratio if the window gets resized everything still gets rendered with the correct aspect ratio*/
-
     glm_translate(view, t->position); //moving the camera
     glm_scale_uni(view, c->zoom);
     glm_rotate_z(view, t->rotation, view);  //rotate it

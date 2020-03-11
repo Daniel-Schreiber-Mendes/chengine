@@ -13,7 +13,7 @@ static void chunk_load_callback(Chunk *const c);
 
 int main(void)
 {
-	systemManager_init(1, 1, 1, 0);
+	systemManager_init(1, 1, 2, 0);
 	entityManager_init();
 	componentManager_init(ComponentCount, 3, 5);
 	commandManager_init(StandardCommandCount);
@@ -34,6 +34,7 @@ int main(void)
 	checs_component_register(SoundSource, 1, 5);
 	checs_component_register(Camera, 1, 5);
 	checs_component_register(Chunk, 1, 5);
+	checs_component_register(Velocity, 2, 5);
 
 
 	checs_event_register(KeyEventData, KeyEvent, 4);
@@ -46,6 +47,7 @@ int main(void)
 
 
 	checs_task_register(input_task, ON_UPDATE);
+	checs_task_register(movement_task, ON_UPDATE);
 
 
 	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1);
