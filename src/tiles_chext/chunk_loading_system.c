@@ -5,28 +5,33 @@ static uint8_t chunk_unload_threshold; //the distance that if exceeded lets the 
 static uint8_t chunk_load_threshold;
 static void(*chunk_unload_callback)(Chunk const *const);
 static void(*chunk_load_callback)(Chunk *const);
-static bool *chunk_loaded; //represents a two dimensional array
-//this unloads a chunk if it is too far away
+static bool chunk_statuses[3][3];
+static EntityId chunk_ids[3][3]; //ringbuffer of all ids of the chunks that correspond to the array index
 //should be updated at max once every 4 seconds
+
+
+static uint8_t manhattan_distance_get(Transform const *const target_t, vec2 const chunk_i);
+
+
 void chunk_loading_system(checs_system_parameters)
 {
 	checs_component_use(Chunk, c);
 	checs_component_use(Transform, t);
 	checs_component_get_once(Transform, camera_t, checs_entity_get_by_tag(CameraTag));
 
-	checs_entity_foreach(entity)
+
+	for (uint16_t i=0; i < 3; ++i)
 	{
-		checs_component_get(Transform, t, entity);
-		checs_component_get(Chunk, c, entity);
-
-
-		if (transform_distance_get(t, camera_t) < chunk_load_threshold)
+		for (uint16_t j=0; j < 3; ++j)
 		{
-			chunk_load_callback(c);
-		}
-		if (transform_distance_get(t, camera_t) > chunk_unload_threshold)
-		{
-			chunk_unload_callback(c);
+			if (manhattan_distance_get(camera_t, (vec2){i, j}) < chunk_load_threshold)
+			{
+				chunk_load_callback(c);
+			}
+			else if (manhattan_distance_get(camera_t, (vec2){i, j}) > chunk_unload_threshold)
+			{
+				chunk_unload_callback(c);
+			}
 		}
 	}
 }
@@ -38,14 +43,23 @@ void chunk_loading_system_init(void(*load_callback)(Chunk *const), void(*unload_
 	chunk_load_threshold = load_threshold;
 	chunk_unload_callback = unload_callback;
 	chunk_load_callback = load_callback;
-	chunk_loaded = che_calloc(unload_threshold, unload_threshold);
 }
 
 
 void chunk_loading_system_terminate(void)
 {
-	che_free(chunk_loaded);
+
 }
+
+
+static uint8_t manhattan_distance_get(Transform const *const target_t, vec2 const chunk_i)
+{
+	//first maps actual world coordinates into chunk coordinates
+	//then calculates manhattan distance of the targets and chunks coords
+	vec2 target_i = {1, 1};
+	return abs(chunk_i[0] - target_i[0]) + abs(chunk_i[1] - target_i[1]);
+}
+
 
 
 void chunk_construct(EntityId const e, uint16_t const tileSize, uint16_t const textureSize)

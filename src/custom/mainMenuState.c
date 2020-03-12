@@ -24,7 +24,7 @@ void mainMenuState_construct(MainMenuState *const s)
     window_fullscreen_set(true);
 
     {
-        EntityId camera = checs_entity_generate(Transform, Camera, Velocity);
+        EntityId camera = checs_entity_generate(Transform, Velocity, Camera);
         checs_entity_tag_add(camera, CameraTag);
         checs_component_get_once(Transform, t, camera);
         checs_component_get_once(Camera, c, camera);
@@ -89,6 +89,7 @@ void mainMenuState_construct(MainMenuState *const s)
     }
 
     chunk_construct(checs_entity_generate(Chunk, Renderable, Transform), 32, s->tex.width);
+    //chunk_construct(checs_entity_generate(Chunk, Renderable, Transform), 32, s->tex.width);
 }
 
 
