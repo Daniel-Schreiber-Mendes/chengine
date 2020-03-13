@@ -10,11 +10,15 @@ typedef struct
 }
 Chunk;
 
+/*
+IMPORTANT NOTE:
+This system has to be initialized AFTER stateMachine_init() and before any state is pushed
+*/
 
 #define CHUNK_LOADING_SYSTEM_COMPONENTS Chunk, Transform
 
-void chunk_construct(EntityId const e, uint16_t const tileSize, uint16_t const textureSize);
-void    chunk_loading_system_init(void(*load_callback)(Chunk *const), void(*unload_callback)(Chunk const *const), uint8_t const unload_threshold, uint8_t const load_threshold);
+void    chunk_construct(EntityId const e, uint16_t const tileCount, uint16_t const tileSize, uint16_t const textureSize);
+void    chunk_loading_system_init(EntityId(*load_callback)(Chunk *const), void(*unload_callback)(Chunk const *const), uint8_t const unload_threshold, uint8_t const load_threshold);
 void    chunk_loading_system_terminate(void);
 void    chunk_loading_system(checs_system_parameters);
 

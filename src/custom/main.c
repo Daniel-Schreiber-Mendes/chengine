@@ -8,7 +8,7 @@ static void mouse_button_command_callback(checs_command_parameters);
 static void joystick_command_callback(checs_command_parameters);
 static void scroll_command_callback(checs_command_parameters);
 static void chunk_unload_callback(Chunk const *const c);
-static void chunk_load_callback(Chunk *const c);
+static EntityId chunk_load_callback(Chunk *const c);
 
 
 int main(void)
@@ -28,12 +28,12 @@ int main(void)
 	checs_command_subscribe(ScrollCommand, scroll_command_callback);
 	
 
-	checs_component_register(Renderable, 2, 5);
-	checs_component_register(Transform, 3, 5);
+	checs_component_register(Renderable, 26, 5);
+	checs_component_register(Transform, 27, 5);
 	checs_component_register(KeyInput, 2, 5);
 	checs_component_register(SoundSource, 1, 5);
 	checs_component_register(Camera, 1, 5);
-	checs_component_register(Chunk, 1, 5);
+	checs_component_register(Chunk, 25, 5);
 	checs_component_register(Velocity, 2, 5);
 
 
@@ -50,10 +50,12 @@ int main(void)
 	checs_task_register(movement_task, ON_UPDATE);
 
 
-	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1);
 
 
 	stateMachine_init();
+
+	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1);
+
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
     stateMachine_run();
 
@@ -67,9 +69,11 @@ static void chunk_unload_callback(Chunk const *const c)
 }
 
 
-static void chunk_load_callback(Chunk *const c)
+static EntityId chunk_load_callback(Chunk *const c)
 {
-	//printf("chunk loaded\n");
+	EntityId chunk = checs_entity_generate(Chunk, Renderable, Transform);
+	chunk_construct(chunk, 32, 32, tex.width);
+	return chunk;
 }
 
 

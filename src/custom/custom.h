@@ -10,9 +10,10 @@
 typedef struct
 {
 	State b;
-	Texture tex;
 }
 MainMenuState;
+
+extern Texture tex;
 
 
 void mainMenuState_construct(MainMenuState *const s);

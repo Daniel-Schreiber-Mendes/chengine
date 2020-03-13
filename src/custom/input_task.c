@@ -36,19 +36,19 @@ void input_task(void)
 
 		if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		{
-			v->vel[1] += 0.008;
+			v->vel[1] += 0.05;
 		}
 		if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		{
-			v->vel[0] -= 0.008;
+			v->vel[0] -= 0.05;
 		}
 		if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		{
-			v->vel[1] -= 0.008;
+			v->vel[1] -= 0.05;
 		}
 		if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		{
-			v->vel[0] += 0.008;
+			v->vel[0] += 0.05;
 		}
 	}
 }

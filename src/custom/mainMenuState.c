@@ -1,5 +1,8 @@
 #include "custom.h"
 
+
+Texture tex;
+
 void draw_callback(void);
 
 void draw_callback(void)
@@ -32,10 +35,11 @@ void mainMenuState_construct(MainMenuState *const s)
         transform_construct(t);
         camera_construct(c);
         velocity_construct(v);
+        c->zoom = 4;
     }
 
 
-    texture_construct_from_file(&s->tex, "../resources/textures/tilemap.png");
+    texture_construct_from_file(&tex, "../resources/textures/tilemap.png");
 
 
     render_system_custom_draw_callback_set(draw_callback);
@@ -58,10 +62,10 @@ void mainMenuState_construct(MainMenuState *const s)
 
         GLfloat positions[5 * 4] = 
         {//  3 x position  2 x tex
-            -0.1, -0.1, 0, 0, 0,
-             0.1, -0.1, 0, 1, 0,
-             0.1,  0.1, 0, 1, 1,
-            -0.1,  0.1, 0, 0, 1
+            0.0,  0.0, 0, 0, 0,
+            5.0,  0.0, 0, 1, 0,
+            5.0, -5.0, 0, 1, 1,
+            0.0, -5.0, 0, 0, 1
         };
 
         GLuint elements[6] = 
@@ -88,15 +92,21 @@ void mainMenuState_construct(MainMenuState *const s)
         program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
 
-    chunk_construct(checs_entity_generate(Chunk, Renderable, Transform), 32, s->tex.width);
-    //chunk_construct(checs_entity_generate(Chunk, Renderable, Transform), 32, s->tex.width);
+/*
+    EntityId const chunk1 = checs_entity_generate(Chunk, Renderable, Transform);
+    chunk_construct(chunk1, 32, 32, tex.width);
+
+    EntityId const chunk2 = checs_entity_generate(Chunk, Renderable, Transform);
+    checs_component_get_once(Transform, t, chunk2);
+    chunk_construct(chunk2, 32, 32, tex.width);
+    t->position[1] += 32;*/
 }
 
 
 void mainMenuState_destruct(State *const state)
 {
     MainMenuState *const s = (MainMenuState*)state;
-    texture_destruct(&s->tex);
+    texture_destruct(&tex);
     chunk_loading_system_terminate();
 }
 

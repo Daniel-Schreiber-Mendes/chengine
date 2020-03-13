@@ -116,6 +116,7 @@ void camera_default_vp_recalculate(Camera *const c)
     //if the camera has a target, interpolate their positions which makes the camera smoothly follow the target
     if (c->target)
     {
+        printf("%f\n", t->position[0]);
         glm_vec3_lerp(t->position, c->target->position, 0.2f, t->position);
     }
 

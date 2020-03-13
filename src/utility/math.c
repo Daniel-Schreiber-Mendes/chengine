@@ -15,6 +15,13 @@ float limitF(float const val, float const min, float const max)
 }
 
 
+//round to nearest integer
+int fround(float const f)
+{
+    return f + 0.5f;
+}
+
+
 uint16_t sr_init(void)
 {
     srand(time(0));
