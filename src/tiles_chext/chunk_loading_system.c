@@ -9,6 +9,7 @@ static bool chunk_statuses[5][5] = {false};
 static EntityId chunk_ids[5][5] = {0}; //ringbuffer of all entity ids of the chunks that correspond to the array index
 static float const chunk_size = 32.0f;
 static vec2 chunk_offset = {0, 0};
+static uint8_t chunk_tile_count; //tiles per row
 //should be updated at max once every 4 seconds
 
 
@@ -56,12 +57,21 @@ void chunk_loading_system_init(EntityId(*load_callback)(Chunk *const), void(*unl
 	chunk_unload_callback = unload_callback;
 	chunk_load_callback = load_callback; //this should only LOAD the chunk. the placement and transform is done by the system
 	program_create(&chunk_program, "../resources/shader/instanced_vertex.glsl", "../resources/shader/instanced_fragment.glsl");
+	program_uniform1u_set(chunk_program, "u_texture_index", 4);
 }
 
 
 void chunk_loading_system_terminate(void)
 {
 
+}
+
+
+//@relativeTileSize is the size in pixels of one tile divided by the whole size of the image
+void chunk_loading_system_tileData_set(uint16_t const tileCount, float const relativeTileSize)
+{
+	program_uniform1u_set(chunk_program, "u_chunk_tile_count", chunk_tile_count = tileCount);
+	program_uniform1f_set(chunk_program, "u_tile_size", relativeTileSize);
 }
 
 
@@ -79,18 +89,14 @@ static void world_to_chunk_position(Transform const *const target_t, vec2 dest)
 
 
 
-void chunk_construct(EntityId const e, uint16_t const tileCount, uint16_t const tileSize, uint16_t const textureSize)
+void chunk_construct(EntityId const e, float const relativeTileSize)
 {
     checs_component_get_once(Renderable, r, e);
     checs_component_get_once(Transform, t, e);
-    transform_construct(t);
-    vertexArray_construct(&r->vao);
+    renderable_construct(r);
     r->vertexCount = 6;
-    r->primitiveCount = tileCount * tileCount;
+    r->primitiveCount = chunk_tile_count * chunk_tile_count;
     r->mode = GL_TRIANGLES;
     r->renderableType = ARRAYS_INSTANCED;
     r->program = chunk_program;
-    program_uniform1f_set(r->program, "u_tile_size", (float)tileSize / textureSize);
-    program_uniform1u_set(r->program, "u_texture_index", 4);
-    program_uniform1u_set(r->program, "u_chunk_size", tileCount);
 }

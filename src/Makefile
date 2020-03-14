@@ -1,12 +1,14 @@
 
 
-ERRORS = -Wall
+VERSION = -std=c99
+
+ERRORS = -Wall -Wuninitialized -Werror=implicit-function-declaration #-Wextra
 
 #flags for linking
 LFLAGS = -o
 
 #flags for compilation
-CFLAGS = $(ERRORS) -c -g -std=c99
+CFLAGS = $(ERRORS) $(VERSION) -c -g
 
 make: OUTPUT
 	./output
@@ -15,7 +17,7 @@ profile:
 	gprof output gmon.out > profile.txt
 	gedit profile.txt
 
-cache_profile: output
+cachecheck: output
 	valgrind --tool=cachegrind make
 
 memcheck: output

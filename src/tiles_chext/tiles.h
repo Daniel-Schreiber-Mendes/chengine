@@ -6,7 +6,6 @@
 typedef struct
 {
 	uint16_t id;
-	EntityId tiles[32 * 32];
 }
 Chunk;
 
@@ -17,9 +16,10 @@ This system has to be initialized AFTER stateMachine_init() and before any state
 
 #define CHUNK_LOADING_SYSTEM_COMPONENTS Chunk, Transform
 
-void    chunk_construct(EntityId const e, uint16_t const tileCount, uint16_t const tileSize, uint16_t const textureSize);
+void    chunk_construct(EntityId const e, float const relativeTileSize);
 void    chunk_loading_system_init(EntityId(*load_callback)(Chunk *const), void(*unload_callback)(Chunk const *const), uint8_t const unload_threshold, uint8_t const load_threshold);
 void    chunk_loading_system_terminate(void);
+void 	chunk_loading_system_tileData_set(uint16_t const tileCount, float const relativeTileSize);
 void    chunk_loading_system(checs_system_parameters);
 
 #endif

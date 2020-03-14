@@ -41,7 +41,7 @@ void program_uniform4f_set(Program const program, char const *const name, GLfloa
     glUseProgram(program);
     GLint location = glGetUniformLocation(program, name);
     che_assert(location != -1);
-	glUniform4f(location, v0, v1, v2, v2);
+	glUniform4f(location, v0, v1, v2, v3);
 }
 
 

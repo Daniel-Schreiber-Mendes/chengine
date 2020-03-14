@@ -26,20 +26,22 @@ void mainMenuState_construct(MainMenuState *const s)
     window_vsync_set(true);
     window_fullscreen_set(true);
 
+
+    texture_construct_from_file(&tex, "../resources/textures/tilemap.png");
+    chunk_loading_system_tileData_set(32, 32.0f / tex.width);
+
+
+
     {
         EntityId camera = checs_entity_generate(Transform, Velocity, Camera);
         checs_entity_tag_add(camera, CameraTag);
         checs_component_get_once(Transform, t, camera);
         checs_component_get_once(Camera, c, camera);
         checs_component_get_once(Velocity, v, camera);
-        transform_construct(t);
         camera_construct(c);
-        velocity_construct(v);
         c->zoom = 4;
     }
 
-
-    texture_construct_from_file(&tex, "../resources/textures/tilemap.png");
 
 
     render_system_custom_draw_callback_set(draw_callback);
@@ -49,10 +51,7 @@ void mainMenuState_construct(MainMenuState *const s)
         EntityId player = checs_entity_generate(Renderable, Transform, Velocity, KeyInput);
         checs_component_get_once(Renderable, r, player);
         checs_component_get_once(Transform, t, player);
-        checs_component_get_once(Velocity, v, player);
-        transform_construct(t);
-        velocity_construct(v);
-
+        renderable_construct(r);
 
         {
             checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
@@ -78,7 +77,6 @@ void mainMenuState_construct(MainMenuState *const s)
         VertexBuffer vbo;
         VertexBufferLayout vbl;
         ElementBuffer ebo;
-        vertexArray_construct(&r->vao);
         elementBuffer_construct(&ebo, elements);
         vertexBuffer_construct(&vbo, positions);
         vertexBufferLayout_construct(&vbl, 2);
@@ -91,15 +89,6 @@ void mainMenuState_construct(MainMenuState *const s)
 
         program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
-
-/*
-    EntityId const chunk1 = checs_entity_generate(Chunk, Renderable, Transform);
-    chunk_construct(chunk1, 32, 32, tex.width);
-
-    EntityId const chunk2 = checs_entity_generate(Chunk, Renderable, Transform);
-    checs_component_get_once(Transform, t, chunk2);
-    chunk_construct(chunk2, 32, 32, tex.width);
-    t->position[1] += 32;*/
 }
 
 

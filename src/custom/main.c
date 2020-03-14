@@ -15,7 +15,7 @@ int main(void)
 {
 	systemManager_init(1, 1, 2, 0);
 	entityManager_init();
-	componentManager_init(ComponentCount, 3, 5);
+	componentManager_init(ComponentCount, 28);
 	commandManager_init(StandardCommandCount);
 	eventManager_init(StandardEventCount);
 
@@ -28,13 +28,13 @@ int main(void)
 	checs_command_subscribe(ScrollCommand, scroll_command_callback);
 	
 
-	checs_component_register(Renderable, 26, 5);
-	checs_component_register(Transform, 27, 5);
-	checs_component_register(KeyInput, 2, 5);
-	checs_component_register(SoundSource, 1, 5);
-	checs_component_register(Camera, 1, 5);
-	checs_component_register(Chunk, 25, 5);
-	checs_component_register(Velocity, 2, 5);
+	checs_component_register(Renderable, 26);
+	checs_component_register(Transform, 27);
+	checs_component_register(KeyInput, 1);
+	checs_component_register(SoundSource, 1);
+	checs_component_register(Camera, 1);
+	checs_component_register(Chunk, 25);
+	checs_component_register(Velocity, 2);
 
 
 	checs_event_register(KeyEventData, KeyEvent, 4);
@@ -49,9 +49,6 @@ int main(void)
 	checs_task_register(input_task, ON_UPDATE);
 	checs_task_register(movement_task, ON_UPDATE);
 
-
-
-
 	stateMachine_init();
 
 	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1);
@@ -65,14 +62,14 @@ int main(void)
 
 static void chunk_unload_callback(Chunk const *const c)
 {
-	//printf("chunk unloaded\n");
+
 }
 
 
 static EntityId chunk_load_callback(Chunk *const c)
 {
 	EntityId chunk = checs_entity_generate(Chunk, Renderable, Transform);
-	chunk_construct(chunk, 32, 32, tex.width);
+	chunk_construct(chunk, 32.0f / tex.width);
 	return chunk;
 }
 

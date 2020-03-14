@@ -3,12 +3,6 @@
 #include <AL/alc.h>
 
 
-void transform_construct(Transform *const t)
-{
-    memset(t, 0, sizeof(Transform));
-}
-
-
 void transform_transform_calculate(Transform *const t, mat4 transform)
 {
     glm_mat4_identity(transform);
@@ -21,12 +15,6 @@ float transform_distance_get(Transform *restrict t, Transform *restrict t2)
 {
     //calculating distance with pythagoreas
     return sqrt(pow(t->position[0] - t2->position[0], 2) + pow(t->position[0] - t2->position[1], 2));
-}
-
-
-void velocity_construct(Velocity *const v)
-{
-    memset(v, 0, sizeof(float) * 3);
 }
 
 
@@ -70,7 +58,7 @@ void soundSource_position_set(SoundSource *const s, vec3 const pos)
 
 void renderable_construct(Renderable *const r)
 {
-    
+    vertexArray_construct(&r->vao);
 }
 
 
@@ -83,7 +71,6 @@ void renderable_destruct(Renderable *const r)
 void camera_construct(Camera *const c)
 {
     c->zoom = 1;
-    c->target = NULL;
 }
 
 
@@ -116,7 +103,6 @@ void camera_default_vp_recalculate(Camera *const c)
     //if the camera has a target, interpolate their positions which makes the camera smoothly follow the target
     if (c->target)
     {
-        printf("%f\n", t->position[0]);
         glm_vec3_lerp(t->position, c->target->position, 0.2f, t->position);
     }
 

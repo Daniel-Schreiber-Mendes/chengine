@@ -7,7 +7,7 @@ uniform float u_tile_size;
 /*width and height of tile relative to the whole size of the image. 
 if the tilemap contains for example 10 tiles and each tile has a size 32 pixels, the tile size is 32 / 320 */
 uniform uint u_texture_index;
-uniform uint u_chunk_size; //number of tiles per row per chunk
+uniform uint u_chunk_tile_count; //number of tiles per row per chunk
 
 out vec2 texture_pos;
  
@@ -24,8 +24,8 @@ const vec2 positions[6] = vec2[6]
 
 void main()
 {
-	float column = mod(float(gl_InstanceID), float(u_chunk_size));
-	float row = float(gl_InstanceID / int(u_chunk_size));
+	float column = mod(float(gl_InstanceID), float(u_chunk_tile_count));
+	float row = float(gl_InstanceID / int(u_chunk_tile_count));
     gl_Position = u_camera_vp * u_transform * vec4(positions[gl_VertexID].x + column, -(positions[gl_VertexID].y + row), 0, 1);
     texture_pos = vec2((u_tile_size) * (positions[gl_VertexID].x + float(u_texture_index)), (u_tile_size) * positions[gl_VertexID].y);
 }
