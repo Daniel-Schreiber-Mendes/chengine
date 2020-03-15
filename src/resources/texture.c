@@ -4,6 +4,8 @@
 #include "../vendor/stb/stb_image.h"
 
 
+
+//do not create textures before having called stateMachine_init because else no valid opengl context was created which is needed when creating textures
 void texture_construct_from_file(Texture *const t, char const *const path)
 {
 	/*opengl expects us to provide the image data in reverse order, but stbi by default loads the data in normal order.

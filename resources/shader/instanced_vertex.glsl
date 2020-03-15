@@ -24,8 +24,8 @@ const vec2 positions[6] = vec2[6]
 
 void main()
 {
-	float column = mod(float(gl_InstanceID), float(u_chunk_tile_count));
-	float row = float(gl_InstanceID / int(u_chunk_tile_count));
-    gl_Position = u_camera_vp * u_transform * vec4(positions[gl_VertexID].x + column, -(positions[gl_VertexID].y + row), 0, 1);
-    texture_pos = vec2((u_tile_size) * (positions[gl_VertexID].x + float(u_texture_index)), (u_tile_size) * positions[gl_VertexID].y);
+	float column = mod(float(gl_VertexID / 6), float(u_chunk_tile_count));
+	float row = float((gl_VertexID / 6) / int(u_chunk_tile_count));
+    gl_Position = u_camera_vp * u_transform * vec4(positions[gl_VertexID % 6].x + column, -(positions[gl_VertexID % 6].y + row), 0, 1);
+    texture_pos = vec2((u_tile_size) * (positions[gl_VertexID % 6].x + float(u_texture_index)), (u_tile_size) * positions[gl_VertexID % 6].y);
 }

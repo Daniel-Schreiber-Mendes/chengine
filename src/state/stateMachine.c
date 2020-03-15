@@ -23,11 +23,8 @@ void stateMachine_state_pop(State *const state)
 
 void stateMachine_run(void)
 {
-    double time = glfwGetTime();
-    int frames;
 	while(running)
 	{                
-        ++frames;
         glfwPollEvents();
         checs_eventBuffers_swap();
         vector_foreach(&states, State*, state)
@@ -43,7 +40,6 @@ void stateMachine_run(void)
             }
         }
 	}
-    printf("usage: %.1f % \n", ((glfwGetTime() - time) / frames * 100) / 0.016f);
     window_terminate();
     audio_terminate();
     vector_foreach(&states, State*, state)

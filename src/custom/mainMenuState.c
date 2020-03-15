@@ -22,22 +22,10 @@ void mainMenuState_construct(MainMenuState *const s)
         s->b.updating = true;
     }
 
-
-    window_vsync_set(true);
-    window_fullscreen_set(true);
-
-
-    texture_construct_from_file(&tex, "../resources/textures/tilemap.png");
-    chunk_loading_system_tileData_set(32, 32.0f / tex.width);
-
-
-
     {
         EntityId camera = checs_entity_generate(Transform, Velocity, Camera);
-        checs_entity_tag_add(camera, CameraTag);
-        checs_component_get_once(Transform, t, camera);
+        checs_entity_tag_add(camera, CameraTag);;
         checs_component_get_once(Camera, c, camera);
-        checs_component_get_once(Velocity, v, camera);
         camera_construct(c);
         c->zoom = 4;
     }
@@ -61,10 +49,10 @@ void mainMenuState_construct(MainMenuState *const s)
 
         GLfloat positions[5 * 4] = 
         {//  3 x position  2 x tex
-            0.0,  0.0, 0, 0, 0,
-            5.0,  0.0, 0, 1, 0,
-            5.0, -5.0, 0, 1, 1,
-            0.0, -5.0, 0, 0, 1
+            0.0,  0.0, 1, 0, 0,
+            5.0,  0.0, 1, 1, 0,
+            5.0, -5.0, 1, 1, 1,
+            0.0, -5.0, 1, 0, 1
         };
 
         GLuint elements[6] = 
@@ -96,7 +84,6 @@ void mainMenuState_destruct(State *const state)
 {
     MainMenuState *const s = (MainMenuState*)state;
     texture_destruct(&tex);
-    chunk_loading_system_terminate();
 }
 
 

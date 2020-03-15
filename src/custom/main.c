@@ -8,7 +8,7 @@ static void mouse_button_command_callback(checs_command_parameters);
 static void joystick_command_callback(checs_command_parameters);
 static void scroll_command_callback(checs_command_parameters);
 static void chunk_unload_callback(Chunk const *const c);
-static EntityId chunk_load_callback(Chunk *const c);
+static EntityId chunk_load_callback(void);
 
 
 int main(void)
@@ -51,9 +51,15 @@ int main(void)
 
 	stateMachine_init();
 
-	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1);
+	texture_construct_from_file(&tex, "../resources/textures/tilemap.png");
+	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 4, 32.0f / tex.width);
+
+
+    window_vsync_set(true);
+    window_fullscreen_set(true);
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
+
     stateMachine_run();
 
     return 0;
@@ -66,7 +72,7 @@ static void chunk_unload_callback(Chunk const *const c)
 }
 
 
-static EntityId chunk_load_callback(Chunk *const c)
+static EntityId chunk_load_callback(void)
 {
 	EntityId chunk = checs_entity_generate(Chunk, Renderable, Transform);
 	chunk_construct(chunk, 32.0f / tex.width);
