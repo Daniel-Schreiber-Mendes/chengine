@@ -67,7 +67,7 @@ void chunk_loading_system_terminate(void)
 }
 
 
-//@relativeTileSize is the size in pixels of one tile divided by the whole size of the image
+//relativeTileSize is the size in pixels of one tile divided by the whole size of the image
 void chunk_loading_system_tileData_set(uint16_t const tileCount, float const relativeTileSize)
 {
 	program_uniform1u_set(chunk_program, "u_chunk_tile_count", chunk_tile_count = tileCount);
