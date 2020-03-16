@@ -24,38 +24,35 @@ void chunk_loading_system(checs_system_parameters)
 
 	checs_component_get(Transform, t, checs_entity_get_by_tag(CameraTag));
 
-	int8_t new_chunk_offset_x, new_chunk_offset_y;
+	int8_t new_chunk_offset_x, new_chunk_offset_y, delta_chunk_offset_x, delta_chunk_offset_y;
 	world_to_chunk_position(t, &new_chunk_offset_x, &new_chunk_offset_y);
+	delta_chunk_offset_x = new_chunk_offset_x - chunk_offset_x;
+	delta_chunk_offset_y = new_chunk_offset_y - chunk_offset_y;
 
-	if (chunk_offset_x - new_chunk_offset_x == -1)
+	//left and right wrapping
+	if (new_chunk_offset_x != chunk_offset_x)
 	{
-		chunk_offset_x += new_chunk_offset_x - chunk_offset_x;
-		for (uint16_t i=0; i < CHUNK_COUNT; ++i)
+		/* why is CHUNK_COUNT added altough it has no effect, because of modulo CHUNK_COUNT ? Because if new_chunk_offset_x - 1 or new_chunk_offset_x is negative, the array 
+			woudl get indexed negatively. since we want to "wrap the index around" if it is negative, if the index is -1, start at the most right index, we just add 
+			CHUNK_COUNT which has the same effect*/
+		uint8_t column = ((delta_chunk_offset_x == 1 ? -1 : 0) + new_chunk_offset_x + CHUNK_COUNT * 100) % CHUNK_COUNT;
+		for (uint8_t i=0; i < CHUNK_COUNT; ++i)
 		{
-			checs_component_get(Transform, t, chunk_ids[i][((chunk_offset_x - 1) % CHUNK_COUNT)]);
-			t->position[0] += chunk_size * CHUNK_COUNT;
+			checs_component_get(Transform, t, chunk_ids[i][column]);
+			t->position[0] += delta_chunk_offset_x * chunk_size * CHUNK_COUNT;
+			 //moves left if player moved left because then delta offset is -1 and right if player moved right
 		}
 	}
-	else if (chunk_offset_x - new_chunk_offset_x == 1)
+	//up and down wraping
+	if (new_chunk_offset_y != chunk_offset_y)
 	{
-		chunk_offset_x += new_chunk_offset_x - chunk_offset_x;
-		for (uint16_t i=0; i < CHUNK_COUNT; ++i)
+		uint8_t row = ((delta_chunk_offset_y == 1 ? -1 : 0) + new_chunk_offset_y + CHUNK_COUNT * 100) % CHUNK_COUNT;
+		for (uint8_t i=0; i < CHUNK_COUNT; ++i)
 		{
-			checs_component_get(Transform, t, chunk_ids[i][((chunk_offset_x + 1) % CHUNK_COUNT)]);
-			t->position[0] -= chunk_size * CHUNK_COUNT;
+			checs_component_get(Transform, t, chunk_ids[row][i]);
+			t->position[1] += delta_chunk_offset_y * chunk_size * CHUNK_COUNT;
 		}
 	}
-
-	if (chunk_offset_y - new_chunk_offset_y)
-	{
-		chunk_offset_y += new_chunk_offset_y - chunk_offset_y;
-		for (uint16_t i=0; i < CHUNK_COUNT; ++i)
-		{
-			checs_component_get(Transform, t, chunk_ids[((chunk_offset_y - 1) % CHUNK_COUNT)][i]);
-			t->position[1] += chunk_size * CHUNK_COUNT;
-		}
-	}
-
 
 	chunk_offset_x = new_chunk_offset_x;
 	chunk_offset_y = new_chunk_offset_y;

@@ -52,7 +52,7 @@ int main(void)
 	stateMachine_init();
 
 	texture_construct_from_file(&tex, "../resources/textures/tilemap.png");
-	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 4, 32.0f / tex.width);
+	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, 32.0f / tex.width);
 
 
     window_vsync_set(true);
