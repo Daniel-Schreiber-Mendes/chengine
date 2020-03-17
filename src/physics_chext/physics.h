@@ -5,10 +5,19 @@
 
 typedef struct
 {
-	float width, height;
+	union
+	{
+		float r; //radius if circle
+		vec2 bb; //bounding box if rect
+	};
+	enum
+	{
+		CIRCLE,
+		RECT
+	}
+	type;
 }
 Collidable;
-
 
 
 #define PHYSICS_SYSTEM_COMPONENTS Velocity, Collidable, Transform

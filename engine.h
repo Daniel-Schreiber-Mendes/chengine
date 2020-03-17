@@ -188,6 +188,7 @@ void renderable_destruct(Renderable *const r);
 
 void  transform_transform_calculate(Transform *const t, mat4 transform);
 float transform_distance_get(Transform *restrict t, Transform *restrict t2);
+bool transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);

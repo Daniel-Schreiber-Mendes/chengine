@@ -34,16 +34,56 @@ void mainMenuState_construct(MainMenuState *const s)
 
     render_system_custom_draw_callback_set(draw_callback);
 
-    
     {
-        EntityId player = checs_entity_generate(Renderable, Transform, Velocity, KeyInput);
+        EntityId enemy = checs_entity_generate(Renderable, Transform, Velocity, Collidable);
+        checs_component_get_once(Renderable, r, enemy);
+        checs_component_get_once(Transform, t, enemy);
+        checs_component_get_once(Collidable, c, enemy);
+        renderable_construct(r);
+        c->r = 2.5f;
+
+        GLfloat positions[5 * 4] = 
+        {//  3 x position  2 x tex
+            0.0,  0.0, 1, 0, 0,
+            5.0,  0.0, 1, 1, 0,
+            5.0, -5.0, 1, 1, 1,
+            0.0, -5.0, 1, 0, 1
+        };
+
+        GLuint elements[6] = 
+        {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+
+        VertexBuffer vbo;
+        VertexBufferLayout vbl;
+        ElementBuffer ebo;
+        elementBuffer_construct(&ebo, elements);
+        vertexBuffer_construct(&vbo, positions);
+        vertexBufferLayout_construct(&vbl, 2);
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
+        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+        vertexArray_buffer_add(&r->vao, vbo, vbl);
+        r->mode = GL_TRIANGLES;
+        r->renderableType = ELEMENTS;
+        r->elementCount = 6;
+
+        program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
+    }
+
+    {
+        EntityId player = checs_entity_generate(Renderable, Transform, Velocity, KeyInput, Collidable);
         checs_component_get_once(Renderable, r, player);
         checs_component_get_once(Transform, t, player);
+        checs_component_get_once(Collidable, c, player);
         renderable_construct(r);
+        c->r = 2.5f;
 
         {
-            checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
-            camera_target_set(c, t);
+            checs_component_get_once(Camera, cam, checs_entity_get_by_tag(CameraTag));
+            camera_target_set(cam, t);
         }
 
 
@@ -89,8 +129,8 @@ void mainMenuState_destruct(State *const state)
 
 void mainMenuState_update(State *const state)
 {
-    checs_tasks_call(ON_UPDATE);
     checs_systems_call(ON_UPDATE);
+    checs_tasks_call(ON_UPDATE);
 }
 
 

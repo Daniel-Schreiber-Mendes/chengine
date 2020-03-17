@@ -1,6 +1,6 @@
 #include "tiles.h"
 
-#define CHUNK_COUNT 5
+#define CHUNK_COUNT 4
 
 static Program chunk_program;
 static uint8_t chunk_unload_threshold; //the distance that if exceeded lets the chunk beeing unloaded

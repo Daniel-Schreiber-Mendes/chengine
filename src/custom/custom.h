@@ -2,10 +2,11 @@
 #define CUSTOM_H
 #include "../../engine.h"
 #include "../tiles_chext/tiles.h"
-
+#include "../physics_chext/physics.h"
 
 //components defined by extensions:
-#define ComponentCount StandardComponentCount + 1
+//+1 for Collidable and +1 for Chunk
+#define ComponentCount StandardComponentCount + 2
 
 typedef struct
 {

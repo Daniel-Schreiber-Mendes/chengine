@@ -14,7 +14,14 @@ void transform_transform_calculate(Transform *const t, mat4 transform)
 float transform_distance_get(Transform *restrict t, Transform *restrict t2)
 {
     //calculating distance with pythagoreas
-    return sqrt(pow(t->position[0] - t2->position[0], 2) + pow(t->position[0] - t2->position[1], 2));
+    return sqrt(pow(t->position[0] - t2->position[0], 2) + pow(t->position[1] - t2->position[1], 2));
+}
+
+
+bool transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1)
+{
+    printf("%.1f\n", sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2)));
+    return r0 + r1 > sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2));
 }
 
 
@@ -103,7 +110,7 @@ void camera_default_vp_recalculate(Camera *const c)
     //if the camera has a target, interpolate their positions which makes the camera smoothly follow the target
     if (c->target)
     {
-        glm_vec3_lerp(t->position, c->target->position, 0.2f, t->position);
+        glm_vec3_lerp(t->position, c->target->position, 0.1f, t->position);
     }
 
     glm_mat4_identity(view); //reset the view matrix
