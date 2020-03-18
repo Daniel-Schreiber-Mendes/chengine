@@ -16,12 +16,19 @@ typedef struct
 		RECT
 	}
 	type;
+	enum
+	{
+		STATIC,
+		DYNAMIC
+	}
+	behaviourType;
 }
 Collidable;
 
 
 #define PHYSICS_SYSTEM_COMPONENTS Velocity, Collidable, Transform
 void physics_system(checs_system_parameters);
-
+void physics_system_init(void);
+void physics_system_terminate(void);
 
 #endif

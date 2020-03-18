@@ -1,6 +1,9 @@
 #include "custom.h"
 
 
+static Texture chunkTexture;
+
+
 static void window_close_command_callback(checs_command_parameters);
 static void framebuffer_size_command_callback(checs_command_parameters);
 static void key_command_callback(checs_command_parameters);
@@ -58,9 +61,11 @@ int main(void)
 
 	stateMachine_init();
 
+	textureLoader_init();
 	texture_construct_from_file(&tex, "../resources/textures/cobble.png");
+	texture_construct_from_file(&chunkTexture, "../resources/textures/tilemap.png");
 	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, 32.0f / tex.width);
-
+	physics_system_init();
 
     window_vsync_set(true);
     window_fullscreen_set(true);
@@ -68,6 +73,7 @@ int main(void)
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 
     stateMachine_run();
+    physics_system_terminate();
 
     return 0;
 }

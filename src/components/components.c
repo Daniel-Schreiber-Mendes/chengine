@@ -20,7 +20,6 @@ float transform_distance_get(Transform *restrict t, Transform *restrict t2)
 
 bool transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1)
 {
-    printf("%.1f\n", sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2)));
     return r0 + r1 > sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2));
 }
 

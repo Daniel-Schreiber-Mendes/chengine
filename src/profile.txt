@@ -5,18 +5,11 @@ Each sample counts as 0.01 seconds.
 
   %   cumulative   self              self     total           
  time   seconds   seconds    calls  Ts/call  Ts/call  name    
-  0.00      0.00     0.00      225     0.00     0.00  createShader
-  0.00      0.00     0.00        6     0.00     0.00  stbi__resample_row_v_2
-  0.00      0.00     0.00        6     0.00     0.00  stbi_load_16
-  0.00      0.00     0.00        5     0.00     0.00  stbi__info_main
-  0.00      0.00     0.00        4     0.00     0.00  mainMenuState_construct
-  0.00      0.00     0.00        3     0.00     0.00  program_uniform1u_set
-  0.00      0.00     0.00        2     0.00     0.00  stbi__resample_row_generic
-  0.00      0.00     0.00        2     0.00     0.00  stbi_load_from_file_16
-  0.00      0.00     0.00        1     0.00     0.00  elementBuffer_destruct
-  0.00      0.00     0.00        1     0.00     0.00  soundSource_construct
-  0.00      0.00     0.00        1     0.00     0.00  typeGL_size_get
-  0.00      0.00     0.00        1     0.00     0.00  vertexBufferLayout_construct
+  0.00      0.00     0.00        7     0.00     0.00  main
+  0.00      0.00     0.00        6     0.00     0.00  load_jpeg_image
+  0.00      0.00     0.00        5     0.00     0.00  stbi_zlib_decode_malloc_guesssize_headerflag
+  0.00      0.00     0.00        2     0.00     0.00  stbi__zbuild_huffman
+  0.00      0.00     0.00        1     0.00     0.00  stbi__parse_png_file
 
  %         the percentage of the total running time of the
 time       program used by this function.
@@ -57,72 +50,27 @@ notice and this notice are preserved.
 granularity: each sample hit covers 2 byte(s) no time propagated
 
 index % time    self  children    called     name
-[1]      0.0    0.00    0.00       2+12      <cycle 1 as a whole> [1]
-                0.00    0.00       6+2           stbi__resample_row_v_2 <cycle 1> [3]
-                0.00    0.00       6             stbi_load_16 <cycle 1> [4]
-                0.00    0.00       2             stbi__resample_row_generic <cycle 1> [8]
+                                 239             main <cycle 1> [2]
+                                   7             load_jpeg_image <cycle 1> [3]
+[2]      0.0    0.00    0.00       7+239     main <cycle 1> [2]
+                0.00    0.00       5/5           stbi_zlib_decode_malloc_guesssize_headerflag [4]
+                0.00    0.00       2/2           stbi__zbuild_huffman [5]
+                0.00    0.00       1/1           stbi__parse_png_file [6]
+                                   6             load_jpeg_image <cycle 1> [3]
+                                 239             main <cycle 1> [2]
 -----------------------------------------------
-                0.00    0.00       1/225         window_fullscreen_set [188]
-                0.00    0.00       1/225         window_fullscreen_switch [189]
-                0.00    0.00       1/225         vertexBufferLayout_destruct [180]
-                0.00    0.00     222/225         vertexBufferLayout_construct [13]
-[2]      0.0    0.00    0.00     225         createShader [2]
-                0.00    0.00       2/4           mainMenuState_construct [6]
-                0.00    0.00       1/2           stbi_load_16 <cycle 1> [4]
+                                   6             main <cycle 1> [2]
+[3]      0.0    0.00    0.00       6         load_jpeg_image <cycle 1> [3]
+                                   7             main <cycle 1> [2]
 -----------------------------------------------
-                                   2             stbi__resample_row_v_2 <cycle 1> [3]
-                                   6             stbi_load_16 <cycle 1> [4]
-[3]      0.0    0.00    0.00       6+2       stbi__resample_row_v_2 <cycle 1> [3]
-                0.00    0.00       2/3           program_uniform1u_set [7]
-                                   2             stbi__resample_row_generic <cycle 1> [8]
-                                   2             stbi__resample_row_v_2 <cycle 1> [3]
+                0.00    0.00       5/5           main <cycle 1> [2]
+[4]      0.0    0.00    0.00       5         stbi_zlib_decode_malloc_guesssize_headerflag [4]
 -----------------------------------------------
-                                   4             stbi__resample_row_generic <cycle 1> [8]
-                0.00    0.00       1/2           typeGL_size_get [12]
-                0.00    0.00       1/2           createShader [2]
-[4]      0.0    0.00    0.00       6         stbi_load_16 <cycle 1> [4]
-                0.00    0.00       1/3           program_uniform1u_set [7]
-                                   6             stbi__resample_row_v_2 <cycle 1> [3]
+                0.00    0.00       2/2           main <cycle 1> [2]
+[5]      0.0    0.00    0.00       2         stbi__zbuild_huffman [5]
 -----------------------------------------------
-                0.00    0.00       2/5           stateMachine_run [85]
-                0.00    0.00       3/5           mainMenuState_construct [6]
-[5]      0.0    0.00    0.00       5         stbi__info_main [5]
------------------------------------------------
-                                   1             mainMenuState_construct [6]
-                0.00    0.00       1/4           typeGL_size_get [12]
-                0.00    0.00       1/4           vertexBufferLayout_destruct [180]
-                0.00    0.00       2/4           createShader [2]
-[6]      0.0    0.00    0.00       4+1       mainMenuState_construct [6]
-                0.00    0.00       3/5           stbi__info_main [5]
-                                   1             mainMenuState_construct [6]
------------------------------------------------
-                0.00    0.00       1/3           stbi_load_16 <cycle 1> [4]
-                0.00    0.00       2/3           stbi__resample_row_v_2 <cycle 1> [3]
-[7]      0.0    0.00    0.00       3         program_uniform1u_set [7]
------------------------------------------------
-                                   2             stbi__resample_row_v_2 <cycle 1> [3]
-[8]      0.0    0.00    0.00       2         stbi__resample_row_generic <cycle 1> [8]
-                                   4             stbi_load_16 <cycle 1> [4]
------------------------------------------------
-                0.00    0.00       1/2           typeGL_size_get [12]
-                0.00    0.00       1/2           vertexBufferLayout_destruct [180]
-[9]      0.0    0.00    0.00       2         stbi_load_from_file_16 [9]
------------------------------------------------
-                0.00    0.00       1/1           window_fullscreen_set [188]
-[10]     0.0    0.00    0.00       1         elementBuffer_destruct [10]
------------------------------------------------
-                0.00    0.00       1/1           window_fullscreen_set [188]
-[11]     0.0    0.00    0.00       1         soundSource_construct [11]
------------------------------------------------
-                0.00    0.00       1/1           window_fullscreen_set [188]
-[12]     0.0    0.00    0.00       1         typeGL_size_get [12]
-                0.00    0.00       1/2           stbi_load_from_file_16 [9]
-                0.00    0.00       1/2           stbi_load_16 <cycle 1> [4]
-                0.00    0.00       1/4           mainMenuState_construct [6]
------------------------------------------------
-                0.00    0.00       1/1           window_fullscreen_set [188]
-[13]     0.0    0.00    0.00       1         vertexBufferLayout_construct [13]
-                0.00    0.00     222/225         createShader [2]
+                0.00    0.00       1/1           main <cycle 1> [2]
+[6]      0.0    0.00    0.00       1         stbi__parse_png_file [6]
 -----------------------------------------------
 
  This table describes the call tree of the program, and was sorted by
@@ -215,8 +163,5 @@ notice and this notice are preserved.
 
 Index by function name
 
-   [2] createShader (program.c) [5] stbi__info_main (stb_image.h) [12] typeGL_size_get
-  [10] elementBuffer_destruct  [8] stbi__resample_row_generic (stb_image.h) [13] vertexBufferLayout_construct
-   [6] mainMenuState_construct [3] stbi__resample_row_v_2 (stb_image.h) [1] <cycle 1>
-   [7] program_uniform1u_set   [4] stbi_load_16
-  [11] soundSource_construct   [9] stbi_load_from_file_16
+   [3] load_jpeg_image (stb_image.h) [6] stbi__parse_png_file (stb_image.h) [4] stbi_zlib_decode_malloc_guesssize_headerflag
+   [2] main                    [5] stbi__zbuild_huffman (stb_image.h) (1) <cycle 1>

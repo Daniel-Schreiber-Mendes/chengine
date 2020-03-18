@@ -4,26 +4,42 @@
 #include "../vendor/stb/stb_image.h"
 
 
+static uint16_t last_textureUnit = GL_TEXTURE0;
+static int textures_limit;
+//static uint8_t max_textures = glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
 
 //do not create textures before having called stateMachine_init because else no valid opengl context was created which is needed when creating textures
+
+
+void textureLoader_init(void)
+{
+	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textures_limit);
+}
+
+
 void texture_construct_from_file(Texture *const t, char const *const path)
 {
 	/*opengl expects us to provide the image data in reverse order, but stbi by default loads the data in normal order.
 	because of this we have to tell it explicitly to flip the image when loading it*/
 	//stbi_set_flip_vertically_on_load(true);
-	if (!(t->buffer = stbi_load(path, &t->width, &t->height, &t->channels, 4)))//4 because RGBA
+	void *buffer;
+	if (!(buffer = stbi_load(path, &t->width, &t->height, &t->channels, 4)))//4 because RGBA
 	{
-		t->buffer = stbi_load("../resources/error/errorTexture.png", &t->width, &t->height, &t->channels, 4); //4 because RGBA
+		buffer = stbi_load("../resources/error/errorTexture.png", &t->width, &t->height, &t->channels, 4); //4 because RGBA
 	}
 	
+	che_assert(last_textureUnit - GL_TEXTURE0 < textures_limit);
+	t->unit = last_textureUnit;
+	glActiveTexture(last_textureUnit++);
+
 	glGenTextures(1, &t->id);
 	glBindTexture(GL_TEXTURE_2D, t->id);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST); //makes the image sharper instead of interpolating
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->width, t->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, t->buffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, t->width, t->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 	
-	che_assert(t->buffer);
-	stbi_image_free(t->buffer);
+	che_assert(buffer);
+	stbi_image_free(buffer);
 }
 
 

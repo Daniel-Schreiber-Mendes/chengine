@@ -4,7 +4,7 @@
 void input_task(void)
 {	
 	checs_component_use(Velocity, v);
-
+	checs_component_use(KeyInput, k);
 
 	checs_components_foreach(KeyInput, k, entity)
 	{

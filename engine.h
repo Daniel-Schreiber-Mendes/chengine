@@ -324,8 +324,8 @@ struct State
 typedef struct
 {
 	int width, height, channels;
-	uint8_t *buffer;
 	GLuint id;
+	GLenum unit;
 }
 Texture;
 
@@ -380,7 +380,7 @@ void  stateMachine_running_set(bool const n_running);
 /////////////////////// Resources  /////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-
+void textureLoader_init(void);
 void texture_construct_from_file(Texture *const t, char const *const path);
 void texture_construct(Texture *const t, uint16_t const width, uint16_t const height);
 void texture_update_from_buffer(Texture *const t, void* buffer);
