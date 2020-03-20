@@ -68,6 +68,11 @@ void render_system(checs_system_parameters)
 
 		vertexArray_bind(&r->vao);
 		program_bind(r->program);
+		if (r->texture)
+		{
+			texture_bind(r->texture);
+			printf("%u\n", r->texture->id);
+		}
 		program_uniformMat4_set(r->program, "u_transform", transform);
 		program_uniformMat4_set(r->program, "u_camera_vp", c->vp);
 

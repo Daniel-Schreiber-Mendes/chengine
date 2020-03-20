@@ -11,6 +11,7 @@ static EntityId chunk_ids[CHUNK_COUNT][CHUNK_COUNT]; //ringbuffer of all entity 
 static float chunk_size;
 static int8_t chunk_offset_x, chunk_offset_y;
 static uint8_t chunk_tile_count; //tiles per row
+static Texture const *texture;
 //should be updated at max once every 4 seconds
 
 
@@ -60,7 +61,7 @@ void chunk_loading_system(checs_system_parameters)
 
 
 void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_callback)(Chunk const *const), uint8_t const unload_threshold, uint8_t const load_threshold, 
-							  uint16_t const tileCount, float const relativeTileSize)
+							  uint16_t const tileCount, Texture const *tex, uint16_t const tileSize)
 {
 	chunk_unload_threshold = unload_threshold;
 	chunk_load_threshold = load_threshold;
@@ -69,7 +70,8 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 	program_create(&chunk_program, "../resources/shader/instanced_vertex.glsl", "../resources/shader/instanced_fragment.glsl");
 	program_uniform1u_set(chunk_program, "u_texture_index", 4);
 	program_uniform1u_set(chunk_program, "u_chunk_tile_count", chunk_tile_count = tileCount);
-	program_uniform1f_set(chunk_program, "u_tile_size", relativeTileSize);
+	program_uniform1f_set(chunk_program, "u_tile_size", (float)tileSize / tex->width);
+	texture = tex;
 	chunk_size = tileCount; //because one currently tile is exactly 1.0f in size
 
 
@@ -101,7 +103,7 @@ static void world_to_chunk_position(Transform const *const target_t, int8_t *con
 
 
 
-void chunk_construct(EntityId const e, float const relativeTileSize)
+void chunk_construct(EntityId const e)
 {
     checs_component_get_once(Renderable, r, e);
     renderable_construct(r);
@@ -109,4 +111,5 @@ void chunk_construct(EntityId const e, float const relativeTileSize)
     r->mode = GL_TRIANGLES;
     r->renderableType = ARRAYS;
     r->program = chunk_program;
+    r->texture = texture;
 }

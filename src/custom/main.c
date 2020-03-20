@@ -1,7 +1,8 @@
 #include "custom.h"
 
 
-static Texture chunkTexture;
+static Texture tileset;
+Texture cobble;
 
 
 static void window_close_command_callback(checs_command_parameters);
@@ -61,10 +62,9 @@ int main(void)
 
 	stateMachine_init();
 
-	textureLoader_init();
-	texture_construct_from_file(&tex, "../resources/textures/cobble.png");
-	texture_construct_from_file(&chunkTexture, "../resources/textures/tilemap.png");
-	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, 32.0f / tex.width);
+	texture_construct_from_file(&cobble, "../resources/textures/cobble.png");
+	texture_construct_from_file(&tileset, "../resources/textures/tilemap.png");
+	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, &tileset, 32);
 	physics_system_init();
 
     window_vsync_set(true);
@@ -88,8 +88,7 @@ static void chunk_unload_callback(Chunk const *const c)
 static EntityId chunk_load_callback(void)
 {
 	EntityId chunk = checs_entity_generate(Chunk, Renderable, Transform);
-	checs_component_get_once(Collidable, c, chunk);
-	chunk_construct(chunk, 32.0f / tex.width);
+	chunk_construct(chunk);
 	return chunk;
 }
 

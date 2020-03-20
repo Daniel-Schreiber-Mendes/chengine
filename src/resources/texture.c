@@ -4,19 +4,6 @@
 #include "../vendor/stb/stb_image.h"
 
 
-static uint16_t last_textureUnit = GL_TEXTURE0;
-static int textures_limit;
-//static uint8_t max_textures = glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &texture_units);
-
-//do not create textures before having called stateMachine_init because else no valid opengl context was created which is needed when creating textures
-
-
-void textureLoader_init(void)
-{
-	glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &textures_limit);
-}
-
-
 void texture_construct_from_file(Texture *const t, char const *const path)
 {
 	/*opengl expects us to provide the image data in reverse order, but stbi by default loads the data in normal order.
@@ -27,10 +14,6 @@ void texture_construct_from_file(Texture *const t, char const *const path)
 	{
 		buffer = stbi_load("../resources/error/errorTexture.png", &t->width, &t->height, &t->channels, 4); //4 because RGBA
 	}
-	
-	che_assert(last_textureUnit - GL_TEXTURE0 < textures_limit);
-	t->unit = last_textureUnit;
-	glActiveTexture(last_textureUnit++);
 
 	glGenTextures(1, &t->id);
 	glBindTexture(GL_TEXTURE_2D, t->id);
@@ -80,6 +63,6 @@ void texture_destruct(Texture const* t)
 
 void texture_bind(Texture *const t)
 {
-	//glActiveTexture(0);
+	glActiveTexture(0);
 	glBindTexture(GL_TEXTURE_2D, t->id);
 }

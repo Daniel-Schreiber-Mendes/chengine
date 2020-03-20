@@ -74,8 +74,18 @@
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Forward declarations ///////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+typedef struct _Texture Texture;
+typedef struct _State State;
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////// Render-Utility-Types ///////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
 
 typedef GLuint VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 typedef GLuint Program;
@@ -127,6 +137,7 @@ typedef struct
 	VertexArray vao;
 	GLenum mode; //can be primitve mode like e.g GL_TRIANGLES or GL_TRIANGLE_STRIP
 	uint16_t primitiveCount; //only used if renderableType is one of the two instanced types
+	Texture* texture;
 	union
 	{
 		uint16_t vertexCount;
@@ -188,7 +199,7 @@ void renderable_destruct(Renderable *const r);
 
 void  transform_transform_calculate(Transform *const t, mat4 transform);
 float transform_distance_get(Transform *restrict t, Transform *restrict t2);
-bool transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1);
+bool  transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);
@@ -306,8 +317,7 @@ JoystickEventData;
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-typedef struct State State;
-struct State 
+struct _State 
 {
 	bool drawing, updating;
     void(*destruct)(State *const);
@@ -321,13 +331,12 @@ struct State
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-typedef struct
+struct _Texture
 {
 	int width, height, channels;
 	GLuint id;
 	GLenum unit;
-}
-Texture;
+};
 
 
 typedef struct
@@ -380,7 +389,6 @@ void  stateMachine_running_set(bool const n_running);
 /////////////////////// Resources  /////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-void textureLoader_init(void);
 void texture_construct_from_file(Texture *const t, char const *const path);
 void texture_construct(Texture *const t, uint16_t const width, uint16_t const height);
 void texture_update_from_buffer(Texture *const t, void* buffer);

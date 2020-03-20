@@ -18,8 +18,9 @@ typedef struct
 	type;
 	enum
 	{
-		STATIC,
-		DYNAMIC
+		STATIC, //has collision enabled, is NOT movable, therefore it shall not have a velocuty component
+		KINEMATIC, //has collision and is movable but can not move or interact with other objects despite collision
+		DYNAMIC //collision, optional gravity, movable, can interact with other objects
 	}
 	behaviourType;
 }

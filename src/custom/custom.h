@@ -14,7 +14,7 @@ typedef struct
 }
 MainMenuState;
 
-extern Texture tex;
+extern Texture cobble;
 
 
 void mainMenuState_construct(MainMenuState *const s);

@@ -1,8 +1,6 @@
 #include "custom.h"
 
 
-Texture tex;
-
 void draw_callback(void);
 
 void draw_callback(void)
@@ -70,6 +68,7 @@ void mainMenuState_construct(MainMenuState *const s)
         r->mode = GL_TRIANGLES;
         r->renderableType = ELEMENTS;
         r->elementCount = 6;
+        r->texture = &cobble;
 
         program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
@@ -117,6 +116,7 @@ void mainMenuState_construct(MainMenuState *const s)
         r->mode = GL_TRIANGLES;
         r->renderableType = ELEMENTS;
         r->elementCount = 6;
+        r->texture = &cobble;
 
         program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
@@ -125,8 +125,7 @@ void mainMenuState_construct(MainMenuState *const s)
 
 void mainMenuState_destruct(State *const state)
 {
-    MainMenuState *const s = (MainMenuState*)state;
-    texture_destruct(&tex);
+
 }
 
 
