@@ -37,9 +37,11 @@ void mainMenuState_construct(MainMenuState *const s)
         checs_component_get_once(Renderable, r, enemy);
         checs_component_get_once(Collidable, c, enemy);
         renderable_construct(r);
-        c->r = 2.5f;
+        //c->r = 2.5f;
+        c->bb[0] = 5;
+        c->bb[1] = 5;
         c->behaviourType = STATIC;
-        c->type = CIRCLE;
+        c->type = RECTANGLE;
 
         GLfloat positions[5 * 4] = 
         {//  3 x position  2 x tex
@@ -79,10 +81,12 @@ void mainMenuState_construct(MainMenuState *const s)
         checs_component_get_once(Transform, t, player);
         checs_component_get_once(Collidable, c, player);
         renderable_construct(r);
-        c->r = 2.5f;
+        //c->r = 2.5f;
+        c->bb[0] = 5;
+        c->bb[1] = 5;
         c->behaviourType = DYNAMIC;
-        c->type = CIRCLE;
-        t->position[0] = 5;
+        c->type = RECTANGLE;
+        t->pos[0] = 5;
 
         {
             checs_component_get_once(Camera, cam, checs_entity_get_by_tag(CameraTag));

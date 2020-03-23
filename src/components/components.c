@@ -6,27 +6,40 @@
 void transform_transform_calculate(Transform *const t, mat4 transform)
 {
     glm_mat4_identity(transform);
-    glm_translate(transform, t->position);
-    glm_rotate_z(transform, t->rotation, transform);
+    glm_translate(transform, t->pos);
+    glm_rotate_z(transform, t->rot, transform);
 }
 
 
 float transform_distance_get(Transform *restrict t, Transform *restrict t2)
 {
     //calculating distance with pythagoreas
-    return sqrt(pow(t->position[0] - t2->position[0], 2) + pow(t->position[1] - t2->position[1], 2));
+    return sqrtf(pow(t->pos[0] - t2->pos[0], 2) + pow(t->pos[1] - t2->pos[1], 2));
 }
 
 
 bool transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1)
 {
-    return r0 + r1 > sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2));
+    return r0 + r1 > sqrtf(pow(t0->pos[0] + r0 - t1->pos[0] - r1, 2) + pow(t0->pos[1] + r0 - t1->pos[1] - r1, 2));
+}
+
+
+bool transform_circle_point_collision(Transform *restrict t0, Transform *restrict t1, float const r0)
+{
+    return transform_distance_get(t0, t1) < r0;
 }
 
 
 bool transform_rect_rect_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1)
 {
-    return false;//r0 + r1 > sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2));
+    return t0->pos[0] + bb0[0] > t1->pos[0] && t0->pos[0] < t1->pos[0] + bb1[0] && 
+           t0->pos[1] - bb0[1] < t1->pos[1] && t0->pos[1] > t1->pos[1] - bb1[1];
+}
+
+
+bool  transform_rect_point_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0)
+{
+    return t1->pos[0] > t0->pos[0] && t1->pos[0] < t0->pos[0] + bb0[0] && t1->pos[1] > t0->pos[1] && t1->pos[1] < t0->pos[1] + bb0[1];
 }
 
 
@@ -112,18 +125,18 @@ void camera_default_vp_recalculate(Camera *const c)
     mat4 view, proj; 
     checs_component_get_once(Transform, t, checs_entity_get_by_tag(CameraTag));
 
-    //if the camera has a target, interpolate their positions which makes the camera smoothly follow the target
+    //if the camera has a target, interpolate their poss which makes the camera smoothly follow the target
     if (c->target)
     {
-        glm_vec3_lerp(t->position, c->target->position, 0.1f, t->position);
+        glm_vec3_lerp(t->pos, c->target->pos, 0.1f, t->pos);
     }
 
     glm_mat4_identity(view); //reset the view matrix
     glm_ortho(-c->zoom * c->aspectRatio, c->zoom * c->aspectRatio, -c->zoom, c->zoom, -1.f, 1.f, proj); 
     /* by setting the projection always according to the aspect ratio if the window gets resized everything still gets rendered with the correct aspect ratio*/
-    glm_translate(view, t->position); //moving the camera
+    glm_translate(view, t->pos); //moving the camera
     glm_scale_uni(view, c->zoom);
-    glm_rotate_z(view, t->rotation, view);  //rotate it
+    glm_rotate_z(view, t->rot, view);  //rotate it
     glm_mat4_inv(view, view); //if camera moves left, everything else should move right. because of this we have to inverse the direction
     glm_mat4_mul(proj, view, c->vp);
 }

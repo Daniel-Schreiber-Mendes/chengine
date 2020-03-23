@@ -169,7 +169,7 @@ typedef struct
 	VertexArray vao;
 	GLenum mode; //can be primitve mode like e.g GL_TRIANGLES or GL_TRIANGLE_STRIP
 	uint16_t primitiveCount; //only used if renderableType is one of the two instanced types
-	Texture* texture;
+	Texture const* texture;
 	union
 	{
 		uint16_t vertexCount;
@@ -189,8 +189,8 @@ Renderable;
 
 typedef struct
 {
-	vec3 position;
-	float rotation;
+	vec3 pos;
+	float rot;
 }
 Transform;
 
@@ -232,7 +232,10 @@ void renderable_destruct(Renderable *const r);
 void  transform_transform_calculate(Transform *const t, mat4 transform);
 float transform_distance_get(Transform *restrict t, Transform *restrict t2);
 bool  transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1);
+bool  transform_circle_point_collision(Transform *restrict t0, Transform *restrict t1, float const r0);
 bool  transform_rect_rect_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
+bool  transform_rect_point_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0);
+
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);
@@ -252,7 +255,6 @@ void camera_default_vp_recalculate(Camera *const c);
 
 
 #define RENDER_SYSTEM_COMPONENTS Renderable, Transform
-#define INPUT_SYSTEM_COMPONENTS  InputReceiver
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,7 +429,7 @@ void texture_construct(Texture *const t, uint16_t const width, uint16_t const he
 void texture_update_from_buffer(Texture *const t, void* buffer);
 void texture_rect_update_from_buffer(Texture *const t, uint16_t const xoffset, uint16_t const yoffset, uint16_t const width, uint16_t const height, void *buffer);
 void texture_destruct(Texture const* t);
-void texture_bind(Texture *const t);
+void texture_bind(Texture const *const t);
 
 
 //file.c
@@ -498,7 +500,7 @@ void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBuff
 void render_init(void);
 void render_system(checs_system_parameters);
 void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void));
-void render_system_imm_rectangle_draw(vec4 const color, vec3 position, vec2 const size);
+void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size);
 
 
 #define mat4_print(m)\

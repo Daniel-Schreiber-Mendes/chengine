@@ -16,7 +16,7 @@ static Texture const *texture;
 
 
 static uint8_t manhattan_distance_get(vec2 const target, vec2 const chunk);
-static void world_to_chunk_position(Transform const *const target_t, int8_t *const dest_x, int8_t *const dest_y);
+static void world_to_chunk_pos(Transform const *const target_t, int8_t *const dest_x, int8_t *const dest_y);
 
 
 void chunk_loading_system(checs_system_parameters)
@@ -26,7 +26,7 @@ void chunk_loading_system(checs_system_parameters)
 	checs_component_get(Transform, t, checs_entity_get_by_tag(CameraTag));
 
 	int8_t new_chunk_offset_x, new_chunk_offset_y, delta_chunk_offset_x, delta_chunk_offset_y;
-	world_to_chunk_position(t, &new_chunk_offset_x, &new_chunk_offset_y);
+	world_to_chunk_pos(t, &new_chunk_offset_x, &new_chunk_offset_y);
 	delta_chunk_offset_x = new_chunk_offset_x - chunk_offset_x;
 	delta_chunk_offset_y = new_chunk_offset_y - chunk_offset_y;
 
@@ -40,7 +40,7 @@ void chunk_loading_system(checs_system_parameters)
 		for (uint8_t i=0; i < CHUNK_COUNT; ++i)
 		{
 			checs_component_get(Transform, t, chunk_ids[i][column]);
-			t->position[0] += delta_chunk_offset_x * chunk_size * CHUNK_COUNT;
+			t->pos[0] += delta_chunk_offset_x * chunk_size * CHUNK_COUNT;
 			 //moves left if player moved left because then delta offset is -1 and right if player moved right
 		}
 	}
@@ -51,7 +51,7 @@ void chunk_loading_system(checs_system_parameters)
 		for (uint8_t i=0; i < CHUNK_COUNT; ++i)
 		{
 			checs_component_get(Transform, t, chunk_ids[row][i]);
-			t->position[1] += delta_chunk_offset_y * chunk_size * CHUNK_COUNT;
+			t->pos[1] += delta_chunk_offset_y * chunk_size * CHUNK_COUNT;
 		}
 	}
 
@@ -82,8 +82,8 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 		{
 			chunk_ids[i][j] = chunk_load_callback();
 			checs_component_get(Transform, t, chunk_ids[i][j]);
-			t->position[0] = chunk_size * j;
-			t->position[1] = chunk_size * i;
+			t->pos[0] = chunk_size * j;
+			t->pos[1] = chunk_size * i;
 		}
 	}
 }
@@ -95,10 +95,10 @@ static uint8_t manhattan_distance_get(vec2 const target, vec2 const chunk)
 }
 
 
-static void world_to_chunk_position(Transform const *const target_t, int8_t *const dest_x, int8_t *const dest_y)
+static void world_to_chunk_pos(Transform const *const target_t, int8_t *const dest_x, int8_t *const dest_y)
 {
-	*dest_x = (int)((target_t->position[0]) / chunk_size) - (target_t->position[0] < 0);
-	*dest_y = (int)((target_t->position[1]) / chunk_size) - (target_t->position[1] < 0) + 1;
+	*dest_x = (int)((target_t->pos[0]) / chunk_size) - (target_t->pos[0] < 0);
+	*dest_y = (int)((target_t->pos[1]) / chunk_size) - (target_t->pos[1] < 0) + 1;
 }
 
 

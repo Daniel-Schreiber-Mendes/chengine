@@ -61,7 +61,7 @@ void texture_destruct(Texture const* t)
 }
 
 
-void texture_bind(Texture *const t)
+void texture_bind(Texture const *const t)
 {
 	glActiveTexture(0);
 	glBindTexture(GL_TEXTURE_2D, t->id);

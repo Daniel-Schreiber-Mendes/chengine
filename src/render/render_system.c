@@ -110,7 +110,7 @@ void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void))
 }
 
 
-void render_system_imm_rectangle_draw(vec4 const color, vec3 position, vec2 const size)
+void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size)
 {
 	//imediate mode drawing is pretty slow compared to retained mode drawing but this is not a problem because it is only used for debugging purposes
 	vertexArray_bind(&imm_vertexArray);
@@ -120,7 +120,7 @@ void render_system_imm_rectangle_draw(vec4 const color, vec3 position, vec2 cons
 	mat4 transform, proj;
 	glm_mat4_identity(transform);
 	glm_scale(transform, (vec3){size[0], size[1], 1});
-	glm_translate(transform, position);
+	glm_translate(transform, pos);
 	glm_ortho(-c->aspectRatio, c->aspectRatio, -1, 1, -1.f, 1.f, proj); 
 	//only the aspect ratio is important for the projection because this drawable should not be manipulated by zoom or rotation or translation
 
@@ -141,6 +141,6 @@ void movement_task(void)
 		checs_component_get(Transform, t, entity);
 		v->vel[0] = (fabs(v->vel[0]) > 0.05f) ? v->vel[0] * 0.75f : 0;
 		v->vel[1] = (fabs(v->vel[1]) > 0.05f) ? v->vel[1] * 0.75f : 0;
-		glm_vec3_add(v->vel, t->position, t->position); //because we dont want to change the z position use vec2 which only has a x and z component
+		glm_vec3_add(v->vel, t->pos, t->pos); //because we dont want to change the z position use vec2 which only has a x and z component
 	}
 }

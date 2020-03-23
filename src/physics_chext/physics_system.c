@@ -40,11 +40,11 @@ void physics_task(void)
 					checs_component_get(Transform, t1, collidable);
 					if (transform_circle_circle_collision(t0, t1, c0->r, c1->r))
 					{
-						t0->position[0] -= v0->vel[0];
+						t0->pos[0] -= v0->vel[0];
 					}
 					if (transform_circle_circle_collision(t0, t1, c0->r, c1->r))
 					{
-						t0->position[1] -= v0->vel[1];
+						t0->pos[1] -= v0->vel[1];
 					}
 				}
 			}
@@ -59,11 +59,11 @@ void physics_task(void)
 					checs_component_get(Transform, t1, collidable);
 					if (transform_rect_rect_collision(t0, t1, c0->bb, c1->bb))
 					{
-						t0->position[0] -= v0->vel[0];
+						t0->pos[0] -= v0->vel[0];
 					}
 					if (transform_rect_rect_collision(t0, t1, c0->bb, c1->bb))
 					{
-						t0->position[1] -= v0->vel[1];
+						t0->pos[1] -= v0->vel[1];
 					}
 				}
 			}
