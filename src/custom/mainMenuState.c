@@ -33,13 +33,13 @@ void mainMenuState_construct(MainMenuState *const s)
     render_system_custom_draw_callback_set(draw_callback);
 
     {
-        EntityId enemy = checs_entity_generate(Renderable, Transform, Velocity, Collidable);
+        EntityId enemy = checs_entity_generate(Renderable, Transform, Collidable);
         checs_component_get_once(Renderable, r, enemy);
-        checs_component_get_once(Transform, t, enemy);
         checs_component_get_once(Collidable, c, enemy);
         renderable_construct(r);
         c->r = 2.5f;
         c->behaviourType = STATIC;
+        c->type = CIRCLE;
 
         GLfloat positions[5 * 4] = 
         {//  3 x position  2 x tex
@@ -81,6 +81,7 @@ void mainMenuState_construct(MainMenuState *const s)
         renderable_construct(r);
         c->r = 2.5f;
         c->behaviourType = DYNAMIC;
+        c->type = CIRCLE;
         t->position[0] = 5;
 
         {

@@ -22,8 +22,14 @@ void mainMenuState_destruct(State *const state);
 void mainMenuState_update(State *const state);
 void mainMenuState_draw(State *const state);
 
-
+/* Requirements:
+ - If an entity has a KeyInput component, it has to have a Velocity component 
+*/
 void input_task(void);
+
+/*Requirements:
+ - If an entity has a Velocity component it has to have a transform component
+*/
 void movement_task(void);
 
 

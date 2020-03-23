@@ -13,11 +13,11 @@
 /////////////////////// Debug Utilitys /////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-#define CHE_MEMLOG
+#define CHE_MEMLOG //memory allocations
 #define CHE_ASSERT
+//#define CHE_SCOPEMEMLOG //memory allocations that get freed at the end of its scope
 
 #ifdef CHE_MEMLOG
-
 	#define che_malloc(size)\
 	({\
 		void* retVal = malloc((size));\
@@ -45,12 +45,44 @@
 		printf("Che-Deallocation:                 line: %.3i | file: %s\n", __LINE__, __FILE__);\
 		printf("\033[0m");\
 	})
-
-
 #else
 	#define che_free(p) free(p)
 	#define che_malloc(size) malloc(size)
 	#define che_calloc(num, size) calloc(num, size)
+#endif
+
+#ifdef CHE_SCOPEMEMLOG
+	#define che_scope_malloc(size)\
+	({\
+		void* retVal = malloc((size));\
+		printf("\033[0;34m");\
+		printf("Che-Scope-Allocation:bytes: %.4u | line: %.3i | file: %s\n", (uint16_t)size, __LINE__, __FILE__ );\
+		printf("\033[0m");\
+		retVal;\
+	})
+
+
+	#define che_scope_calloc(num, size)\
+	({\
+		void* retVal = calloc((num), (size));\
+		printf("\033[0;34m");\
+		printf("Che-Scope-Allocation:bytes: %.4u | line: %.3i | file: %s\n", (uint16_t)size, __LINE__, __FILE__ );\
+		printf("\033[0m");\
+		retVal;\
+	})
+
+	//changes font color to green, print message, reset font color
+	#define che_scope_free(p)\
+	({\
+		free((p));\
+		printf("\033[0;32m");\
+		printf("Che-Scope-Deallocation:          line: %.3i | file: %s\n", __LINE__, __FILE__);\
+		printf("\033[0m");\
+	})
+#else
+	#define che_scope_free(p) free(p)
+	#define che_scope_malloc(size) malloc(size)
+	#define che_scope_calloc(num, size) calloc(num, size)
 #endif
 
 #ifdef CHE_ASSERT
@@ -200,6 +232,7 @@ void renderable_destruct(Renderable *const r);
 void  transform_transform_calculate(Transform *const t, mat4 transform);
 float transform_distance_get(Transform *restrict t, Transform *restrict t2);
 bool  transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1);
+bool  transform_rect_rect_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
 
 void soundSource_construct(SoundSource *const s, char const *const path);
 void soundSource_destruct(SoundSource *const s);
@@ -456,6 +489,12 @@ void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBuff
 
 
 //render_system.c
+/* Requirements:
+- If a renderable is of type ARRAY it has to have its vertexCount defined
+- If a renderable is of type ARRAYS_INSTANCED it has to have its vertexCount and primitiveCount defined
+- If a renderable is of type ELEMENTS it has to have its elementCount defined
+- If a renderable is of type ELEMENTS_INSTANCED it has to have its elementCount and primitveCount defined
+*/
 void render_init(void);
 void render_system(checs_system_parameters);
 void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void));

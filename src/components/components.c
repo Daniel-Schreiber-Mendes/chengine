@@ -24,6 +24,12 @@ bool transform_circle_circle_collision(Transform *restrict t0, Transform *restri
 }
 
 
+bool transform_rect_rect_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1)
+{
+    return false;//r0 + r1 > sqrt(pow(t0->position[0] + r0 - t1->position[0] - r1, 2) + pow(t0->position[1] + r0 - t1->position[1] - r1, 2));
+}
+
+
 void soundSource_construct(SoundSource *const s, char const *const path)
 {
 	uint8_t channels, bps;

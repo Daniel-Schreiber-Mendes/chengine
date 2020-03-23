@@ -10,8 +10,9 @@ typedef struct
 Chunk;
 
 /*
-IMPORTANT NOTE:
-This system has to be initialized AFTER stateMachine_init() and before any state is pushed
+Requirements:
+ - This system has to be initialized AFTER stateMachine_init() and before any state is pushed
+ - An entity with Camera component has to have a transform component
 */
 
 #define CHUNK_LOADING_SYSTEM_COMPONENTS Chunk, Transform

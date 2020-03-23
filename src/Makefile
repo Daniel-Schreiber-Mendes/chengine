@@ -2,7 +2,7 @@
 
 VERSION = -std=c99
 
-ERRORS = -Wall -Wuninitialized -Werror=implicit-function-declaration #-Wextra
+ERRORS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter
 
 #flags for linking
 LFLAGS = -o

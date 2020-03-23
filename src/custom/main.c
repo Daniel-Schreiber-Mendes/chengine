@@ -22,7 +22,7 @@ typedef struct
 
 int main(void)
 {
-	systemManager_init(2, 1, 2, 0);
+	systemManager_init(1, 1, 3, 0);
 	entityManager_init();
 	componentManager_init(ComponentCount, 28);
 	commandManager_init(StandardCommandCount);
@@ -54,18 +54,18 @@ int main(void)
 
 	checs_system_register(render_system, ON_DRAW, 1, 5, RENDER_SYSTEM_COMPONENTS);
 	checs_system_register(chunk_loading_system, ON_UPDATE, 1, 5, CHUNK_LOADING_SYSTEM_COMPONENTS);
-	checs_system_register(physics_system, ON_UPDATE, 2, 5, PHYSICS_SYSTEM_COMPONENTS);
 
 
+	checs_task_register(physics_task, ON_UPDATE);
 	checs_task_register(input_task, ON_UPDATE);
 	checs_task_register(movement_task, ON_UPDATE);
 
 	stateMachine_init();
 
-	texture_construct_from_file(&cobble, "../resources/textures/cobble.png");
+	texture_construct_from_file(&cobble, "../resources/textures/circles.png");
 	texture_construct_from_file(&tileset, "../resources/textures/tilemap.png");
 	chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, &tileset, 32);
-	physics_system_init();
+	physics_task_init();
 
     window_vsync_set(true);
     window_fullscreen_set(true);
@@ -73,7 +73,7 @@ int main(void)
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 
     stateMachine_run();
-    physics_system_terminate();
+    physics_task_terminate();
 
     return 0;
 }

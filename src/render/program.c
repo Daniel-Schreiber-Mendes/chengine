@@ -110,10 +110,10 @@ static GLuint createShader(GLenum const type, char const *const path)
         GLint len;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
         
-        char *const message = che_malloc(sizeof(char) * len);
+        char *const message = che_scope_malloc(sizeof(char) * len);
         glGetShaderInfoLog(shader, len, &len, message);
         printf("Failed to compiler shader!\n\nPath: \n%s\n\nMessage:\n%s", path, message);
-        che_free(message);
+        che_scope_free(message);
     }
 
     return shader;

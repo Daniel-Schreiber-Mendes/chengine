@@ -4,7 +4,7 @@
 static Vector colliders;
 
 
-void physics_system(checs_system_parameters)
+void physics_task(void)
 {
 	checs_component_use(Transform, t0);
 	checs_component_use(Velocity, v0);
@@ -17,25 +17,26 @@ void physics_system(checs_system_parameters)
 	{
 		if (c0->behaviourType == DYNAMIC)
 		{
-			vector_element_push(&colliders, EntityId, collidable);
+			checs_component_get(Velocity, v0, collidable)
+			if (v0->vel[0] != 0.0f || v0->vel[1] != 0.0f)
+			{
+				vector_element_push(&colliders, EntityId, collidable);
+			}
 		}
 	}
 
 	vector_foreach(&colliders, EntityId, collider)
 	{
 		checs_component_get(Collidable, c0, collider);
-		checs_component_get(Velocity, v0, collider);
 		checs_component_get(Transform, t0, collider);
 
 		if (c0->type == CIRCLE)
 		{
-			checs_entity_foreach(collidable)
+			checs_components_foreach(Collidable, c1, collidable)
 			{
-
-				checs_component_get(Collidable, c1, collidable);
 				if (collidable != collider && c1->type == CIRCLE)
 				{
-
+					checs_component_get(Velocity, v0, collider);
 					checs_component_get(Transform, t1, collidable);
 					if (transform_circle_circle_collision(t0, t1, c0->r, c1->r))
 					{
@@ -48,19 +49,38 @@ void physics_system(checs_system_parameters)
 				}
 			}
 		}
+		else if (c0->type == RECTANGLE)
+		{
+			checs_components_foreach(Collidable, c1, collidable)
+			{
+				if (collidable != collider && c1->type == RECTANGLE)
+				{
+					checs_component_get(Velocity, v0, collider);
+					checs_component_get(Transform, t1, collidable);
+					if (transform_rect_rect_collision(t0, t1, c0->bb, c1->bb))
+					{
+						t0->position[0] -= v0->vel[0];
+					}
+					if (transform_rect_rect_collision(t0, t1, c0->bb, c1->bb))
+					{
+						t0->position[1] -= v0->vel[1];
+					}
+				}
+			}
+		}
 	}
 
 	vector_clear(&colliders);
 }
 
 
-void physics_system_init(void)
+void physics_task_init(void)
 {
 	vector_construct(&colliders, sizeof(EntityId));
 }
 
 
-void physics_system_terminate(void)
+void physics_task_terminate(void)
 {
 	vector_destruct(&colliders);
 }

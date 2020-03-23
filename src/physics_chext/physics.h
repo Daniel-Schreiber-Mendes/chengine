@@ -13,7 +13,7 @@ typedef struct
 	enum
 	{
 		CIRCLE,
-		RECT
+		RECTANGLE
 	}
 	type;
 	enum
@@ -27,9 +27,12 @@ typedef struct
 Collidable;
 
 
-#define PHYSICS_SYSTEM_COMPONENTS Velocity, Collidable, Transform
-void physics_system(checs_system_parameters);
-void physics_system_init(void);
-void physics_system_terminate(void);
+/* Requirements:
+- If a collidable is of type Static, it is not required to have a Velocity component.
+- If a collidable is of type Kinematic or Dynamic, they have to have a Velocity component.
+*/
+void physics_task(void);
+void physics_task_init(void);
+void physics_task_terminate(void);
 
 #endif
