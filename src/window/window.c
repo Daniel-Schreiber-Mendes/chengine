@@ -72,6 +72,19 @@ void window_vsync_set(bool const set)
 }
 
 
+void window_cursor_visible_set(bool const set)
+{
+    /*
+    #define GLFW_CURSOR_NORMAL          0x00034001
+    #define GLFW_CURSOR_HIDDEN          0x00034002
+    because HIDDEN is just one more than NORMAL, we can use the input diredctly:
+    if set is true(1), add 0 to NORMAL, if it is false(0) add 1.
+    this means add the negation of set to NORMAL
+    */
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL + !set);
+}
+
+
 static void window_close_callback(GLFWwindow* _window)
 {
     checs_command_publish(WindowCloseCommand, NULL);

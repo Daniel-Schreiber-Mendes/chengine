@@ -396,6 +396,7 @@ void window_terminate(void);
 void window_fullscreen_set(bool const set);
 void window_fullscreen_switch(void);
 void window_vsync_set(bool const set);
+void window_cursor_visible_set(bool const set);
 
 
 void inputManager_init(void);

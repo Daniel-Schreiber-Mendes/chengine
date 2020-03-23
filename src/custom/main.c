@@ -69,6 +69,7 @@ int main(void)
 
     window_vsync_set(true);
     window_fullscreen_set(true);
+    window_cursor_visible_set(false);
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 
