@@ -2,7 +2,7 @@
 
 VERSION = -std=c99
 
-ERRORS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter
+ERRORS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types
 
 #flags for linking
 LFLAGS = -o

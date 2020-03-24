@@ -37,14 +37,14 @@ int main(void)
 	checs_command_subscribe(ScrollCommand, scroll_command_callback);
 	
 
-	checs_component_register(Renderable, 27);
-	checs_component_register(Transform, 28);
-	checs_component_register(KeyInput, 1);
-	checs_component_register(SoundSource, 1);
-	checs_component_register(Camera, 1);
-	checs_component_register(Chunk, 25);
-	checs_component_register(Velocity, 3);
-	checs_component_register(Collidable, 2);
+	checs_component_register(Renderable, 27, renderable_destruct);
+	checs_component_register(Transform, 28, NULL);
+	checs_component_register(KeyInput, 1, NULL);
+	checs_component_register(SoundSource, 1, soundSource_destruct);
+	checs_component_register(Camera, 1, NULL);
+	checs_component_register(Chunk, 25, NULL);
+	checs_component_register(Velocity, 3, NULL);
+	checs_component_register(Collidable, 2, NULL);
 
 
 	checs_event_register(KeyEventData, KeyEvent, 4);
@@ -69,7 +69,7 @@ int main(void)
 
     window_vsync_set(true);
     window_fullscreen_set(true);
-    window_cursor_visible_set(false);
+    window_cursor_visible_set(true);
 
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
 

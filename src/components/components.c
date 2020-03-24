@@ -89,7 +89,7 @@ void renderable_construct(Renderable *const r)
 
 void renderable_destruct(Renderable *const r)
 {
-
+    vertexArray_destruct(&r->vao);
 }
 
 

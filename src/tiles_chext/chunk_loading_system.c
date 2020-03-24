@@ -1,4 +1,4 @@
-#include "tiles.h"
+	#include "tiles.h"
 
 #define CHUNK_COUNT 4
 
@@ -15,7 +15,6 @@ static Texture const *texture;
 //should be updated at max once every 4 seconds
 
 
-static uint8_t manhattan_distance_get(vec2 const target, vec2 const chunk);
 static void world_to_chunk_pos(Transform const *const target_t, int8_t *const dest_x, int8_t *const dest_y);
 
 
@@ -86,12 +85,6 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 			t->pos[1] = chunk_size * i;
 		}
 	}
-}
-
-
-static uint8_t manhattan_distance_get(vec2 const target, vec2 const chunk)
-{
-	return abs((chunk[0] + chunk_offset_x) - target[0]) + abs((chunk[1] + chunk_offset_y)- target[1]);
 }
 
 
