@@ -9,7 +9,7 @@ static ElementBuffer imm_elementBuffer;
 static Program imm_program;
 
 
-void render_init(void)
+void render_system_init(void)
 {
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -39,7 +39,7 @@ void render_init(void)
 	vertexBufferLayout_construct(&imm_vbl, 1);
 	vertexBufferLayout_element_add(&imm_vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE});
 	vertexArray_buffer_add(&imm_vertexArray, imm_vbo, imm_vbl);
-	program_create(&imm_program, "../resources/shader/imm_vertex.glsl", "../resources/shader/imm_fragment.glsl");
+	program_construct(&imm_program, "../resources/shader/imm_vertex.glsl", "../resources/shader/imm_fragment.glsl");
 }
 
 
@@ -101,6 +101,14 @@ void render_system(checs_system_parameters)
 	}
 
 	glfwSwapBuffers(window);
+}
+
+
+void render_system_terminate(void)
+{
+	vertexBuffer_destruct(&imm_vertexArray);
+	elementBuffer_destruct(&imm_elementBuffer);
+	program_destruct(imm_program);
 }
 
 

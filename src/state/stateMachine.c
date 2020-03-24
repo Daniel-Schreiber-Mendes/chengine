@@ -6,9 +6,6 @@ static bool running = true, validState = true;
 void stateMachine_init(void)
 {	 
     vector_construct(&states, sizeof(State*));
-    audio_init();
-    window_init("Che Engine Window", 640, 480);
-    render_init();
 }
 
 
@@ -40,14 +37,11 @@ void stateMachine_run(void)
             }
         }
 	}
-    window_terminate();
-    audio_terminate();
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);
         che_free(state);
     }
-    checs_terminate();
     vector_destruct(&states);
 }
 

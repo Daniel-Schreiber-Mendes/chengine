@@ -2,6 +2,7 @@
 #define ENGINE_H
 #include "./src/utility/utility.h"
 #include <cglm/cglm.h>
+#include <AL/al.h>
 #include <GLFW/glfw3.h>
 #include <checs/checs.h>
 #include <stdbool.h>
@@ -15,7 +16,7 @@
 
 #define CHE_MEMLOG //memory allocations
 #define CHE_ASSERT
-//#define CHE_SCOPEMEMLOG //memory allocations that get freed at the end of its scope
+#define CHE_SCOPEMEMLOG //memory allocations that get freed at the end of its scope
 
 #ifdef CHE_MEMLOG
 	#define che_malloc(size)\
@@ -211,7 +212,7 @@ KeyInput;
 
 typedef struct
 {
-	uint32_t source;
+	ALuint source;
 }
 SoundSource;
 
@@ -474,8 +475,8 @@ void 	vertexArray_bind(VertexArray const *const vao);
 void    vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout);
 
 //program.c
-void    program_create(Program *const program, char const *const fsPath, char const *const vsPath);
-void    program_destroy(Program const program);
+void    program_construct(Program *const program, char const *const fsPath, char const *const vsPath);
+void    program_destruct(Program const program);
 void 	program_bind(Program const program);
 void    program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
 void    program_uniform1i_set(Program const program, char const *const name, GLint const v0);
@@ -498,8 +499,9 @@ void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBuff
 - If a renderable is of type ELEMENTS it has to have its elementCount defined
 - If a renderable is of type ELEMENTS_INSTANCED it has to have its elementCount and primitveCount defined
 */
-void render_init(void);
+void render_system_init(void);
 void render_system(checs_system_parameters);
+void render_system_terminate(void);
 void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void));
 void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size);
 
@@ -525,7 +527,7 @@ void     audio_init(void);
 void     audio_terminate(void);
 bool     is_little_endian(void); //returns if the machine stores the bits in gib endian or little endian order
 uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer);
-void*  wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
+void*    wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
 uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
 
 

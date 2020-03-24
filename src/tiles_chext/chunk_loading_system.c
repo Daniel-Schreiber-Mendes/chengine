@@ -66,7 +66,7 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 	chunk_load_threshold = load_threshold;
 	chunk_unload_callback = unload_callback;
 	chunk_load_callback = load_callback; //this should only LOAD the chunk. the placement and transform is done by the system
-	program_create(&chunk_program, "../resources/shader/instanced_vertex.glsl", "../resources/shader/instanced_fragment.glsl");
+	program_construct(&chunk_program, "../resources/shader/instanced_vertex.glsl", "../resources/shader/instanced_fragment.glsl");
 	program_uniform1u_set(chunk_program, "u_texture_index", 4);
 	program_uniform1u_set(chunk_program, "u_chunk_tile_count", chunk_tile_count = tileCount);
 	program_uniform1f_set(chunk_program, "u_tile_size", (float)tileSize / tex->width);
@@ -83,6 +83,19 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 			checs_component_get(Transform, t, chunk_ids[i][j]);
 			t->pos[0] = chunk_size * j;
 			t->pos[1] = chunk_size * i;
+		}
+	}
+}
+
+
+void chunk_loading_system_terminate(void)
+{
+	program_destruct(&chunk_program);
+		for (uint16_t i=0; i < CHUNK_COUNT; ++i)
+	{
+		for (uint16_t j=0; j < CHUNK_COUNT; ++j)
+		{
+			checs_entity_erase(chunk_ids[i][j]);
 		}
 	}
 }

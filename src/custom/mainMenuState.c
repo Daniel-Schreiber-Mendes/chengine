@@ -20,6 +20,10 @@ void mainMenuState_construct(MainMenuState *const s)
         s->b.updating = true;
     }
 
+    window_vsync_set(true);
+    window_fullscreen_set(true);
+    window_cursor_visible_set(true);
+
     {
         EntityId camera = checs_entity_generate(Transform, Velocity, Camera);
         checs_entity_tag_add(camera, CameraTag);;
@@ -72,15 +76,17 @@ void mainMenuState_construct(MainMenuState *const s)
         r->elementCount = 6;
         r->texture = &cobble;
 
-        program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
+        program_construct(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
 
     {
-        EntityId player = checs_entity_generate(Renderable, Transform, Velocity, KeyInput, Collidable);
+        EntityId player = checs_entity_generate(Renderable, Transform, Velocity, KeyInput, Collidable, SoundSource);
         checs_component_get_once(Renderable, r, player);
         checs_component_get_once(Transform, t, player);
+        checs_component_get_once(SoundSource, ss, player);
         checs_component_get_once(Collidable, c, player);
         renderable_construct(r);
+        soundSource_construct(ss, "../resources/error/errorMusic.wav");
         //c->r = 2.5f;
         c->bb[0] = 5;
         c->bb[1] = 5;
@@ -123,7 +129,7 @@ void mainMenuState_construct(MainMenuState *const s)
         r->elementCount = 6;
         r->texture = &cobble;
 
-        program_create(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
+        program_construct(&r->program, "../resources/shader/vertex.glsl", "../resources/shader/fragment.glsl");
     }
 }
 
@@ -136,13 +142,13 @@ void mainMenuState_destruct(State *const state)
 
 void mainMenuState_update(State *const state)
 {
-    checs_tasks_call(ON_UPDATE);
-    checs_systems_call(ON_UPDATE);
+    checs_tasks_call(CHECS_ON_UPDATE);
+    checs_systems_call(CHECS_ON_UPDATE);
 }
 
 
 void mainMenuState_draw(State *const state)
 {
-    checs_tasks_call(ON_DRAW);
-    checs_systems_call(ON_DRAW);
+    checs_tasks_call(CHECS_ON_DRAW);
+    checs_systems_call(CHECS_ON_DRAW);
 }

@@ -2,7 +2,7 @@
 
 static GLuint createShader(GLenum const type, char const *const path);
 
-void program_create(Program *const program, char const *const vsPath, char const *const fsPath)
+void program_construct(Program *const program, char const *const vsPath, char const *const fsPath)
 {
     //it is important that the source is relative to the .o file not relative to the .c file
     *program = glCreateProgram();
@@ -24,7 +24,7 @@ void program_create(Program *const program, char const *const vsPath, char const
 }
 
 
-void program_destroy(Program const program)
+void program_destruct(Program const program)
 {
     glDeleteProgram(program);
 }
