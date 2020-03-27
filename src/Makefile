@@ -23,8 +23,8 @@ cachecheck: output
 memcheck: output
 	valgrind --tool=memcheck --leak-check=full make
 
-OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o config.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o file.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o config.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal #-lcimgui
+OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o
+	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal #-lcimgui
 
 window.o: window/window.c
 	gcc $(CFLAGS) window/window.c
@@ -32,8 +32,8 @@ window.o: window/window.c
 texture.o: resources/texture.c
 	gcc $(CFLAGS) resources/texture.c
 
-file.o: resources/file.c
-	gcc $(CFLAGS) resources/file.c
+io.o: io/io.c
+	gcc $(CFLAGS) io/io.c
 	
 stateMachine.o: state/stateMachine.c 
 	gcc $(CFLAGS) state/stateMachine.c
@@ -61,9 +61,6 @@ wav_loader.o: audio/wav_loader.c
 
 components.o: components/components.c
 	gcc $(CFLAGS) components/components.c
-
-config.o: config/config.c
-	gcc $(CFLAGS) config/config.c
 
 ############################# custom ###############################################################################################
 

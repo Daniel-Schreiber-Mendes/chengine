@@ -17,6 +17,7 @@ static EntityId chunk_load_callback(void);
 
 int main(void)
 {
+
 	checs_init
 	(
 		1, 					 //systemUpdateCount
@@ -54,7 +55,6 @@ int main(void)
 
 	audio_init();
     window_init();
-    config_load();
     render_system_init();
     physics_task_init();
 
@@ -73,10 +73,10 @@ int main(void)
 	
     physics_task_terminate();
     render_system_terminate();
-    window_terminate();
-    audio_terminate();
 
     checs_terminate();
+    window_terminate();
+    audio_terminate();
 
     return 0;
 }

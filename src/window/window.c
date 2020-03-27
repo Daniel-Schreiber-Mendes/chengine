@@ -3,7 +3,7 @@
 
 
 static uint16_t width, height;
-static uint16_t std_width, std_height; //if the window mode is switched back to not fullscreen, set this as its size
+static uint16_t std_width = 400, std_height = 400; //if the window mode is switched back to not fullscreen, set this as its size
 static GLFWmonitor *monitor;
 static bool fullscreen;
 GLFWwindow* window;
@@ -21,7 +21,7 @@ void window_init(void)
 {
     che_assert(glfwInit());
     monitor = glfwGetPrimaryMonitor();
-    che_assert(window = glfwCreateWindow(width = 400, height = 400, "", NULL, NULL));
+    che_assert(window = glfwCreateWindow(std_width, std_height, "", NULL, NULL));
     glfwMakeContextCurrent(window);
     che_assert(glewInit() == GLEW_OK);
     glClearColor(1, 0, 1, 1); //set clear color to magenta so it is easyer to see if e.g the background got not rendered correctly

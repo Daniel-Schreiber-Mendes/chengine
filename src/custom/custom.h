@@ -3,6 +3,7 @@
 #include "../../engine.h"
 #include "../tiles_chext/tiles.h"
 #include "../physics_chext/physics.h"
+#include "../../io.h"
 
 //components defined by extensions:
 //+1 for Collidable and +1 for Chunk

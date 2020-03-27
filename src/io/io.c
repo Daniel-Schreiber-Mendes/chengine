@@ -1,8 +1,7 @@
-#include "../../engine.h"
+#include "../../io.h"
 
 
-//path has to be relative to the executable
-bool file_load_text(File *const f, char const *const path)
+bool file_construct(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "r");
 
@@ -25,11 +24,15 @@ bool file_load_text(File *const f, char const *const path)
 }
 
 
-void file_load_binary(File *const f, char const *const path)
+bool file_construct_bin(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "rb");
 
-    che_assert(file);
+    if (!file)
+    {
+        printf("File %s couldn't be opened\n", path);
+        return false;
+    }
 
     fseek(file, 0, SEEK_END); //move file pointer to end of file
     f->bufferSize = ftell(file); //tell position of pointer which means length of string
@@ -39,10 +42,23 @@ void file_load_binary(File *const f, char const *const path)
     fread(f->buffer, f->bufferSize, 1, file); //copy memory in file to buffer
 
     fclose(file);
+    return true;
 }
 
 
 void file_destruct(File const *const f)
 {
 	che_free(f->buffer);
+}
+
+
+void configFile_construct(ConfigFile *const cf, char const *const path)
+{
+    file_construct(cf, path);
+}
+
+
+void configFile_destruct(ConfigFile *const cf)
+{
+    file_destruct(cf);
 }
