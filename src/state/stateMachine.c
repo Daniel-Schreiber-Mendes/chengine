@@ -1,7 +1,7 @@
 #include "../../engine.h"
-
 static Vector states; 
-static bool running = true, validState = true;
+static bool running = true;
+
 
 void stateMachine_init(void)
 {	 
@@ -9,12 +9,12 @@ void stateMachine_init(void)
 }
 
 
+//a state shall only be popped inside state.update, NEVER in state.draw
 void stateMachine_state_pop(State *const state)
 {
-    vector_element_erase(&states, State*, state);
+    vector_erase(&states, State*, state);
     state->destruct(state);
     che_free(state);
-    validState = false;
 }
 
 
@@ -22,21 +22,19 @@ void stateMachine_run(void)
 {
 	while(running)
 	{                
-        glfwPollEvents();
+        glfwPollEvents(); 
         checs_eventBuffers_swap();
         vector_foreach(&states, State*, state)
         {      
+            state->draw(state);
             state->update(state);
-            if (validState) // check if state is valid, in case it got deleted
-            {
-                state->draw(state);
-            }
-            else // if state isnt valid make it valid again, since the invalid state got deleted
-            {
-                validState = true;
-            }
         }
 	}
+}
+
+
+void stateMachine_terminate(void)
+{
     vector_foreach(&states, State*, state)
     {
         state->destruct(state);
@@ -48,7 +46,7 @@ void stateMachine_run(void)
 
 void _stateMachine_state_push(State *const state)
 {
-    vector_element_push(&states, State*, state);
+    vector_push_back(&states, State*, state);
 }
 
 

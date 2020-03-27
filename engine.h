@@ -14,9 +14,9 @@
 /////////////////////// Debug Utilitys /////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-#define CHE_MEMLOG //memory allocations
+//#define CHE_MEMLOG //memory allocations
 #define CHE_ASSERT
-#define CHE_SCOPEMEMLOG //memory allocations that get freed at the end of its scope
+//#define CHE_SCOPEMEMLOG //memory allocations that get freed at the end of its scope
 
 #ifdef CHE_MEMLOG
 	#define che_malloc(size)\
@@ -400,25 +400,22 @@ void window_vsync_set(bool const set);
 void window_cursor_visible_set(bool const set);
 
 
-void inputManager_init(void);
-void inputManager_inputReceiver_add(EntityId const entity);
-
-
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////// Statemachine  //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
 void  stateMachine_init(void);
+void stateMachine_terminate(void);
 void  stateMachine_state_pop(State *const state);
 void _stateMachine_state_push(State *const state);
 void  stateMachine_run(void);
 void  stateMachine_running_set(bool const n_running);
 
 
-#define stateMachine_state_push(StateType, stateConstructFunction)\
-	State *const state = che_malloc(sizeof(StateType));\
-	stateConstructFunction((StateType*)state);\
+#define stateMachine_state_push(Type, stateConstructFunc)\
+	State *const state = che_malloc(sizeof(Type));\
+	stateConstructFunc((Type*)state);\
 	_stateMachine_state_push(state);
 
 

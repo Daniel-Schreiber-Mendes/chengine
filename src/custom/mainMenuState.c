@@ -142,13 +142,11 @@ void mainMenuState_destruct(State *const state)
 
 void mainMenuState_update(State *const state)
 {
-    checs_tasks_call(CHECS_ON_UPDATE);
-    checs_systems_call(CHECS_ON_UPDATE);
+    checs_update();
 }
 
 
 void mainMenuState_draw(State *const state)
 {
-    checs_tasks_call(CHECS_ON_DRAW);
-    checs_systems_call(CHECS_ON_DRAW);
+    checs_draw();
 }

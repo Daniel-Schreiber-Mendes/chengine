@@ -1,4 +1,4 @@
-	#include "tiles.h"
+#include "tiles.h"
 
 #define CHUNK_COUNT 4
 
@@ -90,7 +90,7 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 
 void chunk_loading_system_terminate(void)
 {
-	program_destruct(&chunk_program);
+	program_destruct(chunk_program);
 		for (uint16_t i=0; i < CHUNK_COUNT; ++i)
 	{
 		for (uint16_t j=0; j < CHUNK_COUNT; ++j)

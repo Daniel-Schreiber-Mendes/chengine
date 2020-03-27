@@ -23,6 +23,7 @@ int main(void)
 		1, 					 //systemDrawCount,
 		3, 					 //taskUpdateCount
 		0, 					 //taskDrawCount
+		1, 					 //tag_count
 		ComponentCount, 	 //componentCount
 		19, 				 //maxEntitysHint
 		StandardCommandCount,//commandCount
@@ -63,6 +64,7 @@ int main(void)
 	stateMachine_init();
 	stateMachine_state_push(MainMenuState, mainMenuState_construct);
     stateMachine_run();
+    stateMachine_terminate();
 
 	chunk_loading_system_terminate();
 	texture_destruct(&cobble);
