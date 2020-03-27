@@ -392,11 +392,13 @@ File;
 extern GLFWwindow* window;
 
 
-void window_init(char const* const title, uint16_t const n_width, uint16_t const n_height);
+void window_init(void);
 void window_terminate(void);
 void window_fullscreen_set(bool const set);
 void window_fullscreen_switch(void);
 void window_vsync_set(bool const set);
+void window_title_set(char const *title);
+void window_size_set(uint16_t const new_width, uint16_t const new_height);
 void window_cursor_visible_set(bool const set);
 
 
@@ -432,7 +434,7 @@ void texture_bind(Texture const *const t);
 
 
 //file.c
-void file_load_text(File *const f, char const *const path);
+bool file_load_text(File *const f, char const *const path);
 void file_load_binary(File *const f, char const *const path);
 void file_destruct(File const *const f);
 
@@ -526,6 +528,14 @@ bool     is_little_endian(void); //returns if the machine stores the bits in gib
 uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer);
 void*    wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
 uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// Config /////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+void config_load(void);
 
 
 #endif

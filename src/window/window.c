@@ -3,6 +3,7 @@
 
 
 static uint16_t width, height;
+static uint16_t std_width, std_height; //if the window mode is switched back to not fullscreen, set this as its size
 static GLFWmonitor *monitor;
 static bool fullscreen;
 GLFWwindow* window;
@@ -16,11 +17,11 @@ static void joystick_callback(int jid, int event);
 static void scroll_callback(GLFWwindow* _window, double const xoffset, double const yoffset);
 
 
-void window_init(char const* const title, uint16_t const n_width, uint16_t const n_height)
+void window_init(void)
 {
     che_assert(glfwInit());
     monitor = glfwGetPrimaryMonitor();
-    che_assert(window = glfwCreateWindow(width = n_width, height = n_height, title, NULL, NULL));
+    che_assert(window = glfwCreateWindow(width = 400, height = 400, "", NULL, NULL));
     glfwMakeContextCurrent(window);
     che_assert(glewInit() == GLEW_OK);
     glClearColor(1, 0, 1, 1); //set clear color to magenta so it is easyer to see if e.g the background got not rendered correctly
@@ -55,7 +56,7 @@ void window_fullscreen_set(bool const set)
     }
     else
     {
-        glfwSetWindowMonitor(window, NULL, 400, 200, 640, 480, 0);    
+        glfwSetWindowMonitor(window, NULL, 400, 200, std_width, std_height, 0);    
     }
 }
 
@@ -71,6 +72,17 @@ void window_vsync_set(bool const set)
     glfwSwapInterval(set);
 }
 
+
+void window_title_set(char const *title)
+{
+    glfwSetWindowTitle(window, title);
+}
+
+
+void window_size_set(uint16_t const new_width, uint16_t const new_height)
+{
+    glfwSetWindowSize(window, std_width = width = new_width, std_height = height = new_height);
+}
 
 /*
 #define GLFW_CURSOR_NORMAL          0x00034001

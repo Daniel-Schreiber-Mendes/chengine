@@ -2,11 +2,15 @@
 
 
 //path has to be relative to the executable
-void file_load_text(File *const f, char const *const path)
+bool file_load_text(File *const f, char const *const path)
 {
     FILE* file = fopen(path, "r");
 
-    che_assert(file);
+    if (!file)
+    {
+        printf("File %s couldn't be opened\n", path);
+        return false;
+    }
 
     fseek(file, 0, SEEK_END); //move file pointer to end of file
     f->bufferSize = ftell(file); //tell position of pointer which means length of string
@@ -17,6 +21,7 @@ void file_load_text(File *const f, char const *const path)
     ((char*)f->buffer)[f->bufferSize] = '\0'; //the string has to end with a null terminator, so put it at the end of it
 
     fclose(file);
+    return true;
 }
 
 

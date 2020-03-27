@@ -20,10 +20,6 @@ void mainMenuState_construct(MainMenuState *const s)
         s->b.updating = true;
     }
 
-    window_vsync_set(true);
-    window_fullscreen_set(true);
-    window_cursor_visible_set(true);
-
     {
         EntityId camera = checs_entity_generate(Transform, Velocity, Camera);
         checs_entity_tag_add(camera, CameraTag);;
@@ -31,8 +27,6 @@ void mainMenuState_construct(MainMenuState *const s)
         camera_construct(c);
         c->zoom = 4;
     }
-
-
 
     render_system_custom_draw_callback_set(draw_callback);
 

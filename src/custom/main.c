@@ -53,7 +53,8 @@ int main(void)
 	checs_task_register(movement_task, CHECS_ON_UPDATE);
 
 	audio_init();
-    window_init("Che Engine Window", 640, 480);
+    window_init();
+    config_load();
     render_system_init();
     physics_task_init();
 
