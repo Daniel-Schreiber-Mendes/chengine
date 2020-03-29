@@ -17,6 +17,8 @@ typedef struct
 {
 	void *buffer; //this can be casted to a File
 	uint16_t bufferSize; //size in bytes
+	char *keys;
+	char *values;
 }
 ConfigFile;
 
@@ -26,10 +28,6 @@ ConfigFile;
 bool file_construct(File *const f, char const *const path);
 bool file_construct_bin(File *const f, char const *const path);
 void file_destruct(File const *const f);
-
-
-void configFile_construct(ConfigFile *const cf, char const *const path);
-void configFile_destruct(ConfigFile *const cf);
 
 
 #endif

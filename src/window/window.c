@@ -21,7 +21,7 @@ void window_init(void)
 {
     che_assert(glfwInit());
     monitor = glfwGetPrimaryMonitor();
-    che_assert(window = glfwCreateWindow(std_width, std_height, "", NULL, NULL));
+    che_assert(window = glfwCreateWindow((width = std_width), (height = std_height), "", NULL, NULL));
     glfwMakeContextCurrent(window);
     che_assert(glewInit() == GLEW_OK);
     glClearColor(1, 0, 1, 1); //set clear color to magenta so it is easyer to see if e.g the background got not rendered correctly
@@ -34,7 +34,7 @@ void window_init(void)
     glfwSetJoystickCallback(joystick_callback);
     glfwSetScrollCallback(window, scroll_callback);
 
-    framebuffer_size_callback(window, width, height + 1);
+    framebuffer_size_callback(window, width, height);
     //we have to call this manually once after the window was created because it does not call this on creation
 }
 
@@ -48,16 +48,17 @@ void window_terminate(void)
 
 void window_fullscreen_set(bool const set)
 {
-    if ((fullscreen = set))
+    if (set && !fullscreen)
     {
         int videoModeCount;
         GLFWvidmode const *const mode = &glfwGetVideoModes(monitor, &videoModeCount)[videoModeCount - 1];
         glfwSetWindowMonitor(window, monitor, 0, 0, (width = mode->width), (height = mode->height), mode->refreshRate);
     }
-    else
+    else if (!set && fullscreen)
     {
-        glfwSetWindowMonitor(window, NULL, 400, 200, std_width, std_height, 0);    
+        glfwSetWindowMonitor(window, NULL, 200, 200, std_width, std_height, 0);    
     }
+    fullscreen = set;
 }
 
 
@@ -81,7 +82,10 @@ void window_title_set(char const *title)
 
 void window_size_set(uint16_t const new_width, uint16_t const new_height)
 {
-    glfwSetWindowSize(window, std_width = width = new_width, std_height = height = new_height);
+    if (!fullscreen)
+    {
+        glfwSetWindowSize(window, std_width = width = new_width, std_height = height = new_height);
+    }
 }
 
 /*

@@ -1,14 +1,11 @@
 
 
 VERSION = -std=c99
-
-ERRORS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion
-
-#flags for linking
+ERRORFLAGS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion
 LFLAGS = -o
-
-#flags for compilation
-CFLAGS = $(ERRORS) $(VERSION) -c -g
+LIBS = -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal
+CFLAGS = $(ERRORFLAGS) $(VERSION) -c -g
+OBJFILES = main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o
 
 make: OUTPUT
 	./output
@@ -23,8 +20,8 @@ cachecheck: output
 memcheck: output
 	valgrind --tool=memcheck --leak-check=full make
 
-OUTPUT: 		         main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o
-	gcc $(LFLAGS) output main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal #-lcimgui
+OUTPUT: 		         $(OBJFILES)
+	gcc $(LFLAGS) output $(OBJFILES) $(LIBS)
 
 window.o: window/window.c
 	gcc $(CFLAGS) window/window.c
@@ -62,18 +59,16 @@ wav_loader.o: audio/wav_loader.c
 components.o: components/components.c
 	gcc $(CFLAGS) components/components.c
 
+main.o: main.c
+	gcc $(CFLAGS) main.c
+
 ############################# custom ###############################################################################################
 
-	
 mainMenuState.o: custom/mainMenuState.c
 	gcc $(CFLAGS) custom/mainMenuState.c
 
-main.o: custom/main.c
-	gcc $(CFLAGS) custom/main.c
-
 input_task.o: custom/input_task.c
 	gcc $(CFLAGS) custom/input_task.c
-
 
 ########################### extensions ##################################################################################################
 chunk_loading_system.o: tiles_chext/chunk_loading_system.c

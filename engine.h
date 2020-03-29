@@ -309,6 +309,7 @@ void  stateMachine_state_pop(State *const state);
 void _stateMachine_state_push(State *const state);
 void  stateMachine_run(void);
 void  stateMachine_running_set(bool const n_running);
+extern void stateMachine_first_state_push(void); //user implemented
 
 
 #define stateMachine_state_push(Type, stateConstructFunc)\
@@ -418,6 +419,17 @@ bool     is_little_endian(void); //returns if the machine stores the bits in big
 uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer);
 void*    wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
 uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
+
+
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////// User implemented ///////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
+
+extern void checs_init_config(void);
+extern void che_window_config(void);
+extern void che_init_config(void);
+extern void che_terminate_config(void);
 
 
 #endif

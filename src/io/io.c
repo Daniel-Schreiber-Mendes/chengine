@@ -50,15 +50,3 @@ void file_destruct(File const *const f)
 {
 	che_free(f->buffer);
 }
-
-
-void configFile_construct(ConfigFile *const cf, char const *const path)
-{
-    file_construct(cf, path);
-}
-
-
-void configFile_destruct(ConfigFile *const cf)
-{
-    file_destruct(cf);
-}
