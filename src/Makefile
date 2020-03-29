@@ -9,11 +9,11 @@ OBJFILES = main.o window.o stateMachine.o math.o utility.o vertexArray.o buffer.
 
 
 make: $(OBJFILES)
-	gcc $(LFLAGS) libchengine-lib.so $(OBJFILES) $(LIBS)
+	gcc $(LFLAGS) libchengine-dev.so $(OBJFILES) $(LIBS)
 
 lib-update:
-	mv libchengine-lib.so /usr/local/lib/
-	cp ../*.h /usr/local/include/chengine-lib/
+	mv libchengine-dev.so /usr/local/lib/
+	cp ../*.h /usr/local/include/chengine-dev/
 
 profile:
 	gprof output gmon.out > profile.txt
