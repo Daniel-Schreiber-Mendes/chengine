@@ -39,7 +39,7 @@ void render_system_init(void)
 	vertexBufferLayout_construct(&imm_vbl, 1);
 	vertexBufferLayout_element_add(&imm_vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE});
 	vertexArray_buffer_add(&imm_vertexArray, imm_vbo, imm_vbl);
-	program_construct(&imm_program, "../resources/shader/imm_vertex.glsl", "../resources/shader/imm_fragment.glsl");
+	program_construct(&imm_program, "./resources/shader/imm_vertex.glsl", "./resources/shader/imm_fragment.glsl");
 }
 
 

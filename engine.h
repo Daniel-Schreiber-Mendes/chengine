@@ -1,6 +1,6 @@
 #ifndef ENGINE_H
 #define ENGINE_H
-#include "./src/utility/utility.h"
+#include "utility.h"
 #include "debug_utils.h"
 #include <cglm/cglm.h>
 #include <AL/al.h>

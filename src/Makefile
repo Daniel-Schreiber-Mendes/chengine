@@ -2,13 +2,18 @@
 
 VERSION = -std=c99
 ERRORFLAGS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion
-LFLAGS = -o
+LFLAGS = -shared -o
 LIBS = -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal
-CFLAGS = $(ERRORFLAGS) $(VERSION) -c -g
-OBJFILES = main.o window.o stateMachine.o mainMenuState.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o input_task.o wav_loader.o components.o chunk_loading_system.o physics_system.o
+CFLAGS = $(ERRORFLAGS) $(VERSION) -c -g -fpic
+OBJFILES = main.o window.o stateMachine.o math.o utility.o vertexArray.o buffer.o program.o texture.o io.o render_system.o wav_loader.o components.o
 
-make: OUTPUT
-	./output
+
+make: $(OBJFILES)
+	gcc $(LFLAGS) libchengine-lib.so $(OBJFILES) $(LIBS)
+
+lib-update:
+	mv libchengine-lib.so /usr/local/lib/
+	cp ../*.h /usr/local/include/chengine-lib/
 
 profile:
 	gprof output gmon.out > profile.txt
@@ -19,9 +24,6 @@ cachecheck: output
 
 memcheck: output
 	valgrind --tool=memcheck --leak-check=full make
-
-OUTPUT: 		         $(OBJFILES)
-	gcc $(LFLAGS) output $(OBJFILES) $(LIBS)
 
 window.o: window/window.c
 	gcc $(CFLAGS) window/window.c
@@ -61,18 +63,3 @@ components.o: components/components.c
 
 main.o: main.c
 	gcc $(CFLAGS) main.c
-
-############################# custom ###############################################################################################
-
-mainMenuState.o: custom/mainMenuState.c
-	gcc $(CFLAGS) custom/mainMenuState.c
-
-input_task.o: custom/input_task.c
-	gcc $(CFLAGS) custom/input_task.c
-
-########################### extensions ##################################################################################################
-chunk_loading_system.o: tiles_chext/chunk_loading_system.c
-	gcc $(CFLAGS) tiles_chext/chunk_loading_system.c
-
-physics_system.o: physics_chext/physics_system.c
-	gcc $(CFLAGS) physics_chext/physics_system.c
