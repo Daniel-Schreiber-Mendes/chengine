@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+  <requires lib="gtk+" version="3.20"/>
+  <object class="GtkImage" id="compile_b_i1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-execute</property>
+  </object>
+  <object class="GtkTreeStore" id="components_trst">
+    <columns>
+      <!-- column-name Name -->
+      <column type="gchararray"/>
+      <!-- column-name Count -->
+      <column type="guint"/>
+    </columns>
+  </object>
+  <object class="GtkImage" id="run_b_i1">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-media-play</property>
+  </object>
+  <object class="GtkWindow" id="main_w">
+    <property name="width_request">1000</property>
+    <property name="height_request">600</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Che Engine</property>
+    <property name="hide_titlebar_when_maximized">True</property>
+    <signal name="destroy" handler="on_main_window_destroy" swapped="no"/>
+    <child>
+      <placeholder/>
+    </child>
+    <child>
+      <object class="GtkFixed" id="main_f">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkStack" id="main_s">
+            <property name="width_request">800</property>
+            <property name="height_request">100</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="transition_duration">300</property>
+            <property name="transition_type">over-left-right</property>
+            <child>
+              <object class="GtkFixed" id="settings_f">
+                <property name="width_request">800</property>
+                <property name="height_request">600</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkLabel" id="mode_label">
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Mode:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">40</property>
+                    <property name="y">160</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="save_settings_b">
+                    <property name="label" translatable="yes">Save Settings</property>
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                  </object>
+                  <packing>
+                    <property name="x">40</property>
+                    <property name="y">302</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="optimizations_cb">
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="active">0</property>
+                    <items>
+                      <item id="O0" translatable="yes">None</item>
+                      <item id="O1" translatable="yes">O1</item>
+                      <item id="O2" translatable="yes">O2</item>
+                      <item id="O3" translatable="yes">O3</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="x">140</property>
+                    <property name="y">80</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="optimizations_label">
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Optimizations:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">40</property>
+                    <property name="y">80</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="version_label">
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Version:</property>
+                    <property name="xalign">0</property>
+                  </object>
+                  <packing>
+                    <property name="x">40</property>
+                    <property name="y">120</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="mode_cb">
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="active">0</property>
+                    <items>
+                      <item id="d" translatable="yes">Debug</item>
+                      <item id="r" translatable="yes">Release</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="x">140</property>
+                    <property name="y">160</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="librarys_e">
+                    <property name="width_request">200</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="placeholder_text" translatable="yes">Librarys</property>
+                  </object>
+                  <packing>
+                    <property name="x">40</property>
+                    <property name="y">200</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkComboBoxText" id="version_cb">
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="active">0</property>
+                    <items>
+                      <item id="c99" translatable="yes">C99</item>
+                      <item id="c11" translatable="yes">C11</item>
+                    </items>
+                  </object>
+                  <packing>
+                    <property name="x">140</property>
+                    <property name="y">120</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFileChooserButton" id="open_fcb">
+                    <property name="width_request">200</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="title" translatable="yes">Open</property>
+                  </object>
+                  <packing>
+                    <property name="x">40</property>
+                    <property name="y">40</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="title" translatable="yes">Settings</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="components_f">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkViewport" id="components_v">
+                    <property name="width_request">200</property>
+                    <property name="height_request">400</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkTreeView" id="components_tv">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">components_trst</property>
+                        <child internal-child="selection">
+                          <object class="GtkTreeSelection" id="components_trse"/>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="components_name_tvc">
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Name</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="components_name_cr">
+                                <property name="editable">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="components_count_tvc">
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Count</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="components_count_cr">
+                                <property name="editable">True</property>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="x">5</property>
+                    <property name="y">50</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="components_add_b">
+                    <property name="label">gtk-add</property>
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="on_components_add_b_clicked" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="x">5</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkButton" id="components_remove_b">
+                    <property name="label">gtk-remove</property>
+                    <property name="width_request">100</property>
+                    <property name="height_request">40</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <property name="always_show_image">True</property>
+                  </object>
+                  <packing>
+                    <property name="x">105</property>
+                    <property name="y">460</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="title" translatable="yes">Components</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="systems_f">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="name">page2</property>
+                <property name="title" translatable="yes">Systems</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="tasks_f">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="title" translatable="yes">Tasks</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkFixed" id="states_f">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+              </object>
+              <packing>
+                <property name="title" translatable="yes">States</property>
+                <property name="position">4</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">50</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkStackSwitcher" id="main_sw">
+            <property name="width_request">100</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="stack">main_s</property>
+          </object>
+          <packing>
+            <property name="x">400</property>
+            <property name="y">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="compile_b">
+            <property name="label">compile</property>
+            <property name="width_request">100</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">compile_b_i1</property>
+            <property name="always_show_image">True</property>
+            <signal name="clicked" handler="on_compile_b_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="x">5</property>
+            <property name="y">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="run_b">
+            <property name="label" translatable="yes">run</property>
+            <property name="width_request">100</property>
+            <property name="height_request">40</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="image">run_b_i1</property>
+            <property name="always_show_image">True</property>
+          </object>
+          <packing>
+            <property name="x">110</property>
+            <property name="y">5</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
