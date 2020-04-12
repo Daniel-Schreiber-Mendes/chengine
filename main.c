@@ -17,18 +17,21 @@ int main(int argc, char *argv[])
     GtkBuilder *builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "che.glade", NULL);
 
+    
     main_window = GTK_WINDOW(gtk_builder_get_object(builder, "main_w"));
+    /*
     compile_b = GTK_BUTTON(gtk_builder_get_object(builder, "compile_b"));
     run_b = GTK_BUTTON(gtk_builder_get_object(builder, "run_b"));
     open_fcb = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "open_fcb"));
     gtk_file_chooser_set_action(GTK_FILE_CHOOSER(open_fcb), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
-
+    
     settings_init(builder);
     components_init(builder);
     
     g_signal_connect(main_window, "destroy", G_CALLBACK(on_main_window_destroy), NULL);
     g_signal_connect(compile_b, "clicked", G_CALLBACK(on_compile_b_clicked), NULL);
     g_signal_connect(run_b, "clicked", G_CALLBACK(on_run_b_clicked), NULL);
+    */
 
     g_object_unref(builder);
 
