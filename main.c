@@ -3,6 +3,8 @@
 static void on_main_window_destroy(GtkWidget *widget, GdkEvent *event, gpointer user_data);
 static void on_compile_b_clicked(GtkButton *b, gpointer user_data);
 static void on_run_b_clicked(GtkButton *b, gpointer user_data);
+static void on_open_fcb_file_set(GtkFileChooserButton *widget, gpointer user_data);
+
 
 static GtkWindow      *main_window;
 static GtkButton      *compile_b;
@@ -14,12 +16,13 @@ int main(int argc, char *argv[])
 {
     gtk_init(&argc, &argv);
 
+    g_type_ensure(GTK_SOURCE_TYPE_VIEW);
     GtkBuilder *builder = gtk_builder_new();
     gtk_builder_add_from_file(builder, "che.glade", NULL);
 
     
     main_window = GTK_WINDOW(gtk_builder_get_object(builder, "main_w"));
-    /*
+    
     compile_b = GTK_BUTTON(gtk_builder_get_object(builder, "compile_b"));
     run_b = GTK_BUTTON(gtk_builder_get_object(builder, "run_b"));
     open_fcb = GTK_FILE_CHOOSER(gtk_builder_get_object(builder, "open_fcb"));
@@ -31,7 +34,8 @@ int main(int argc, char *argv[])
     g_signal_connect(main_window, "destroy", G_CALLBACK(on_main_window_destroy), NULL);
     g_signal_connect(compile_b, "clicked", G_CALLBACK(on_compile_b_clicked), NULL);
     g_signal_connect(run_b, "clicked", G_CALLBACK(on_run_b_clicked), NULL);
-    */
+    g_signal_connect(open_fcb, "file-set", G_CALLBACK(on_open_fcb_file_set), NULL);
+
 
     g_object_unref(builder);
 
@@ -79,4 +83,10 @@ static void on_run_b_clicked(GtkButton *b, gpointer user_data)
 char* project_path_get(void)
 {
     return gtk_file_chooser_get_filename(open_fcb);
+}
+
+
+static void on_open_fcb_file_set(GtkFileChooserButton *widget, gpointer user_data)
+{
+    components_load();
 }

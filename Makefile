@@ -6,11 +6,12 @@ CFLAGS = $(ERRORFLAGS) $(VERSION) -c -g `pkg-config --cflags gtk+-3.0` `pkg-conf
 OBJFILES = main.o settings.o components.o
 
 
-make: OUTPUT
-	./output
 
-OUTPUT: $(OBJFILES)
-	gcc $(LFLAGS) output $(OBJFILES) $(LIBS)
+all: CHENGINE
+	./chengine
+
+CHENGINE: $(OBJFILES)
+	gcc $(LFLAGS) chengine $(OBJFILES) $(LIBS)
 
 main.o: main.c
 	gcc $(CFLAGS) main.c
@@ -20,3 +21,10 @@ settings.o: settings.c
 
 components.o: components.c
 	gcc $(CFLAGS) components.c
+
+
+setup:
+	sudo mv chengine /usr/bin
+	sudo cp install/chengine.desktop /usr/share/applications
+	gio set /usr/share/applications/chengine.desktop "metadata::trusted" yes
+	sudo cp install/chengine_icon.png /usr/share/pixmaps

@@ -20,6 +20,8 @@ static GtkButton 		 *remove_b;
 static GtkTreeModel 	 *model;
 static GtkTreeIter 		  iter;
 static Vector 			  components;
+static GtkSourceView     *sv;
+static FILE              *file; //file with component typedefs
 
 
 static void on_add_b_clicked(GtkButton *b, gpointer user_data);
@@ -27,6 +29,7 @@ static void on_remove_b_clicked(GtkButton *b, gpointer user_data);
 static void on_name_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
 static void on_count_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
 static void load_component(char const *const name, uint16_t const count);
+static void on_trse_changed(GtkTreeSelection *treeselection, gpointer user_data);
 
 
 void components_init(GtkBuilder *const builder)
@@ -40,12 +43,14 @@ void components_init(GtkBuilder *const builder)
 	trse = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "components_trse"));
 	add_b = GTK_BUTTON(gtk_builder_get_object(builder, "components_add_b"));
 	remove_b = GTK_BUTTON(gtk_builder_get_object(builder, "components_remove_b"));
+	sv = GTK_TEXT_VIEW(gtk_builder_get_object(builder, "components_sv"));
 
 
 	g_signal_connect(add_b, "clicked", G_CALLBACK(on_add_b_clicked), NULL);
 	g_signal_connect(remove_b, "clicked", G_CALLBACK(on_remove_b_clicked), NULL);
 	g_signal_connect(name_cr, "edited", G_CALLBACK(on_name_cr_edited), NULL);
 	g_signal_connect(count_cr, "edited", G_CALLBACK(on_count_cr_edited), NULL);
+	g_signal_connect(trse, "changed", G_CALLBACK(on_trse_changed), NULL);
 
 
 	gtk_tree_view_column_add_attribute(name_tvc, name_cr, "text", 0);
@@ -55,7 +60,26 @@ void components_init(GtkBuilder *const builder)
 
 void components_load(void)
 {
+	char const path[100];
 
+	{
+		char *projpath;
+		if (!(projpath = project_path_get))
+		{
+			g_print("No project selected");
+			return;
+		}
+		strcpy(path, project_path_get);
+		strcat(path, "/components.h");
+	}
+
+	if (!(file = fopen(path, "r+")))
+	{
+		g_print("File components.h could not be found");
+		return;
+	}
+
+	
 }
 
 
@@ -102,4 +126,10 @@ static void load_component(char const *const name, uint16_t const count)
 	gtk_tree_store_append(trst, &iter, NULL);
 	gtk_tree_store_set(trst, &iter, 0, name, -1);
 	gtk_tree_store_set(trst, &iter, 1, count, -1);
+}
+
+
+static void on_trse_changed(GtkTreeSelection *treeselection, gpointer user_data)
+{
+	g_print("Selection Changed\n");
 }
