@@ -55,7 +55,7 @@ static void on_save_settings_b_clicked(GtkButton *b, gpointer user_data)
 	fprintf(new_file, "LIBS = %s\n", gtk_entry_get_text(librarys_e));
 	fprintf(new_file, "MODE = %s\n", gtk_combo_box_get_active_id(mode_cb)[0] == 'd' ? "-g" : "");
 	fprintf(new_file, "OPTIMIZATIONS = -%s\n", gtk_combo_box_get_active_id(optimizations_cb));
-	fputs(strfndi(old_file.buffer, '\n', 4), new_file);
+	fputs(strfndch(old_file.buffer, '\n', 4), new_file);
 	file_destruct(&old_file);	
 	fclose(new_file);
 }

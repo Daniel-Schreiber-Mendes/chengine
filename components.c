@@ -60,26 +60,34 @@ void components_init(GtkBuilder *const builder)
 
 void components_load(void)
 {
-	char const path[100];
+	char path[100];
 
 	{
 		char *projpath;
-		if (!(projpath = project_path_get))
+		if (!(projpath = project_path_get()))
 		{
 			g_print("No project selected");
 			return;
 		}
-		strcpy(path, project_path_get);
+		strcpy(path, projpath);
 		strcat(path, "/components.h");
 	}
 
 	if (!(file = fopen(path, "r+")))
 	{
-		g_print("File components.h could not be found");
+		g_print("File components.h could not be found at %s\n", path);
 		return;
 	}
 
-	
+	char *const buffer = fbcp(file);
+	char *componentbuffer;
+	while (componentbuffer = fndstrchnk(buffer, "//componentbegin", "//componentend", NULL))
+	{
+		printf("%s\n", componentbuffer);
+		free(componentbuffer);
+	}
+
+	free(buffer);
 }
 
 
