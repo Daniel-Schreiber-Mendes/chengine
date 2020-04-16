@@ -136,11 +136,11 @@ void renderable_construct(Renderable *const r);
 void renderable_destruct(Renderable *const r);
 
 void  transform_transform_calculate(Transform *const t, mat4 transform);
-float transform_distance_get(Transform *restrict t, Transform *restrict t2);
-bool  transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1);
-bool  transform_circle_point_collision(Transform *restrict t0, Transform *restrict t1, float const r0);
-bool  transform_rect_rect_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
-bool  transform_rect_point_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0);
+float transform_distance_get(Transform const *restrict t, Transform const *restrict t2);
+bool  transform_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
+bool  transform_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0);
+bool  transform_rect_rect_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1);
+bool  transform_rect_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0);
 
 
 void soundSource_construct(SoundSource *const s, char const *const path);

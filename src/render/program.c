@@ -1,5 +1,5 @@
 #include "../../engine.h"
-#include "../../io.h"
+#include <cheio/io.h>
 
 static GLuint createShader(GLenum const type, char const *const path);
 
@@ -98,7 +98,7 @@ static GLuint createShader(GLenum const type, char const *const path)
     GLuint const shader = glCreateShader(type);
     {
         File file;
-        file_construct(&file, path);
+        file_construct(&file, path, "r");
         glShaderSource(shader, 1, (char const *const *)&file.buffer, NULL);
         file_destruct(&file);
     }

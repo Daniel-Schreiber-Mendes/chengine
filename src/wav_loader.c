@@ -1,5 +1,4 @@
-#include "../../engine.h"
-#include <AL/al.h>
+#include "../engine.h"
 #include <AL/alc.h>
 
 //according to wav standard all bits in a wav file are stored in little endian order

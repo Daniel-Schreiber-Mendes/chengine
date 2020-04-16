@@ -12,6 +12,7 @@ void texture_construct_from_file(Texture *const t, char const *const path)
 	void *buffer;
 	if (!(buffer = stbi_load(path, &t->width, &t->height, &t->channels, 4)))//4 because RGBA
 	{
+		printf("Failed to load texture file %s\n", path);
 		buffer = stbi_load("./resources/error/errorTexture.png", &t->width, &t->height, &t->channels, 4); //4 because RGBA
 	}
 

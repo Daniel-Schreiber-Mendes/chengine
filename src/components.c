@@ -1,6 +1,4 @@
-#include "../../engine.h"
-#include <AL/al.h>
-#include <AL/alc.h>
+#include "../engine.h"
 
 
 void transform_transform_calculate(Transform *const t, mat4 transform)
@@ -11,33 +9,33 @@ void transform_transform_calculate(Transform *const t, mat4 transform)
 }
 
 
-float transform_distance_get(Transform *restrict t, Transform *restrict t2)
+float transform_distance_get(Transform const *restrict t, Transform const *restrict t2)
 {
     //calculating distance with pythagoreas
     return sqrtf(pow(t->pos[0] - t2->pos[0], 2) + pow(t->pos[1] - t2->pos[1], 2));
 }
 
 
-bool transform_circle_circle_collision(Transform *restrict t0, Transform *restrict t1, float const r0, float const r1)
+bool transform_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1)
 {
     return r0 + r1 > sqrtf(pow(t0->pos[0] + r0 - t1->pos[0] - r1, 2) + pow(t0->pos[1] + r0 - t1->pos[1] - r1, 2));
 }
 
 
-bool transform_circle_point_collision(Transform *restrict t0, Transform *restrict t1, float const r0)
+bool transform_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0)
 {
     return transform_distance_get(t0, t1) < r0;
 }
 
 
-bool transform_rect_rect_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1)
+bool transform_rect_rect_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1)
 {
     return t0->pos[0] + bb0[0] > t1->pos[0] && t0->pos[0] < t1->pos[0] + bb1[0] && 
            t0->pos[1] - bb0[1] < t1->pos[1] && t0->pos[1] > t1->pos[1] - bb1[1];
 }
 
 
-bool  transform_rect_point_collision(Transform *restrict t0, Transform *restrict t1, vec2 const bb0)
+bool  transform_rect_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0)
 {
     return t1->pos[0] > t0->pos[0] && t1->pos[0] < t0->pos[0] + bb0[0] && t1->pos[1] > t0->pos[1] && t1->pos[1] < t0->pos[1] + bb0[1];
 }
