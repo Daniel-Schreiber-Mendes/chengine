@@ -33,8 +33,8 @@ input_task.o: input_task.c
 
 ########################### extensions ##################################################################################################
 
-chunk_loading_system.o: tiles_chext/chunk_loading_system.c
-	gcc $(CFLAGS) tiles_chext/chunk_loading_system.c
+chunk_loading_system.o: tiles_ext/chunk_loading_system.c
+	gcc $(CFLAGS) tiles_ext/chunk_loading_system.c
 
-physics_system.o: physics_chext/physics_system.c
-	gcc $(CFLAGS) physics_chext/physics_system.c
+physics_system.o: physics_ext/physics_system.c
+	gcc $(CFLAGS) physics_ext/physics_system.c

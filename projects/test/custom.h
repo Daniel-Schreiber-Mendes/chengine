@@ -1,8 +1,8 @@
 #ifndef CUSTOM_H
 #define CUSTOM_H
 #include <chengine-dev/engine.h>
-#include "./tiles_chext/tiles.h"
-#include "./physics_chext/physics.h"
+#include "./tiles_ext/tiles.h"
+#include "./physics_ext/physics.h"
 
 //components defined by extensions:
 //+1 for Collidable and +1 for Chunk
