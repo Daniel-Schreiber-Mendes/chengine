@@ -1,5 +1,6 @@
 #include "../../utility.h"
 
+
 uint8_t getRandElement(uint8_t const *const array, uint8_t const size)
 {
     return array[getRandUint16(0, size - 1)];

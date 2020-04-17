@@ -1,7 +1,6 @@
 #include "../../utility.h"
 
 
-static uint8_t bit;
 
 
 uint8_t limitUint8(uint8_t const val, uint8_t const min, uint8_t const max)
@@ -15,20 +14,14 @@ float limitF(float const val, float const min, float const max)
 }
 
 
-//round to nearest integer
-int fround(float const f)
-{
-    return f + 0.5f;
-}
-
-
 uint16_t sr_init(void)
 {
     srand(time(0));
     return rand();
 }
 
-static uint16_t sr = 0;
+static uint16_t sr;
+static uint8_t bit;
 
 uint16_t getRandUint16(uint16_t const min, uint16_t const max)
 {

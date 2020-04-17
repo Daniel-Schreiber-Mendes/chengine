@@ -3,12 +3,9 @@
 #include "utility.h"
 #include "debug_utils.h"
 #include <cglm/cglm.h>
-#include <AL/al.h>
 #include <GLFW/glfw3.h>
 #include <checs/checs.h>
 #include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +44,7 @@ VertexBufferLayoutElement; //only used when creating a renderable and is stored 
 
 typedef struct
 {
-	VertexBufferLayoutElement* elements;
+	VertexBufferLayoutElement *elements;
 	uint8_t elementCount;
 	GLsizei stride;
 }
@@ -58,199 +55,8 @@ typedef struct
 {
 	GLuint id;
 	GLsizei elementCount;
-}ElementBuffer;
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Components /////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-#define StandardComponentCount  6
-
-
-typedef struct
-{
-	Program program;
-	VertexArray vao;
-	GLenum mode; //can be primitve mode like e.g GL_TRIANGLES or GL_TRIANGLE_STRIP
-	uint16_t primitiveCount; //only used if renderableType is one of the two instanced types
-	Texture const* texture;
-	union
-	{
-		uint16_t vertexCount;
-		uint16_t elementCount;
-	};
-	enum
-	{
-		ARRAYS,
-		ARRAYS_INSTANCED,
-		ELEMENTS,
-		ELEMENTS_INSTANCED
-	}
-	renderableType;
 }
-Renderable;
-
-
-typedef struct
-{
-	vec3 pos;
-	float rot;
-}
-Transform;
-
-
-typedef struct
-{
-	vec3 vel;
-}
-Velocity;
-
-
-typedef struct
-{ 
-	int i;	
-}
-KeyInput;
-
-
-typedef struct
-{
-	ALuint source;
-}
-SoundSource;
-
-
-typedef struct
-{
-	mat4 vp;
-	float aspectRatio;
-	float zoom;
-	Transform *target; //this is optionally. of it is null, don't follow anything and just wait for a direct command to move the camera
-}
-Camera;
-
-
-void renderable_construct(Renderable *const r);
-void renderable_destruct(Renderable *const r);
-
-void  transform_transform_calculate(Transform *const t, mat4 transform);
-float transform_distance_get(Transform const *restrict t, Transform const *restrict t2);
-bool  transform_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
-bool  transform_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0);
-bool  transform_rect_rect_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1);
-bool  transform_rect_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0);
-
-
-void soundSource_construct(SoundSource *const s, char const *const path);
-void soundSource_destruct(SoundSource *const s);
-void soundSource_sound_play(SoundSource *const s);
-void soundSource_position_set(SoundSource *const s, vec3 const pos);
-
-void camera_construct(Camera *const c);
-void camera_default_zoom(Camera *const c, float const yoffset);
-void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height);
-void camera_target_set(Camera *const c, Transform *const t);
-void camera_default_vp_recalculate(Camera *const c);
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// System-Components //////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-#define RENDER_SYSTEM_COMPONENTS Renderable, Transform
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Tags ///////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-#define CameraTag 0
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Commands ///////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-#define WindowCloseCommand     0
-#define FramebufferSizeCommand 1
-#define KeyCommand 			   2
-#define MouseButtonCommand     3
-#define JoystickCommand        4
-#define ScrollCommand 		   5
-#define StandardCommandCount   6
-
-
-typedef struct
-{
-	int const width, height;
-}
-FramebufferSizeData;
-
-
-typedef struct
-{
-	int const key, scancode, action, mods;
-}
-KeyData;
-
-
-typedef struct
-{
-	int const button, action, mods;
-}
-MouseButtonData;
-
-
-typedef struct
-{
-	int const jid, event;
-}
-JoystickData;
-
-
-typedef struct
-{
-	double yoffset;
-}
-ScrollData;
-
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Events ///////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-#define KeyEvent 		   0
-#define MouseButtonEvent   1
-#define JoystickEvent      2
-#define StandardEventCount 3
-
-
-typedef struct
-{
-	int const key, scancode, action, mods;
-}
-KeyEventData;
-
-
-typedef struct
-{
-	int const button, action, mods;
-}
-MouseButtonEventData;
-
-
-typedef struct
-{
-	int const jid, event;
-}
-JoystickEventData;
+ElementBuffer;
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -281,24 +87,6 @@ struct _Texture
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Window  ////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-extern GLFWwindow* window;
-
-
-void window_init(void);
-void window_terminate(void);
-void window_fullscreen_set(bool const set);
-void window_fullscreen_switch(void);
-void window_vsync_set(bool const set);
-void window_title_set(char const *title);
-void window_size_set(uint16_t const new_width, uint16_t const new_height);
-void window_cursor_visible_set(bool const set);
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////// Statemachine  //////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
@@ -322,6 +110,7 @@ extern void stateMachine_first_state_push(void); //user implemented
 /////////////////////// Resources  /////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+
 void texture_construct_from_file(Texture *const t, char const *const path);
 void texture_construct(Texture *const t, uint16_t const width, uint16_t const height);
 void texture_update_from_buffer(Texture *const t, void* buffer);
@@ -344,9 +133,8 @@ void texture_bind(Texture const *const t);
 void 	vertexBuffer_destruct(VertexBuffer const *const vbo);
 void 	vertexBuffer_bind(VertexBuffer const vbo);
 
-//elementBuffer.c
-//void	elementBuffer_construct(ElementBuffer *const ebo, GLsizeiptr const size, GLsizei const elementCount, void const *const data);
 
+//elementBuffer.c
 
 #define elementBuffer_construct(ebo_ptr, array)\
 	glGenBuffers(1, &(ebo_ptr)->id);\
@@ -377,48 +165,9 @@ void    program_uniform1u_set(Program const program, char const *const name, flo
 
 
 //vertexBufferLayout.c
-void    vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const size);
-void    vertexBufferLayout_destruct(VertexBufferLayout const *const vbl);
-void    vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element);
-
-
-//render_system.c
-/* Requirements:
-- If a renderable is of type ARRAY it has to have its vertexCount defined
-- If a renderable is of type ARRAYS_INSTANCED it has to have its vertexCount and primitiveCount defined
-- If a renderable is of type ELEMENTS it has to have its elementCount defined
-- If a renderable is of type ELEMENTS_INSTANCED it has to have its elementCount and primitveCount defined
-*/
-void render_system_init(void);
-void render_system(checs_system_parameters);
-void render_system_terminate(void);
-void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void));
-void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size);
-
-
-#define mat4_print(m)\
-	for(int i=0; i < 4; ++i)\
-	{\
-		for(int j=0; j < 4; ++j)\
-		{\
-			printf("%.2f, ", m[i][j]);\
-		}\
-		printf("\n");\
-	}
-
-
-
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-/////////////////////// Audio //////////////////////////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-
-
-void     audio_init(void);
-void     audio_terminate(void);
-bool     is_little_endian(void); //returns if the machine stores the bits in big endian or little endian order
-uint16_t convert_byte2_buffer_to_uint16(uint8_t const *const buffer);
-void*    wavFile_load(char const *const path, uint8_t *channels, uint32_t *const sampleRate, uint8_t *const bps, uint32_t *const size);
-uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
+void vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const size);
+void vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element);
+void vertexBufferLayout_destruct(VertexBufferLayout const *const vbl);
 
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -426,10 +175,9 @@ uint16_t wav_format_get(uint8_t const channels, uint8_t const bps);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 
-extern void checs_init_config(void);
-extern void che_window_config(void);
-extern void che_init_config(void);
-extern void che_terminate_config(void);
+extern void che_checs_init(void);
+extern void che_init(void);
+extern void che_terminate(void);
 
 
 #endif

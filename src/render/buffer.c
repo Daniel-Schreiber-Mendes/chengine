@@ -25,19 +25,19 @@ void vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const s
 }
 
 
-void vertexBufferLayout_destruct(VertexBufferLayout const *const vbl)
-{
-	che_free(vbl->elements);
-}
-
-
 void vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element)
 {
 	vbl->elements[vbl->elementCount] = element;
-	vbl->stride += typeGL_size_get(element.type) * element.componentCount;
+	vbl->stride += getGlTypeSize(element.type) * element.componentCount;
 	++vbl->elementCount;
 	//stride is the size of a vertex. If we add a new attribute to the vertex the size of it is getting bigger
 	//element.size is the number of components this attribute has. E.g a 3-dimensional position attribute would have the size 3
+}
+
+
+void vertexBufferLayout_destruct(VertexBufferLayout const *const vbl)
+{
+	che_free(vbl->elements);
 }
 
 

@@ -12,7 +12,7 @@ void stateMachine_init(void)
 //a state shall only be popped inside state.update, NEVER in state.draw
 void stateMachine_state_pop(State *const state)
 {
-    vector_erase(&states, State*, state);
+    vector_erase(&states, State*, vector_find(&states, state));
     state->destruct(state);
     che_free(state);
 }
@@ -20,6 +20,7 @@ void stateMachine_state_pop(State *const state)
 
 void stateMachine_run(void)
 {
+    stateMachine_first_state_push();
 	while(running)
 	{                
         glfwPollEvents(); 
@@ -27,7 +28,9 @@ void stateMachine_run(void)
         vector_foreach(&states, State*, state)
         {      
             state->draw(state);
-            state->update(state);
+            state->update(state); 
+            //it is important that the draw function is called before update because when a state is popped in update and then the draw
+            //function would be called, one would access memory that already got freed
         }
 	}
 }

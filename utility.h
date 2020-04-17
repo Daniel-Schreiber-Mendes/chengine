@@ -21,10 +21,9 @@ Alternator;
 //utility.c
 uint8_t  getRandElement(uint8_t const *const array, uint8_t const size);
 uint8_t  alternator_alternate(Alternator *const alt);
-uint8_t  typeGL_size_get(GLuint const type);
+uint8_t  getGlTypeSize(GLuint const type);
 
 //math.c
-int fround(float const f);
 uint16_t sr_init(void);
 uint8_t  limitUint8(uint8_t const val, uint8_t const min, uint8_t const max);
 float    limitF(float const val, float const min, float const max);
@@ -33,5 +32,6 @@ uint8_t  getRandUint8(uint8_t const min, uint8_t const max);
 bool     getRandBool(float const chance);
 int      roundToMultiple(int const number, int const multiple);
 float    getRandF(float min, float max);
+
 
 #endif

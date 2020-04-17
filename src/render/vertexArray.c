@@ -44,6 +44,6 @@ void vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, Vert
 		);
 
 		//with each attribute the offset is getting higher 
-		offset += typeGL_size_get(element.type) * element.componentCount;
+		offset += getGlTypeSize(element.type) * element.componentCount;
 	}
 }
