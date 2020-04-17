@@ -1,6 +1,7 @@
 #ifndef PHYSICS_H
 #define PHYSICS_H
 #include <chengine-dev/engine.h>
+#include "../movement_ext/movement.h"
 
 
 typedef struct

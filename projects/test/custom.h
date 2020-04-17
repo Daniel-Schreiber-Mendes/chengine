@@ -3,6 +3,8 @@
 #include <chengine-dev/engine.h>
 #include "./tiles_ext/tiles.h"
 #include "./physics_ext/physics.h"
+#include "./render_ext/render.h"
+#include "./camera_ext/camera.h"
 
 //components defined by extensions:
 //+1 for Collidable and +1 for Chunk
@@ -24,11 +26,6 @@ void mainMenuState_draw(State *const state);
  - If an entity has a KeyInput component, it has to have a Velocity component 
 */
 void input_task(void);
-
-/*Requirements:
- - If an entity has a Velocity component it has to have a transform component
-*/
-void movement_task(void);
 
 
 #endif

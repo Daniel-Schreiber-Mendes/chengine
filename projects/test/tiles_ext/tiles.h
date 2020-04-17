@@ -1,6 +1,8 @@
 #ifndef TILES_H
 #define TILES_H
 #include <chengine-dev/engine.h>
+#include "../render_ext/render.h"
+#include "../movement_ext/movement.h"
 
 
 typedef struct

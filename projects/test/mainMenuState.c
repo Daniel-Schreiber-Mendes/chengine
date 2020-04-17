@@ -161,25 +161,71 @@ void stateMachine_first_state_push(void)
 
 void checs_init_config(void)
 {
-    #include "./resources/config/che_checs.cfg"
+    checs_init
+    (
+        1,                   //systemUpdateCount
+        1,                   //systemDrawCount,
+        3,                   //taskUpdateCount
+        0,                   //taskDrawCount
+        1,                   //tag_count
+        8,                   //componentCount
+        19,                  //maxEntitysHint
+        StandardCommandCount,//commandCount
+        StandardEventCount   //eventCount
+    );
+
+    checs_command_subscribe(WindowCloseCommand, window_close_command_callback);
+    checs_command_subscribe(FramebufferSizeCommand, framebuffer_size_command_callback);
+    checs_command_subscribe(KeyCommand, key_command_callback);
+    checs_command_subscribe(MouseButtonCommand, mouse_button_command_callback);
+    checs_command_subscribe(JoystickCommand, joystick_command_callback);
+    checs_command_subscribe(ScrollCommand, scroll_command_callback);
+    checs_component_register(Renderable, 18, renderable_destruct);
+    checs_component_register(Transform, 19, NULL);
+    checs_component_register(KeyInput, 1, NULL);
+    checs_component_register(SoundSource, 1, soundSource_destruct);
+    checs_component_register(Camera, 1, NULL);
+    checs_component_register(Chunk, 16, NULL);
+    checs_component_register(Velocity, 3, NULL);
+    checs_component_register(Collidable, 2, NULL);
+    checs_event_register(KeyEventData, KeyEvent, 4);
+    checs_event_register(MouseButtonEventData, MouseButtonEvent, 1);
+    checs_event_register(JoystickEventData, JoystickEvent, 1);
+    checs_system_register(render_system, CHECS_ON_DRAW, 1, 5, RENDER_SYSTEM_COMPONENTS);
+    checs_system_register(chunk_loading_system, CHECS_ON_UPDATE, 1, 5, CHUNK_LOADING_SYSTEM_COMPONENTS);
+    checs_task_register(physics_task, CHECS_ON_UPDATE);
+    checs_task_register(input_task, CHECS_ON_UPDATE);
+    checs_task_register(movement_task, CHECS_ON_UPDATE);
 }
 
 
 void che_window_config(void)
 {
-    #include "./resources/config/che_window.cfg"
+    window_fullscreen_set(false);
+    //window_size_set(700, 300);
+    window_title_set("Che Engine");
+    window_vsync_set(true);
 }
 
 
 void che_init_config(void)
 {
-    #include "./resources/config/che_init.cfg"
+    render_system_init();
+    physics_task_init();
+
+    texture_construct_from_file(&cobble, "./resources/textures/circle.png");
+    texture_construct_from_file(&tileset, "./resources/textures/tilemap.png");
+    chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, &tileset, 32);
 }
 
 
 void che_terminate_config(void)
 {
-    #include "./resources/config/che_terminate.cfg"
+    physics_task_terminate();
+    render_system_terminate();
+    chunk_loading_system_terminate();
+    texture_destruct(&cobble);
+    texture_destruct(&tileset);
 }
 
 
