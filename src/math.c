@@ -1,6 +1,8 @@
-#include "../../utility.h"
+#include "../utility.h"
 
 
+static uint16_t sr;
+static uint8_t bit;
 
 
 uint8_t limitUint8(uint8_t const val, uint8_t const min, uint8_t const max)
@@ -14,14 +16,12 @@ float limitF(float const val, float const min, float const max)
 }
 
 
-uint16_t sr_init(void)
+void sr_init(void)
 {
     srand(time(0));
-    return rand();
+    sr = rand();
 }
 
-static uint16_t sr;
-static uint8_t bit;
 
 uint16_t getRandUint16(uint16_t const min, uint16_t const max)
 {
@@ -46,7 +46,7 @@ bool getRandBool(float const chance)
 }
 
 
-int roundToMultiple(int const number, int const multiple)
+int mround(int const number, int const multiple)
 {
     return ((number + multiple / 2) / multiple) * multiple;
 }

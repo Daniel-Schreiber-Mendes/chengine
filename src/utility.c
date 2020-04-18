@@ -1,4 +1,4 @@
-#include "../../utility.h"
+#include "../utility.h"
 
 
 uint8_t getRandElement(uint8_t const *const array, uint8_t const size)
@@ -17,7 +17,7 @@ uint8_t alternator_alternate(Alternator *const alt)
 }
 
 
-uint8_t typeGL_size_get(GLuint const type)
+uint8_t getGlTypeSize(GLuint const type)
 {
 	switch (type)
 	{
