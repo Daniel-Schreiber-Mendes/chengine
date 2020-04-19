@@ -26,22 +26,15 @@ static void on_add_b_clicked(GtkButton *b, gpointer user_data);
 static void on_remove_b_clicked(GtkButton *b, gpointer user_data);
 static void on_name_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
 static void on_count_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
-static void load_module(char const *restrict type, char const *restrict name, uint16_t const count);
+static void load_module(char const *const name);
 static void on_trse_changed(GtkTreeSelection *treeselection, gpointer user_data);
 
 
 void modules_init(GtkBuilder *const builder)
 {
-	GtkTreeViewColumn 		*type_tvc = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "modules_type_tvc"));
-	GtkTreeViewColumn 		*name_tvc = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "modules_name_tvc"));
-	GtkTreeViewColumn 		*count_tvc = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "modules_count_tvc"));
-	GtkCellRenderer   		*type_cr = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "modules_type_cr"));
-	GtkCellRenderer   		*name_cr = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "modules_name_cr"));
-	GtkCellRenderer   		*count_cr = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "modules_count_cr"));
-
-	gtk_tree_view_column_add_attribute(type_tvc, type_cr, "text", 0);
-	gtk_tree_view_column_add_attribute(name_tvc, name_cr, "text", 1);
-	gtk_tree_view_column_add_attribute(count_tvc, count_cr, "text", 2);
+	GtkTreeViewColumn *name_tvc = GTK_TREE_VIEW_COLUMN(gtk_builder_get_object(builder, "modules_name_tvc"));
+	GtkCellRenderer   *name_cr = GTK_CELL_RENDERER(gtk_builder_get_object(builder, "modules_name_cr"));
+	gtk_tree_view_column_add_attribute(name_tvc, name_cr, "text", 0);
 
 
 	trst = GTK_TREE_STORE(gtk_builder_get_object(builder, "modules_trst"));
@@ -54,8 +47,6 @@ void modules_init(GtkBuilder *const builder)
 
 	g_signal_connect(add_b, "clicked", G_CALLBACK(on_add_b_clicked), NULL);
 	g_signal_connect(remove_b, "clicked", G_CALLBACK(on_remove_b_clicked), NULL);
-	g_signal_connect(name_cr, "edited", G_CALLBACK(on_name_cr_edited), NULL);
-	g_signal_connect(count_cr, "edited", G_CALLBACK(on_count_cr_edited), NULL);
 	g_signal_connect(trse, "changed", G_CALLBACK(on_trse_changed), NULL);
 
 
@@ -84,25 +75,17 @@ void modules_load(void)
 	strcpy(modules_path, projpath);
 	strcat(modules_path, "/modules");
 
-    DIR *const dir = opendir(modules_path);
-    if (!dir)
-    {
-        g_print("Project could not be opened");
-        return;
-    }
-
-    struct dirent *modules;  
-  
-    while ((modules = readdir(dir)) != NULL) 
-    {
-    	if(!strcmp(modules->d_name, ".") || !strcmp(modules->d_name, ".."))
-        {
-        	continue;
-        }
-		load_module("Mod", modules->d_name, 0);
-    }
-  
-    closedir(dir);
+	fforeach(modules_path, module, 
+	({
+		char module_path[100];
+		strcpy(module_path, modules_path);
+		strcat(module_path, "/");
+		strcat(module_path, module->d_name);
+		fforeach(module_path, file, 
+		({
+			load_module(file->d_name);
+		}))
+	}))
 }
 
 
@@ -143,12 +126,10 @@ static void on_count_cr_edited(GtkCellRendererText *cell, gchar *path_string, gc
 }
 
 
-static void load_module(char const *restrict type, char const *restrict name, uint16_t const count)
+static void load_module(char const *const name)
 {
 	gtk_tree_store_append(trst, &iter, NULL);
-	gtk_tree_store_set(trst, &iter, 0, type, -1);
-	gtk_tree_store_set(trst, &iter, 1, name, -1);
-	gtk_tree_store_set(trst, &iter, 2, count, -1);
+	gtk_tree_store_set(trst, &iter, 0, name, -1);
 }
 
 

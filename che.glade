@@ -10,12 +10,8 @@
   </object>
   <object class="GtkTreeStore" id="modules_trst">
     <columns>
-      <!-- column-name Type -->
-      <column type="gchararray"/>
       <!-- column-name Name -->
       <column type="gchararray"/>
-      <!-- column-name Count -->
-      <column type="guint"/>
     </columns>
   </object>
   <object class="GtkImage" id="run_b_i1">
@@ -196,7 +192,7 @@
                   </object>
                   <packing>
                     <property name="x">5</property>
-                    <property name="y">460</property>
+                    <property name="y">560</property>
                   </packing>
                 </child>
                 <child>
@@ -213,13 +209,13 @@
                   </object>
                   <packing>
                     <property name="x">105</property>
-                    <property name="y">460</property>
+                    <property name="y">560</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
-                    <property name="width_request">600</property>
-                    <property name="height_request">400</property>
+                    <property name="width_request">800</property>
+                    <property name="height_request">500</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="shadow_type">in</property>
@@ -244,46 +240,36 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkViewport" id="modules_v">
+                  <object class="GtkScrolledWindow">
                     <property name="width_request">200</property>
-                    <property name="height_request">400</property>
+                    <property name="height_request">500</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="shadow_type">in</property>
+                    <property name="max_content_width">800</property>
+                    <property name="max_content_height">3000</property>
                     <child>
-                      <object class="GtkTreeView" id="modules_tv">
+                      <object class="GtkViewport" id="modules_v">
+                        <property name="width_request">200</property>
+                        <property name="height_request">400</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="model">modules_trst</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="modules_trse">
-                            <signal name="changed" handler="on_modules_trse_changed" swapped="no"/>
-                          </object>
-                        </child>
+                        <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkTreeViewColumn" id="modules_type_tvc">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Type</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="modules_type_cr"/>
+                          <object class="GtkTreeView" id="modules_tv">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="model">modules_trst</property>
+                            <property name="search_column">0</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection" id="modules_trse"/>
                             </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn" id="modules_name_tvc">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Name</property>
                             <child>
-                              <object class="GtkCellRendererText" id="modules_name_cr"/>
-                            </child>
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkTreeViewColumn" id="modules_count_tvc">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Count</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="modules_count_cr">
-                                <property name="editable">True</property>
+                              <object class="GtkTreeViewColumn" id="modules_name_tvc">
+                                <property name="sizing">autosize</property>
+                                <property name="title" translatable="yes">Name</property>
+                                <child>
+                                  <object class="GtkCellRendererText" id="modules_name_cr"/>
+                                </child>
                               </object>
                             </child>
                           </object>
