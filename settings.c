@@ -26,36 +26,33 @@ static void on_save_settings_b_clicked(GtkButton *b, gpointer user_data)
 {
 	char path[50];
 
-	if (!project_path_get())
 	{
-		g_print("Failed to save settings because the project path is not set\n");
-		return;
+		if (!project_path_get())
+		{
+			g_print("Failed to save settings because the project path is not set\n");
+			return;
+		}
+		strcpy(path, project_path_get());
+		strcat(path, "/Makefile");
 	}
-	strcpy(path, project_path_get());
-	strcat(path, "/Makefile");
 
-	File old_file;
-	if (!file_construct(&old_file, path, "r"))
+
+	FILE *old_file = fopen(path, "r");
+	if (!old_file)
 	{
 		g_print("Failed to save settings because the Makefile couldnt be found\n");
-		file_destruct(&old_file);
 		return;
 	}
-	if (!old_file.bufferSize)
-	{
-		g_print("Makefile is empty");
-		file_destruct(&old_file);
-		return;
-	}
-	remove(path); //delete original Makefile	
 
+	char *const buffer = fbcp(old_file);
+	remove(path); //delete original Makefile	
 	
 	FILE *new_file = fopen(path, "w");
 	fprintf(new_file, "VERSION = -std=%s\n", gtk_combo_box_get_active_id(version_cb));
 	fprintf(new_file, "LIBS = %s\n", gtk_entry_get_text(librarys_e));
 	fprintf(new_file, "MODE = %s\n", gtk_combo_box_get_active_id(mode_cb)[0] == 'd' ? "-g" : "");
 	fprintf(new_file, "OPTIMIZATIONS = -%s\n", gtk_combo_box_get_active_id(optimizations_cb));
-	fputs(strfndch(old_file.buffer, '\n', 4), new_file);
-	file_destruct(&old_file);	
+	fputs(strfndch(buffer, '\n', 4), new_file);
+	free(buffer);	
 	fclose(new_file);
 }

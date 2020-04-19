@@ -8,8 +8,10 @@
     <property name="can_focus">False</property>
     <property name="stock">gtk-execute</property>
   </object>
-  <object class="GtkTreeStore" id="components_trst">
+  <object class="GtkTreeStore" id="modules_trst">
     <columns>
+      <!-- column-name Type -->
+      <column type="gchararray"/>
       <!-- column-name Name -->
       <column type="gchararray"/>
       <!-- column-name Count -->
@@ -177,11 +179,11 @@
               </packing>
             </child>
             <child>
-              <object class="GtkFixed" id="components_f">
+              <object class="GtkFixed" id="modules_f">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="components_add_b">
+                  <object class="GtkButton" id="modules_add_b">
                     <property name="label">gtk-add</property>
                     <property name="width_request">100</property>
                     <property name="height_request">40</property>
@@ -190,7 +192,7 @@
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
                     <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="on_components_add_b_clicked" swapped="no"/>
+                    <signal name="clicked" handler="on_modules_add_b_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="x">5</property>
@@ -198,7 +200,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="components_remove_b">
+                  <object class="GtkButton" id="modules_remove_b">
                     <property name="label">gtk-remove</property>
                     <property name="width_request">100</property>
                     <property name="height_request">40</property>
@@ -207,6 +209,7 @@
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
                     <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="on_modules_remove_b_clicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="x">105</property>
@@ -223,13 +226,14 @@
                     <property name="max_content_width">800</property>
                     <property name="max_content_height">3000</property>
                     <child>
-                      <object class="GtkSourceView" id="components_sv">
+                      <object class="GtkSourceView" id="modules_sv">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="left_margin">2</property>
                         <property name="right_margin">2</property>
                         <property name="show_line_numbers">True</property>
                         <property name="show_line_marks">True</property>
+                        <property name="auto_indent">True</property>
                         <property name="highlight_current_line">True</property>
                       </object>
                     </child>
@@ -240,38 +244,45 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkViewport" id="components_v">
+                  <object class="GtkViewport" id="modules_v">
                     <property name="width_request">200</property>
                     <property name="height_request">400</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkTreeView" id="components_tv">
+                      <object class="GtkTreeView" id="modules_tv">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <property name="model">components_trst</property>
+                        <property name="model">modules_trst</property>
                         <child internal-child="selection">
-                          <object class="GtkTreeSelection" id="components_trse">
-                            <signal name="changed" handler="on_components_trse_changed" swapped="no"/>
+                          <object class="GtkTreeSelection" id="modules_trse">
+                            <signal name="changed" handler="on_modules_trse_changed" swapped="no"/>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkTreeViewColumn" id="components_name_tvc">
+                          <object class="GtkTreeViewColumn" id="modules_type_tvc">
                             <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Name</property>
+                            <property name="title" translatable="yes">Type</property>
                             <child>
-                              <object class="GtkCellRendererText" id="components_name_cr">
-                                <property name="editable">True</property>
-                              </object>
+                              <object class="GtkCellRendererText" id="modules_type_cr"/>
                             </child>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkTreeViewColumn" id="components_count_tvc">
+                          <object class="GtkTreeViewColumn" id="modules_name_tvc">
+                            <property name="sizing">autosize</property>
+                            <property name="title" translatable="yes">Name</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="modules_name_cr"/>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="modules_count_tvc">
                             <property name="sizing">autosize</property>
                             <property name="title" translatable="yes">Count</property>
                             <child>
-                              <object class="GtkCellRendererText" id="components_count_cr">
+                              <object class="GtkCellRendererText" id="modules_count_cr">
                                 <property name="editable">True</property>
                               </object>
                             </child>
@@ -287,29 +298,8 @@
                 </child>
               </object>
               <packing>
-                <property name="title" translatable="yes">Components</property>
+                <property name="title" translatable="yes">Modules</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkFixed" id="systems_f">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="name">page2</property>
-                <property name="title" translatable="yes">Systems</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkFixed" id="tasks_f">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="title" translatable="yes">Tasks</property>
-                <property name="position">3</property>
               </packing>
             </child>
             <child>
@@ -319,7 +309,7 @@
               </object>
               <packing>
                 <property name="title" translatable="yes">States</property>
-                <property name="position">4</property>
+                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -381,6 +371,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="title" translatable="yes"/>
+            <signal name="file-set" handler="on_open_fcb_file_set" swapped="no"/>
           </object>
           <packing>
             <property name="x">210</property>

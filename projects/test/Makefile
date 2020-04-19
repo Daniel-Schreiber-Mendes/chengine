@@ -5,11 +5,11 @@ OPTIMIZATIONS = -O0
 ERRORFLAGS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion
 LFLAGS = -o
 CFLAGS = $(ERRORFLAGS) $(VERSION) $(OPTIMIZATIONS) -c $(MODE)
-OBJFILES = mainMenuState.o input_task.o physics_system.o chunk_loading_system.o render_system.o movement_task.o camera.o
+OBJFILES = mainMenuState.o input_task.o physics_system.o chunk_loading_system.o render_system.o movement_task.o camera.o soundSource.o audio.o wav.o window.o vertexArray.o buffer.o program.o texture.o
 
 
 compile: $(OBJFILES)
-	gcc $(LFLAGS) application $(OBJFILES) -lchengine-dev -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lopenal $(LIBS)
+	gcc $(LFLAGS) application $(OBJFILES) -lchengine-dev -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcheio -lopenal $(LIBS)
 
 run:
 	./application
@@ -31,19 +31,43 @@ mainMenuState.o: mainMenuState.c
 input_task.o: input_task.c
 	gcc $(CFLAGS) input_task.c
 
-########################### extensions ##################################################################################################
+########################### modules ##################################################################################################
 
-chunk_loading_system.o: tiles_ext/chunk_loading_system.c
-	gcc $(CFLAGS) tiles_ext/chunk_loading_system.c
+chunk_loading_system.o: modules/std_tiles/chunk_loading_system.c
+	gcc $(CFLAGS) modules/std_tiles/chunk_loading_system.c
 
-physics_system.o: physics_ext/physics_system.c
-	gcc $(CFLAGS) physics_ext/physics_system.c
+physics_system.o: modules/std_physics/physics_system.c
+	gcc $(CFLAGS) modules/std_physics/physics_system.c
 
-render_system.o: render_ext/render_system.c
-	gcc $(CFLAGS) render_ext/render_system.c
+render_system.o: modules/std_render/render_system.c
+	gcc $(CFLAGS) modules/std_render/render_system.c
 
-movement_task.o: movement_ext/movement_task.c
-	gcc $(CFLAGS) movement_ext/movement_task.c
+movement_task.o: modules/std_movement/movement_task.c
+	gcc $(CFLAGS) modules/std_movement/movement_task.c
 
-camera.o: camera_ext/camera.c
-	gcc $(CFLAGS) camera_ext/camera.c
+camera.o: modules/std_camera/camera.c
+	gcc $(CFLAGS) modules/std_camera/camera.c
+
+soundSource.o: modules/std_audio/soundSource.c
+	gcc $(CFLAGS) modules/std_audio/soundSource.c
+
+audio.o: modules/std_audio/audio.c
+	gcc $(CFLAGS) modules/std_audio/audio.c
+
+wav.o: modules/std_audio/wav.c
+	gcc $(CFLAGS) modules/std_audio/wav.c
+
+window.o: modules/std_window/window.c
+	gcc $(CFLAGS) modules/std_window/window.c
+
+texture.o: modules/std_gl/texture.c
+	gcc $(CFLAGS) modules/std_gl/texture.c
+
+vertexArray.o: modules/std_gl/vertexArray.c
+	gcc $(CFLAGS) modules/std_gl/vertexArray.c	
+
+buffer.o: modules/std_gl/buffer.c
+	gcc $(CFLAGS) modules/std_gl/buffer.c
+
+program.o: modules/std_gl/program.c
+	gcc $(CFLAGS) modules/std_gl/program.c	

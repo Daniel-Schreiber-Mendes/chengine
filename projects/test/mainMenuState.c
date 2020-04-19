@@ -69,8 +69,8 @@ void mainMenuState_construct(MainMenuState *const s)
         elementBuffer_construct(&ebo, elements);
         vertexBuffer_construct(&vbo, positions);
         vertexBufferLayout_construct(&vbl, 2);
-        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
-        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE})); //pos coords
+        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE})); //tex coords
         vertexArray_buffer_add(&r->vao, vbo, vbl);
         r->mode = GL_TRIANGLES;
         r->renderableType = ELEMENTS;
@@ -122,8 +122,8 @@ void mainMenuState_construct(MainMenuState *const s)
         elementBuffer_construct(&ebo, elements);
         vertexBuffer_construct(&vbo, positions);
         vertexBufferLayout_construct(&vbl, 2);
-        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE}); //pos coords
-        vertexBufferLayout_element_add(&vbl, (VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}); //tex coords
+        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE})); //pos coords
+        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE})); //tex coords
         vertexArray_buffer_add(&r->vao, vbo, vbl);
         r->mode = GL_TRIANGLES;
         r->renderableType = ELEMENTS;
@@ -159,7 +159,7 @@ void stateMachine_first_state_push(void)
 }
 
 
-void checs_init_config(void)
+void che_checs_init(void)
 {
     checs_init
     (
@@ -199,8 +199,18 @@ void checs_init_config(void)
 }
 
 
-void che_window_config(void)
+void che_init(void)
 {
+    window_init();
+    audio_init();
+
+    render_system_init();
+    physics_task_init();
+
+    texture_construct_from_file(&cobble, "./resources/textures/circle.png");
+    texture_construct_from_file(&tileset, "./resources/textures/tilemap.png");
+    chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, &tileset, 32);
+
     window_fullscreen_set(false);
     //window_size_set(700, 300);
     window_title_set("Che Engine");
@@ -208,24 +218,23 @@ void che_window_config(void)
 }
 
 
-void che_init_config(void)
-{
-    render_system_init();
-    physics_task_init();
-
-    texture_construct_from_file(&cobble, "./resources/textures/circle.png");
-    texture_construct_from_file(&tileset, "./resources/textures/tilemap.png");
-    chunk_loading_system_init(chunk_load_callback, chunk_unload_callback, 2, 1, 32, &tileset, 32);
-}
-
-
-void che_terminate_config(void)
+void che_terminate(void)
 {
     physics_task_terminate();
     render_system_terminate();
+
     chunk_loading_system_terminate();
     texture_destruct(&cobble);
     texture_destruct(&tileset);
+
+    audio_terminate();
+    window_terminate();
+}
+
+
+void che_poll_events(void)
+{
+    window_poll_events();
 }
 
 

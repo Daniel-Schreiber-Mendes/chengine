@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
     gtk_file_chooser_set_action(GTK_FILE_CHOOSER(open_fcb), GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER);
     
     settings_init(builder);
-    components_init(builder);
+    modules_init(builder);
     
     g_signal_connect(main_window, "destroy", G_CALLBACK(on_main_window_destroy), NULL);
     g_signal_connect(compile_b, "clicked", G_CALLBACK(on_compile_b_clicked), NULL);
@@ -88,5 +88,5 @@ char* project_path_get(void)
 
 static void on_open_fcb_file_set(GtkFileChooserButton *widget, gpointer user_data)
 {
-    components_load();
+    modules_load();
 }

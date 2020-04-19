@@ -3,7 +3,7 @@ ERRORFLAGS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra
 LFLAGS = -o
 LIBS =  -lcheio -lchecl `pkg-config --libs gtksourceview-3.0`
 CFLAGS = $(ERRORFLAGS) $(VERSION) -c -g `pkg-config --cflags gtk+-3.0` `pkg-config --cflags gtksourceview-3.0`
-OBJFILES = main.o settings.o components.o
+OBJFILES = main.o settings.o modules.o
 
 
 
@@ -19,8 +19,8 @@ main.o: main.c
 settings.o: settings.c
 	gcc $(CFLAGS) settings.c
 
-components.o: components.c
-	gcc $(CFLAGS) components.c
+modules.o: modules.c
+	gcc $(CFLAGS) modules.c
 
 
 setup:

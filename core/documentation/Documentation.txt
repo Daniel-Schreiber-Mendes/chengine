@@ -1,0 +1,34 @@
+Documentation of the coding style in all Che projects:
+
+Naming conventions:
+#Functions:
+	foo_bar()
+
+	@foo can be the name of a compilation unit or a struct.
+	@bar can be any verb like "get", "set" or "create".
+	
+	It is possible to name a function for example foo_isActive() but only if this function is the only one mentioning this keyword.
+	This means as soon as the you have a setActive function both need to be written in the form foo_active_get() and foo_active_set()
+
+	init <-> terminate : initializing static variables
+	create <-> destroy : A manager or factory or just something else is responsible for creating, storing and destroying objects
+	generate <-> erase : anything that just generates an id or number or index
+	construct <-> destruct : for actual objects where memory *can* (not must) be allocated or deallocated. 
+	add <-> remove : adding something to a data structure like a vector or stack or sparseSet
+	Like constructor and destructor. 
+
+	If a function begins with a "inter_", that means that the function is only used inside the library, not in the API itself. (If the Project is part of a library)
+	
+	The end of a function implemenatation has to be exactly 2 lines above the begin of the next one
+
+#Macros:
+	foo_bar(arg);
+	
+	@function body -> #Functions
+	@arg if it begins with an uppercase letter, it is a type
+	
+	Variables defined in a macro always have to be uppercase.
+	Functions defined in as macro always have to be written like normal functions -> #Functions
+
+#Variables:
+	if defined as extern in a header, they have to be written in this form : variable_name
