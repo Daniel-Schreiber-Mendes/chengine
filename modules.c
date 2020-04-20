@@ -8,6 +8,13 @@ typedef struct
 ComponentView;
 
 
+enum filetype_t
+{
+	MODULE,
+	FILE
+};
+
+
 static GtkTreeStore 	 		*trst;
 static GtkTreeView 	     		*tv;
 static GtkTreeSelection  		*trse;
@@ -21,12 +28,9 @@ static GtkTextBuffer            *sbuf; //is a GtkSourceBuffer
 static GtkTextView    		    *sv; // is a GtkSourceView
 //static Vector 			  components;
 
-
-static void on_add_b_clicked(GtkButton *b, gpointer user_data);
-static void on_remove_b_clicked(GtkButton *b, gpointer user_data);
 static void on_name_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
 static void on_count_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
-static void load_module(char const *const name);
+static void load_file(char const *const name, enum filetype_t ft);
 static void on_trse_changed(GtkTreeSelection *treeselection, gpointer user_data);
 
 
@@ -77,34 +81,19 @@ void modules_load(void)
 
 	fforeach(modules_path, module, 
 	({
+
+		load_file(module->d_name, MODULE);
+
 		char module_path[100];
 		strcpy(module_path, modules_path);
 		strcat(module_path, "/");
 		strcat(module_path, module->d_name);
+
 		fforeach(module_path, file, 
 		({
-			load_module(file->d_name);
+			load_file(file->d_name, FILE);
 		}))
 	}))
-}
-
-
-static void on_add_b_clicked(GtkButton *b, gpointer user_data)
-{
-	//load_module("Component", 0);
-}
-
-
-static void on_remove_b_clicked(GtkButton *b, gpointer user_data)
-{
-	if (gtk_tree_selection_get_selected(trse, &model, &iter) == FALSE)
-	{
-		return;
-	}
-
-	char const *name;
-	gtk_tree_model_get(model, &iter, 0, &name, -1);
-	gtk_tree_store_remove(trst, &iter); //removes the currently selected row from the tree store
 }
 
 
@@ -126,10 +115,18 @@ static void on_count_cr_edited(GtkCellRendererText *cell, gchar *path_string, gc
 }
 
 
-static void load_module(char const *const name)
+static void load_file(char const *const name, enum filetype_t ft)
 {
-	gtk_tree_store_append(trst, &iter, NULL);
-	gtk_tree_store_set(trst, &iter, 0, name, -1);
+	static GtkTreeIter module;
+	if (ft == MODULE)
+	{
+		gtk_tree_store_append(trst, &module &iter);
+		gtk_tree_store_set(trst, &module, 0, name, -1);
+		return;
+	}
+
+	gtk_tree_store_append(trst, &module, &iter);
+	gtk_tree_store_set(trst, &module, 0, name, -1);
 }
 
 
