@@ -1,9 +1,5 @@
 #ifndef CHENGINE_H
 #define CHENGINE_H
-#include <gtksourceview/gtksource.h>
-#include <gtksourceview/gtksourcelanguagemanager.h>
-#include <gtk/gtk.h>
-#include <checl/containers.h>
 #include <cheio/io.h>
 #include <sys/types.h>
 #include <dirent.h>
