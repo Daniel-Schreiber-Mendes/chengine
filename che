@@ -1,0 +1,66 @@
+#!/bin/bash
+
+
+if [ -z "$3" ] 
+then
+	echo "Not enough arguments given"
+	exit
+fi
+
+if [ "$1" = "install" ]
+then
+	if [ "$2" = "module" ]
+	then
+		(cd projects/test/modules/$3 && ./.install)
+	elif [ "$2" = "project" ]
+	then
+		echo "Project installed"
+	else
+		echo "Unkown install argument: ${2}"
+	fi
+elif [ "$1" = "remove" ]
+then
+	if [ "$2" = "module" ]
+	then
+		echo "Module removed"
+	elif [ "$2" = "project" ]
+	then
+		echo "Project removed"
+	else
+		echo "Unkown remove argument: ${2}"
+	fi
+elif [ "$1" = "create" ]
+then
+	if [ "$2" = "module" ]
+	then
+		mkdir projects/test/modules/$3
+		echo -e "#ifndef ${3^^}_MOD_H\n#define ${3^^}_MOD_H\n\n\n\n#endif" > projects/test/modules/$3/$3.h 
+		#-e makes echo interpret \n as a newline character, otherwise it would just print it into the file
+		#^^ makes the string before that fully uppercase
+	elif [ "$2" = "project" ]
+	then
+		mkdir modules
+		#the - after << make it ignore leading tabs
+		cat > Makefile <<- EOF
+		VERSION = -std=c99
+		LIBS = 
+		MODE = -g
+		OPTIMIZATIONS = -O0
+		ERRORFLAGS = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion
+		LFLAGS = -o
+		CFLAGS = \$(ERRORFLAGS) \$(VERSION) \$(OPTIMIZATIONS) -c \$(MODE)
+		OBJFILES = 
+
+
+		compile: \$(OBJFILES)
+			gcc \$(LFLAGS) ${3} \$(OBJFILES) \$(LIBS)
+
+		run:
+			./${3}
+		EOF
+	else
+		echo "Unkown create argument: ${2}"
+	fi
+else
+	echo "Unkown command: ${1}"
+fi
