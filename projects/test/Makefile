@@ -9,20 +9,10 @@ OBJFILES = mainMenuState.o input_task.o physics_system.o chunk_loading_system.o 
 
 
 compile: $(OBJFILES)
-	gcc $(LFLAGS) application $(OBJFILES) -lchengine-dev -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcheio -lopenal $(LIBS)
+	gcc $(LFLAGS) test $(OBJFILES) -lchengine-dev -lGL -lGLEW -lglfw -lm -lchecl -lchecs -lcheio -lopenal $(LIBS)
 
 run:
-	./application
-
-profile:
-	gprof application gmon.out > profile.txt
-	gedit profile.txt
-
-cachecheck: application
-	valgrind --tool=cachegrind make
-
-memcheck: application
-	valgrind --tool=memcheck --leak-check=full make
+	./test
 
 	
 mainMenuState.o: mainMenuState.c
