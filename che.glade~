@@ -179,40 +179,6 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="modules_add_b">
-                    <property name="label">gtk-add</property>
-                    <property name="width_request">100</property>
-                    <property name="height_request">40</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="on_modules_add_b_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x">5</property>
-                    <property name="y">560</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="modules_remove_b">
-                    <property name="label">gtk-remove</property>
-                    <property name="width_request">100</property>
-                    <property name="height_request">40</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="on_modules_remove_b_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="x">105</property>
-                    <property name="y">560</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkScrolledWindow">
                     <property name="width_request">800</property>
                     <property name="height_request">500</property>
@@ -241,27 +207,36 @@
                 </child>
                 <child>
                   <object class="GtkScrolledWindow">
-                    <property name="width_request">100</property>
-                    <property name="height_request">80</property>
+                    <property name="width_request">200</property>
+                    <property name="height_request">500</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="shadow_type">in</property>
                     <property name="max_content_width">800</property>
                     <property name="max_content_height">3000</property>
                     <child>
-                      <object class="GtkTreeView" id="modules_tv">
+                      <object class="GtkViewport" id="modules_v">
+                        <property name="width_request">200</property>
+                        <property name="height_request">400</property>
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="search_column">0</property>
-                        <child internal-child="selection">
-                          <object class="GtkTreeSelection"/>
-                        </child>
+                        <property name="can_focus">False</property>
                         <child>
-                          <object class="GtkTreeViewColumn" id="modules_name_tvc">
-                            <property name="sizing">autosize</property>
-                            <property name="title" translatable="yes">Name</property>
+                          <object class="GtkTreeView" id="modules_tv">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="model">modules_trst</property>
+                            <property name="search_column">0</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection" id="modules_trse"/>
+                            </child>
                             <child>
-                              <object class="GtkCellRendererText" id="modules_name_cr"/>
+                              <object class="GtkTreeViewColumn" id="modules_name_tvc">
+                                <property name="sizing">autosize</property>
+                                <property name="title" translatable="yes">Name</property>
+                                <child>
+                                  <object class="GtkCellRendererText" id="modules_name_cr"/>
+                                </child>
+                              </object>
                             </child>
                           </object>
                         </child>
@@ -269,8 +244,22 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="x">-202</property>
-                    <property name="y">175</property>
+                    <property name="x">5</property>
+                    <property name="y">50</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkFileChooserButton" id="modules_fcb">
+                    <property name="width_request">100</property>
+                    <property name="height_request">80</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="action">create-folder</property>
+                    <property name="title" translatable="yes"/>
+                  </object>
+                  <packing>
+                    <property name="x">25</property>
+                    <property name="y">563</property>
                   </packing>
                 </child>
               </object>

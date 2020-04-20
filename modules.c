@@ -18,7 +18,7 @@ enum filetype_t
 static GtkTreeStore 	 		*trst;
 static GtkTreeView 	     		*tv;
 static GtkTreeSelection  		*trse;
-static GtkButton 		 		*add_b;
+static GtkButton 		 		*create_b;
 static GtkButton 		 		*remove_b;
 static GtkTreeModel 	 		*model;
 static GtkTreeIter 		  		 iter;
@@ -28,10 +28,8 @@ static GtkTextBuffer            *sbuf; //is a GtkSourceBuffer
 static GtkTextView    		    *sv; // is a GtkSourceView
 //static Vector 			  components;
 
-static void on_name_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
-static void on_count_cr_edited(GtkCellRendererText *cell, gchar *path_string, gchar *new_text, gpointer user_data);
+static void on_save_settings_b_clicked(GtkButton *b, gpointer user_data);
 static void load_file(char const *const name, enum filetype_t ft);
-static void on_trse_changed(GtkTreeSelection *treeselection, gpointer user_data);
 
 
 void modules_init(GtkBuilder *const builder)
@@ -44,23 +42,14 @@ void modules_init(GtkBuilder *const builder)
 	trst = GTK_TREE_STORE(gtk_builder_get_object(builder, "modules_trst"));
 	tv = GTK_TREE_VIEW(gtk_builder_get_object(builder, "modules_tv"));
 	trse = GTK_TREE_SELECTION(gtk_builder_get_object(builder, "modules_trse"));
-	add_b = GTK_BUTTON(gtk_builder_get_object(builder, "modules_add_b"));
+	create_b = GTK_BUTTON(gtk_builder_get_object(builder, "modules_create_b"));
 	remove_b = GTK_BUTTON(gtk_builder_get_object(builder, "modules_remove_b"));
 	sv = GTK_TEXT_VIEW(gtk_builder_get_object(builder, "modules_sv"));
 
 
-	g_signal_connect(add_b, "clicked", G_CALLBACK(on_add_b_clicked), NULL);
+	g_signal_connect(create_b, "clicked", G_CALLBACK(on_add_b_clicked), NULL);
 	g_signal_connect(remove_b, "clicked", G_CALLBACK(on_remove_b_clicked), NULL);
 	g_signal_connect(trse, "changed", G_CALLBACK(on_trse_changed), NULL);
-
-
-
-	lm = gtk_source_language_manager_new();
-	l = gtk_source_language_manager_guess_language(lm, "file.c", NULL);
-
-	sbuf = GTK_TEXT_BUFFER(gtk_source_buffer_new(NULL));
-	gtk_source_buffer_set_language(GTK_SOURCE_BUFFER(sbuf), l);
-	gtk_text_view_set_buffer(sv, sbuf);
 }
 
 
@@ -127,10 +116,4 @@ static void load_file(char const *const name, enum filetype_t ft)
 
 	gtk_tree_store_append(trst, &module, &iter);
 	gtk_tree_store_set(trst, &module, 0, name, -1);
-}
-
-
-static void on_trse_changed(GtkTreeSelection *treeselection, gpointer user_data)
-{
-	g_print("Selection Changed\n");
 }
