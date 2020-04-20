@@ -1,5 +1,8 @@
-#include "engine.h"
-
+#include <cheio/io.h>
+#include <sys/types.h>
+#include <dirent.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 
 int main(int argc, char *argv[])
@@ -8,7 +11,7 @@ int main(int argc, char *argv[])
 }
 
 
-static void on_compile_b_clicked(GtkButton *b, gpointer user_data)
+static void proj_comp(GtkButton *b, gpointer user_data)
 {
     char command[50];
     strcpy(command, "cd ");
@@ -19,7 +22,7 @@ static void on_compile_b_clicked(GtkButton *b, gpointer user_data)
 }
 
 
-static void on_run_b_clicked(GtkButton *b, gpointer user_data)
+static void proj_run(GtkButton *b, gpointer user_data)
 {
     char command[50];
     strcpy(command, "cd ");
