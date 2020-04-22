@@ -49,6 +49,9 @@ then
 		done
 		sed -i "1s|.*|&$files|" Makefile
 		#| seperators instead of / were used because the variable files contains /
+	elif [ "$2" = "che" ]
+	then
+		sudo mv che /usr/bin
 	else
 		echo "Unkown install argument: ${2}"
 	fi
@@ -67,6 +70,9 @@ then
 	then
 		rm -r modules states
 		rm Makefile
+	elif [ "$2" = "che" ]
+	then
+		sudo rm /usr/bin/che
 	else
 		echo "Unkown remove argument: ${2}"
 	fi
@@ -102,9 +108,24 @@ then
 				sed -i "1s|.*|& $file|" Makefile
 			fi
 		done
+	elif [ "$2" = "states" ]
+	then
+		read -r firstline < Makefile
+		for file in states/*.c
+		do
+			if [[ firstline != *"$file"* ]]
+			then
+				sed -i "1s|.*|& $file|" Makefile
+			fi
+		done
 	elif [ "$2" = "project" ]
 	then
 		param_check $3
+		for mod in modules
+		do
+			./che update module mod
+		done
+		./che update states
 	else
 		echo "Unkown update argument: ${2}"
 	fi
