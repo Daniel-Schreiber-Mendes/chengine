@@ -2,6 +2,7 @@
 
 /* if a collidable has the type DYNAMIC and it has moved in the last frame then it is not only a collidable but a collider. */
 static Vector colliders;
+static float gravity[2] = {0, -0.15};
 
 
 void physics_task(void)
@@ -66,6 +67,13 @@ void physics_task(void)
 	}
 
 	vector_clear(&colliders);
+
+	checs_component_entity_foreach(Gravitatable, gravitatable)
+	{
+		checs_component_get(Velocity, v0, gravitatable);
+		v0->vel[0] += gravity[0];
+		v0->vel[1] += gravity[1];
+	}
 }
 
 

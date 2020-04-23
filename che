@@ -59,6 +59,9 @@ run: \$(EXE)
 %.o: %.c
 	gcc -c \$(CFLAGS) \$*.c
 	mv "\$\$(basename \$*.o)" "\$\$(dirname \$*.)"
+
+cleanall:
+	rm \$(OBJ)
 EOF
 }
 

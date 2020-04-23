@@ -28,6 +28,9 @@ typedef struct
 Collidable;
 
 
+typedef struct {}
+Gravitatable;
+
 /* Requirements:
 - If a collidable is of type Static, it is not required to have a Velocity component.
 - If a collidable is of type Kinematic or Dynamic, they have to have a Velocity component.
