@@ -11,6 +11,19 @@ param_check ()
 }
 
 
+module_update ()
+{
+	read -r firstline < Makefile
+	for file in $1/*.c
+	do
+		if [[ firstline != *"$file"* ]]
+		then
+			sed -i "1s|.*|& $file|" Makefile
+		fi
+	done
+}
+
+
 create_makefile ()
 {
 	cat << EOF > Makefile
@@ -28,8 +41,8 @@ CFLAGS = \$(ERR) \$(VER) \$(OPT) -c \$(MODE)
 run: \$(EXE)
 	./\$(EXE)
 
-\$(EXE): \$(OBJ)
-	gcc \$(LFLAGS) \$(EXE) \$(OBJ) \$(LIBS)
+\$(EXE): \$(notdir \$(OBJ))
+	gcc \$(LFLAGS) \$(EXE) \$(notdir \$(OBJ)) \$(LIBS)
 
 %.o: %.c
 	gcc -c \$(CFLAGS) \$*.c
@@ -52,6 +65,7 @@ then
 	elif [ "$2" = "che" ]
 	then
 		sudo mv che /usr/bin
+		chmod 700 /usr/bin/che
 	else
 		echo "Unkown install argument: ${2}"
 	fi
@@ -120,12 +134,11 @@ then
 		done
 	elif [ "$2" = "project" ]
 	then
-		param_check $3
-		for mod in modules
+		for mod in ./modules/*
 		do
-			./che update module mod
+			module_update $mod
 		done
-		./che update states
+		che update states
 	else
 		echo "Unkown update argument: ${2}"
 	fi
