@@ -21,6 +21,18 @@ module_update ()
 			sed -i "1s|.*|& $file|" Makefile
 		fi
 	done
+	##TODO: remove files that are no longer in module
+}
+
+
+module_remove()
+{
+	for file in modules/"$1"/*.c
+	do 
+		sed -e "s|$file||g" -i Makefile
+		#replaces all occurances of $file with nothing
+	done
+	rm -r modules/$1
 }
 
 
@@ -41,21 +53,21 @@ CFLAGS = \$(ERR) \$(VER) \$(OPT) -c \$(MODE)
 run: \$(EXE)
 	./\$(EXE)
 
-\$(EXE): \$(notdir \$(OBJ))
-	gcc \$(LFLAGS) \$(EXE) \$(notdir \$(OBJ)) \$(LIBS)
+\$(EXE): \$(OBJ)
+	gcc \$(LFLAGS) \$(EXE) \$(OBJ) \$(LIBS)
 
 %.o: %.c
 	gcc -c \$(CFLAGS) \$*.c
+	mv "\$\$(basename \$*.o)" "\$\$(dirname \$*.)"
 EOF
 }
 
-
+param_check $2
 if [ "$1" = "install" ]
 then
 	if [ "$2" = "module" ]
 	then
 		param_check $3
-		files=""
 		for file in modules/"$3"/*.c
 		do 
 			files+=" $file"
@@ -74,12 +86,7 @@ then
 	if [ "$2" = "module" ]
 	then
 		param_check $3
-		for file in modules/"$3"/*.c
-		do 
-			sed -e "s|$file||g" -i Makefile
-			#replaces all occurances of $file with nothing
-		done
-		rm -r modules/$3
+		module_remove $3
 	elif [ "$2" = "project" ]
 	then
 		rm -r modules states
@@ -113,15 +120,7 @@ then
 	if [ "$2" = "module" ]
 	then
 		param_check $3
-
-		read -r firstline < Makefile
-		for file in modules/$3/*.c
-		do
-			if [[ firstline != *"$file"* ]]
-			then
-				sed -i "1s|.*|& $file|" Makefile
-			fi
-		done
+		module_update $3
 	elif [ "$2" = "states" ]
 	then
 		read -r firstline < Makefile
