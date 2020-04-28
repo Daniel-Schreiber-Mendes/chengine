@@ -19,7 +19,7 @@ typedef struct
 	type;
 	enum
 	{
-		STATIC, //has collision enabled, is NOT movable, therefore it shall not have a velocuty component
+		STATIC, //has collision enabled, is NOT movable, therefore it shall not have a velocity component
 		KINEMATIC, //has collision and is movable but can not move or interact with other objects despite collision
 		DYNAMIC //collision, optional gravity, movable, can interact with other objects
 	}
@@ -34,6 +34,7 @@ Gravitatable;
 /* Requirements:
 - If a collidable is of type Static, it is not required to have a Velocity component.
 - If a collidable is of type Kinematic or Dynamic, they have to have a Velocity component.
+- Has to run after the movement task
 */
 void physics_task(void);
 void physics_task_init(void);

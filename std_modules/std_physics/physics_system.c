@@ -2,7 +2,7 @@
 
 /* if a collidable has the type DYNAMIC and it has moved in the last frame then it is not only a collidable but a collider. */
 static Vector colliders;
-static float gravity[2] = {0, -0.15};
+static float gravity[2] = {0, -0.008};
 
 
 void physics_task(void)
@@ -30,15 +30,10 @@ void physics_task(void)
 					{
 						if (collidable != collider && c1->type == RECTANGLE)
 						{
-							checs_component_get(Velocity, v0, collider);
 							checs_component_get(Transform, t1, collidable);
 							if (transform_rect_rect_collision(t0, t1, c0->bb, c1->bb))
 							{
-								t0->pos[0] -= v0->vel[0];
-							}
-							if (transform_rect_rect_collision(t0, t1, c0->bb, c1->bb))
-							{
-								t0->pos[1] -= v0->vel[1];
+								transform_rect_rect_single_bump(t0, t1, c0->bb, c1->bb);
 							}
 						}
 					}
@@ -53,11 +48,11 @@ void physics_task(void)
 							checs_component_get(Transform, t1, collidable);
 							if (transform_circle_circle_collision(t0, t1, c0->r, c1->r))
 							{
-								t0->pos[0] -= v0->vel[0];
+								t0->pos[1] -= v0->vel[1];
 							}
 							if (transform_circle_circle_collision(t0, t1, c0->r, c1->r))
 							{
-								t0->pos[1] -= v0->vel[1];
+								t0->pos[0] -= v0->vel[0];
 							}
 						}
 					}
