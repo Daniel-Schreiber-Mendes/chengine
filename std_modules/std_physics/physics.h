@@ -6,15 +6,29 @@
 
 typedef struct
 {
+	float penetration;
+	vec2 normal;
+	vec2 position;
+}
+Contact;
+
+
+typedef struct
+{
 	union
 	{
 		float r; //radius if circle
 		vec2 bb; //bounding box if rect
+		float normal; //vector perpendicular to a line
 	};
 	enum
 	{
 		CIRCLE,
-		RECTANGLE
+		AABB, //axis aligned rectangle, e.g. no rotation
+		RECTANGLE, //rectangle with rotaion
+		LINE, //line with no ends,
+		LINE_SEGMENT, //line with two end
+		RAY //line with one end
 	}
 	type;
 	enum
@@ -39,5 +53,12 @@ Gravitatable;
 void physics_task(void);
 void physics_task_init(void);
 void physics_task_terminate(void);
+void physics_gravity_set(vec2 const g);
+bool physics_aabb_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1);
+void physics_aabb_aabb_single_bump(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
+void physics_aabb_aabb_equal_bump(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
+bool physics_aabb_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0);
+bool physics_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0);
+bool physics_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
 
 #endif
