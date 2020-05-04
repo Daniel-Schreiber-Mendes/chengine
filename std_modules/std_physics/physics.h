@@ -7,7 +7,7 @@
 typedef struct
 {
 	float penetration;
-	vec2 normal;
+	vec2 normal; //the direction of the collision. for example if the top of a rect collides with another one, the normal is (0, 1)
 	vec2 position;
 }
 Contact;
@@ -19,7 +19,6 @@ typedef struct
 	{
 		float r; //radius if circle
 		vec2 bb; //bounding box if rect
-		float normal; //vector perpendicular to a line
 	};
 	enum
 	{
@@ -54,11 +53,15 @@ void physics_task(void);
 void physics_task_init(void);
 void physics_task_terminate(void);
 void physics_gravity_set(vec2 const g);
+
 bool physics_aabb_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1);
 void physics_aabb_aabb_single_bump(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
 void physics_aabb_aabb_equal_bump(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
+
 bool physics_aabb_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0);
 bool physics_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0);
+
 bool physics_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
+void physics_circle_circle_single_bump(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
 
 #endif

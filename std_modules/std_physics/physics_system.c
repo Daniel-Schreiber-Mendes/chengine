@@ -94,75 +94,47 @@ void physics_gravity_set(vec2 const g)
 
 bool physics_aabb_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1)
 {
-	vec2 const mid0 = {t0->pos[0] + bb0[0] * 0.5, t0->pos[1] - bb0[1] * 0.5};
-	vec2 const mid1 = {t1->pos[0] + bb1[0] * 0.5, t1->pos[1] - bb1[1] * 0.5};
-	float const dmidx = mid0[0] - mid1[0];
-	float const dmidy = mid0[1] - mid1[1];
+	float const dmidx = (t0->pos[0] + bb0[0] * 0.5) - (t1->pos[0] + bb1[0] * 0.5);
+	float const dmidy = (t0->pos[1] - bb0[1] * 0.5) - (t1->pos[1] - bb1[1] * 0.5);
     float const px = bb0[0] * 0.5 + bb1[0] * 0.5 - fabs(dmidx); //penetration depth on the x axis
     float const py = bb0[1] * 0.5 + bb1[1] * 0.5 - fabs(dmidy); //penetration depth on the y axis
-    if (px > 0 && py > 0)
+    if (px < py)
     {
-    	vec2 const normal = {px < py ? -1 * sign(dmidx) : 0, px < py ? 0 : -1 * sign(dmidy)};
-    	contact = (Contact)
-    	{
-    		fminf(px, py), //the penetration depth is defined as the axis of least penetration
-    		{normal[0], normal[1]},
-    		{mid0[0] + (bb0[0] * 0.5 - 1) * normal[0], 0}
-    	}; 
-    	return true;
+    	contact.penetration = px;
+    	contact.normal[0] = -1 * sign(dmidx);
+    	contact.normal[1] = 0;
     }
-    return false;
+    else
+    {
+    	contact.penetration = py;
+    	contact.normal[0] = 0;
+    	contact.normal[1] = -1 * sign(dmidy);
+    }
+    contact.position[0] = fmaxf(t0->pos[0], t1->pos[0]);
+    contact.position[0] = fmaxf(t0->pos[1] - bb0[1], t1->pos[1] - bb1[1]);
+    return px > 0 && py > 0;
 }
 
 
 //this pushes only the first entity out of the second
 void physics_aabb_aabb_single_bump(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1)
 {
-    float const right =  (t0->pos[0] + bb0[0]) - t1->pos[0];
-    float const left =   (t1->pos[0] + bb1[0]) - t0->pos[0];
-    float const bottom = (t0->pos[1] + bb0[1]) - t1->pos[1];
-    float const top =    (t1->pos[1] + bb1[1]) - t0->pos[1];
-    
-    if (right < left && right < top && right < bottom)
+    if (contact.normal[0] == 1)
     {
         t0->pos[0] = t1->pos[0] - bb0[0];//right collision
     }
-    else if (left < top && left < bottom)
+    else if (contact.normal[0] == -1)
     {
         t0->pos[0] = t1->pos[0] + bb1[0];//left collision
     }
-    else if (top < bottom)
+    else if (contact.normal[1] == 1)
     {
-        t0->pos[1] = t1->pos[1] + bb1[1];//top collision
+        t0->pos[1] = t1->pos[1] - bb1[1];//top collision
     }
     else
     {
-        t0->pos[1] = t1->pos[1] - bb0[1];//bottom collision
+        t0->pos[1] = t1->pos[1] + bb0[1];//bottom collisicon
     }
-/*
-  // Calculate relative velocity
-  vec2 rv;
-  glm_vec2_sub();
-   = B.velocity - A.velocity
- 
-  // Calculate relative velocity in terms of the normal direction
-  float velAlongNormal = DotProduct( rv, normal )
- 
-  // Do not resolve if velocities are separating
-  if(velAlongNormal > 0)
-    return;
- 
-  // Calculate restitution
-  float e = min( A.restitution, B.restitution)
- 
-  // Calculate impulse scalar
-  float j = -(1 + e) * velAlongNormal
-  j /= 1 / A.mass + 1 / B.mass
-
-    // Apply impulse
-    Vec2 impulse = j * normal
-    A.velocity -= 1 / A.mass * impulse
-	B.velocity += 1 / B.mass * impulse*/
 }
 
 
@@ -187,6 +159,23 @@ bool physics_circle_point_collision(Transform const *restrict t0, Transform cons
 
 bool physics_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1)
 {
-    return pow(r0 + r1, 2) > (pow(t0->pos[0] + r0 - t1->pos[0] - r1, 2) + pow(t0->pos[1] + r0 - t1->pos[1] - r1, 2));
-    //if
+	vec2 mid0 = {t0->pos[0] + r0, t0->pos[1] - r0};
+	vec2 mid1 = {t1->pos[0] + r1, t1->pos[1] - r1};
+	//the penetration is the sum of the radiuses minus the acutal distance
+	if ((contact.penetration = r0 + r1 - glm_vec2_distance(mid0, mid1)) > 0)
+	{
+		vec2 t;//translation vector between two circles
+		glm_vec2_sub(mid1, mid0, t);
+		glm_vec2_normalize_to(t, contact.normal); //the normal is the normalized translation vector between the two circles
+		glm_vec2_copy(t0->pos, contact.position);
+		glm_vec2_muladds(contact.normal, r0, contact.position); //multiplies vec2 normal and scalar radius and adds them to the middle position of circle 0
+	    return true;
+	}
+	return false;
+}
+
+
+void physics_circle_circle_single_bump(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1)
+{
+
 }
