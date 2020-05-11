@@ -82,25 +82,24 @@ static bool aabb_aabb_collision(Transform const *restrict t0, Transform const *r
 	//translation vetcor between the middles of the two rects
 	vec2 const t = {(t0->pos[0] + c0->bb[0] * 0.5) - (t1->pos[0] + c1->bb[0] * 0.5), (t0->pos[1] - c0->bb[1] * 0.5) - (t1->pos[1] - c1->bb[1] * 0.5)};
 	vec2 const p = {c0->bb[0] * 0.5 + c1->bb[0] * 0.5 - fabs(t[0]), c0->bb[1] * 0.5 + c1->bb[1] * 0.5 - fabs(t[1])}; //penetration depth on both axes
-    if (p[0] > 0 && p[1] > 0)
+    if (p[0] > 0 && p[1] < 0)
+    	return false;
+
+    if (p[0] < p[1]) //if collision is mainly on x axis
     {
-	    if (p[0] < p[1]) //if collision is mainly on x axis
-	    {
-	    	contact.penetration = p[0];
-	    	contact.normal[0] = -1 * sign(t[0]);
-	    	contact.normal[1] = 0;
-	    }
-	    else //collision is mainly on y axis
-	    {
-	    	contact.penetration = p[1];
-	    	contact.normal[0] = 0;
-	    	contact.normal[1] = -1 * sign(t[1]);
-	    }
-	    contact.position[0] = fmaxf(t0->pos[0], t1->pos[0]);
-	    contact.position[1] = fmaxf(t0->pos[1] - c0->bb[1], t1->pos[1] - c1->bb[1]);
-	    return true;
+    	contact.penetration = p[0];
+    	contact.normal[0] = -1 * sign(t[0]);
+    	contact.normal[1] = 0;
     }
-    return false;
+    else //collision is mainly on y axis
+    {
+    	contact.penetration = p[1];
+    	contact.normal[0] = 0;
+    	contact.normal[1] = -1 * sign(t[1]);
+    }
+    contact.position[0] = fmaxf(t0->pos[0], t1->pos[0]);
+    contact.position[1] = fmaxf(t0->pos[1] - c0->bb[1], t1->pos[1] - c1->bb[1]);
+    return true;
 }
 
 
@@ -114,14 +113,14 @@ static bool circle_circle_collision(Transform const *restrict t0, Transform cons
 {
 	//translation vector between two circle middles
 	vec2 const t = {(t1->pos[0] + c1->r) - (t0->pos[0] + c0->r), (t1->pos[1] - c1->r) - (t0->pos[1] - c0->r)};
-	if ((contact.penetration = c0->r + c1->r - glm_vec2_distance((vec2){0, 0}, t)) > 0) //the penetration is the sum of the radiuses minus the acutal distance
-	{
-		glm_vec2_normalize_to(t, contact.normal); //the normal is the normalized translation vector between the two circles
-		glm_vec2_copy(t0->pos, contact.position);
-		glm_vec2_muladds(contact.normal, c0->r, contact.position); //multiplies vec2 normal and scalar radius and adds them to the middle position of circle 0
-	    return true;
-	}
-	return false;
+
+	if ((contact.penetration = c0->r + c1->r - glm_vec2_distance((vec2){0, 0}, t)) < 0) //the penetration is the sum of the radiuses minus the acutal distance
+		return false;
+
+	glm_vec2_normalize_to(t, contact.normal); //the normal is the normalized translation vector between the two circles
+	glm_vec2_copy(t0->pos, contact.position);
+	glm_vec2_muladds(contact.normal, c0->r, contact.position); //multiplies vec2 normal and scalar radius and adds them to the middle position of circle 0
+    return true;
 }
 
 
@@ -130,14 +129,14 @@ static bool circle_aabb_collision(Transform const *restrict t0, Transform const 
 	contact.position[0] = clamp(t0->pos[0] + c0->r, t1->pos[0], t1->pos[0] + c1->bb[0]);
 	contact.position[1] = clamp(t0->pos[1] - c0->r, t1->pos[1] - c1->bb[1], t1->pos[1]);
  
-    bool const inside = glm_vec2_eqv((vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r}, contact.position);
+    bool const inside = glm_vec2_eqv((vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r}, contact.position); //if clamping doesn't change the position, both are the same
 
 	if((contact.penetration = c0->r - glm_vec2_distance(contact.position, (vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r})) < 0 && !inside)
     	return false;
 
  	glm_vec2_sub((vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r}, contact.position, contact.normal);
  	glm_vec2_normalize(contact.normal);
- 	
+
 	if(!inside)
 		glm_vec2_negate(contact.normal);
 
