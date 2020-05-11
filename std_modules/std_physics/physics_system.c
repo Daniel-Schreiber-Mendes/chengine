@@ -8,8 +8,6 @@ static bool aabb_aabb_collision(Transform const *restrict t0, Transform const *r
 static bool aabb_circle_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1);
 static bool circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1);
 static bool circle_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1);
-static void collision_resolve_dynamic(Velocity *restrict v0, Velocity *restrict v1, Transform *restrict t0, Transform *restrict t1);
-static void collision_resolve_static(Velocity *restrict v0, Transform *restrict t0);
 
 //2 dimensional array of all functions that check if two shapes collide. the array can be indexed by the tyope of the two COLLIDABLE_TYPES_COUNT
 static bool(*collision_tests[AABB + 1][AABB + 1]) 
@@ -52,11 +50,33 @@ void physics_task(void)
 					if (c1->behaviourType == DYNAMIC)
 					{
 						checs_component_get(Velocity, v1, collidable)
-						collision_resolve_dynamic(v0, v1, t0, t1);
+						vec2 impulse;
+						{
+							vec2 rv;  //relative velocity
+							glm_vec2_sub(v1 ? v1 : (vec2){0, 0}, v0, rv);
+							float const contactv = glm_vec2_dot(rv, contact.normal);
+							if (contactv > 0) continue;  //this means objects are moving away from each other
+							glm_vec2_scale(contact.normal, -1 * contactv, impulse);
+						}
+						glm_vec2_sub(v0->vel, (vec2){impulse[0] * c1->mass / (c0->mass + c1->mass), impulse[1] * c1->mass / (c0->mass + c1->mass)}, v0->vel);
+						glm_vec2_add(v1->vel, (vec2){impulse[0] * c0->mass / (c0->mass + c1->mass), impulse[1] * c0->mass / (c0->mass + c1->mass)}, v1->vel);
+
+						// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
+						//inside the other one. because of this we have to correct it a bit by moving the object manually.
+						float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 0.5;
+						glm_vec2_muladds(contact.normal, -correction * c0->mass / (c0->mass + c1->mass), t0->pos);
+						glm_vec2_muladds(contact.normal,  correction * c1->mass / (c0->mass + c1->mass), t1->pos);
+
 					}
 					else
 					{
-						collision_resolve_static(v0, t0);
+						float const contactv = glm_vec2_dot((vec2){-v0->vel[0], -v0->vel[1]}, contact.normal);
+						if (contactv > 0) continue;
+						vec2 impulse;
+						glm_vec2_scale(contact.normal, -contactv, impulse);
+						glm_vec2_sub(v0->vel, impulse, v0->vel);
+						t0->pos[0] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[0] * 0.5;
+						t0->pos[1] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[1] * 0.5;
 					}
 				}
 			}
@@ -142,40 +162,3 @@ static bool circle_aabb_collision(Transform const *restrict t0, Transform const 
 
 	return true;
 }
-
-
-
-
-static void collision_resolve_dynamic(Velocity *restrict v0, Velocity *restrict v1, Transform *restrict t0, Transform *restrict t1)
-{
-	vec2 impulse;
-	{
-		vec2 rv;  //relative velocity
-		glm_vec2_sub(v1 ? v1 : (vec2){0, 0}, v0, rv);
-		float const contactv = glm_vec2_dot(rv, contact.normal);
-		if (contactv > 0) return;  //this means objects are moving away from each other
-		glm_vec2_scale(contact.normal, -1 * contactv, impulse);
-	}
-	//vec2 impulse0;
-	//vec2 impulse1;
-	glm_vec2_sub(v0->vel, impulse, v0->vel);
-	//glm_vec2_sub(v1->vel, impulse, v1->vel);
-
-	// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
-	//inside the other one. because of this we have to correct it a bit by moving the object manually.
-	t0->pos[0] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[0] * 0.5;
-	t0->pos[1] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[1] * 0.5;
-}
-
-
-static void collision_resolve_static(Velocity *const v0, Transform *const t0)
-{
-	float const contactv = glm_vec2_dot((vec2){-v0->vel[0], -v0->vel[1]}, contact.normal);
-	if (contactv > 0) return;
-	vec2 impulse;
-	glm_vec2_scale(contact.normal, -contactv, impulse);
-	glm_vec2_sub(v0->vel, impulse, v0->vel);
-	t0->pos[0] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[0] * 0.5;
-	t0->pos[1] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[1] * 0.5;
-}
-
