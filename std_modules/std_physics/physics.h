@@ -29,7 +29,8 @@ typedef struct
 		RECTANGLE, //rectangle with rotaion
 		LINE, //line with no ends,
 		LINE_SEGMENT, //line with two end
-		RAY //line with one end
+		RAY, //line with one end
+		COLLIDABLE_TYPES_COUNT
 	}
 	type;
 	enum
@@ -46,6 +47,12 @@ Collidable;
 typedef struct {}
 Gravitatable;
 
+
+#define sign(x) ((x > 0) - (x < 0))
+#define clamp(x, lower, upper) fmaxf(lower, fminf(x, upper))
+#define nearest(x, l0, l1) fabs(x - l0) > fabs(x - l1) ? l1 : l0
+
+
 /* Requirements:
 - If a collidable is of type Static, it is not required to have a Velocity component.
 - If a collidable is of type Kinematic or Dynamic, they have to have a Velocity component.
@@ -53,14 +60,5 @@ Gravitatable;
 */
 void physics_task(void);
 void physics_gravity_set(vec2 const g);
-
-bool physics_aabb_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1);
-bool physics_aabb_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0);
-
-bool physics_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0);
-bool physics_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
-
-void physics_collision_resolve_dynamic(Velocity *restrict v0, Velocity *restrict v1, Transform *restrict t0, Transform *restrict t1);
-void physics_collision_resolve_static(Velocity *restrict v0, Transform *restrict t0);
 
 #endif
