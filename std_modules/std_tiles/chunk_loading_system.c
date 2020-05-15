@@ -20,7 +20,7 @@ static void world_to_chunk_pos(Transform const *const target_t, int8_t *const de
 
 void chunk_loading_system(checs_system_parameters)
 {
-	checs_component_use(Transform, t);
+	checs_component_mut_use(Transform, t);
 
 	checs_component_get(Transform, t, checs_entity_get_by_tag(CameraTag));
 
@@ -74,7 +74,7 @@ void chunk_loading_system_init(EntityId(*load_callback)(void), void(*unload_call
 	chunk_size = tileCount; //because one currently tile is exactly 1.0f in size
 
 
-	checs_component_use(Transform, t);
+	checs_component_mut_use(Transform, t);
 	for (uint16_t i=0; i < CHUNK_COUNT; ++i)
 	{
 		for (uint16_t j=0; j < CHUNK_COUNT; ++j)

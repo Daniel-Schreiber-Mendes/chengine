@@ -16,6 +16,7 @@ typedef struct
 	VertexArray vao;
 	GLenum mode; //can be primitve mode like e.g GL_TRIANGLES or GL_TRIANGLE_STRIP
 	uint16_t primitiveCount; //only used if renderableType is one of the two instanced types
+	//Animatable *animatable;
 	Texture const* texture;
 	union
 	{

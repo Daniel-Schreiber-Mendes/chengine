@@ -44,10 +44,6 @@ typedef struct
 Collidable;
 
 
-typedef struct {}
-Gravitatable;
-
-
 #define sign(x) ((x > 0) - (x < 0))
 #define clamp(x, lower, upper) fmaxf(lower, fminf(x, upper))
 #define nearest(x, l0, l1) fabs(x - l0) > fabs(x - l1) ? l1 : l0

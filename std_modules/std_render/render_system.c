@@ -46,7 +46,7 @@ void render_system_init(void)
 void render_system(checs_system_parameters)
 {
 	checs_component_use(Renderable, r);
-	checs_component_use(Camera, c);
+	checs_component_mut_use(Camera, c);
 	checs_component_use(Transform, t);
 
 	checs_component_get(Camera, c, checs_entity_get_by_tag(CameraTag));

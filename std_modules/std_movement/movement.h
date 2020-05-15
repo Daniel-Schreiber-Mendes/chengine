@@ -18,14 +18,8 @@ typedef struct
 Velocity;
 
 
-void  transform_transform_calculate(Transform *const t, mat4 transform);
+void  transform_transform_calculate(Transform const *const t, mat4 transform);
 float transform_distance_get(Transform const *restrict t, Transform const *restrict t2);
-bool  transform_circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0, float const r1);
-bool  transform_circle_point_collision(Transform const *restrict t0, Transform const *restrict t1, float const r0);
-bool  transform_rect_rect_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0, vec2 const bb1);
-void transform_rect_rect_single_bump(Transform *restrict t0, Transform *restrict t1, vec2 const bb0, vec2 const bb1);
-bool  transform_rect_point_collision(Transform const *restrict t0, Transform const *restrict t1, vec2 const bb0);
-
 
 /*Requirements:
  - If an entity has a Velocity component it has to have a transform component

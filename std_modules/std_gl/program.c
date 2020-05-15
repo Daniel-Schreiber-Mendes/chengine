@@ -92,6 +92,23 @@ void program_uniform1u_set(Program const program, char const *const name, float 
 }
 
 
+void program_uniform2uv_set(Program const program, char const *const name, uint32_t const *const v0)
+{
+    glUseProgram(program);
+    GLint const location = glGetUniformLocation(program, name);
+    che_assert(location != -1);
+    glUniform2uiv(location, 1, v0);
+}
+
+
+void program_uniform2fv_set(Program const program, char const *const name, vec2 const v0)
+{
+    glUseProgram(program);
+    GLint const location = glGetUniformLocation(program, name);
+    che_assert(location != -1);
+    glUniform2fv(location, 1, v0);
+}
+
 
 static GLuint createShader(GLenum const type, char const *const path)
 {
@@ -103,9 +120,9 @@ static GLuint createShader(GLenum const type, char const *const path)
             printf("File %s couldn't be opened\n", path);
             return 0;
         }
-        char const *const buffer = fbcp(file);
-        glShaderSource(shader, 1, (char const *const *)&buffer, NULL);
-        free(buffer);
+        char const *const buffer = fbcp(file); //don't allocate on stack cause it may cause an overflow if too big
+        glShaderSource(shader, 1, &buffer, NULL);
+        free((void*)buffer);
     }
     glCompileShader(shader);
 

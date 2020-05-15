@@ -47,43 +47,47 @@ void physics_task(void)
 				checs_component_get(Transform, t1, collidable);
 				if (collision_tests[c0->type][c1->type](t0, t1, c0, c1))
 				{
+					vec2 impulse;
+					float contactv;
+					// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
+					float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 1.1;
+
 					if (c1->behaviourType == DYNAMIC)
 					{
 						checs_component_get(Velocity, v1, collidable)
-						vec2 impulse;
-						{
-							vec2 rv;  //relative velocity
-							glm_vec2_sub(v1 ? v1 : (vec2){0, 0}, v0, rv);
-							float const contactv = glm_vec2_dot(rv, contact.normal);
-							if (contactv > 0) continue;  //this means objects are moving away from each other
-							glm_vec2_scale(contact.normal, -1 * contactv, impulse);
-						}
+
+						vec2 rv;  //relative velocity
+						glm_vec2_sub(v1 ? v1 : (vec2){0, 0}, v0, rv);
+						
+						contactv = glm_vec2_dot(rv, contact.normal);
+						
+						if (contactv > 0) continue;  //this means objects are moving away from each other
+						glm_vec2_scale(contact.normal, -contactv, impulse);
+
 						glm_vec2_sub(v0->vel, (vec2){impulse[0] * c1->mass / (c0->mass + c1->mass), impulse[1] * c1->mass / (c0->mass + c1->mass)}, v0->vel);
 						glm_vec2_add(v1->vel, (vec2){impulse[0] * c0->mass / (c0->mass + c1->mass), impulse[1] * c0->mass / (c0->mass + c1->mass)}, v1->vel);
 
-						// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
 						//inside the other one. because of this we have to correct it a bit by moving the object manually.
-						float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 0.5;
 						glm_vec2_muladds(contact.normal, -correction * c0->mass / (c0->mass + c1->mass), t0->pos);
 						glm_vec2_muladds(contact.normal,  correction * c1->mass / (c0->mass + c1->mass), t1->pos);
 
 					}
 					else
 					{
-						float const contactv = glm_vec2_dot((vec2){-v0->vel[0], -v0->vel[1]}, contact.normal);
+						contactv = glm_vec2_dot((vec2){-v0->vel[0], -v0->vel[1]}, contact.normal);
+						
 						if (contactv > 0) continue;
-						vec2 impulse;
 						glm_vec2_scale(contact.normal, -contactv, impulse);
+						
 						glm_vec2_sub(v0->vel, impulse, v0->vel);
-						t0->pos[0] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[0] * 0.5;
-						t0->pos[1] -= fmaxf(contact.penetration - 0.001, 0.0) * contact.normal[1] * 0.5;
+						glm_vec2_muladds(contact.normal, -correction, t0->pos);
 					}
 				}
 			}
 		}
 	}
 
-	checs_component_entity_foreach(Gravitatable, gravitatable)
+	checs_attribute_entity_foreach(Gravitatable, gravitatable)
 	{
 		checs_component_get(Velocity, v0, gravitatable);
 		glm_vec2_add(v0->vel, gravity, v0->vel);

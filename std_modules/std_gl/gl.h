@@ -72,21 +72,23 @@ void 	elementBuffer_destruct(ElementBuffer const *const ebo);
 void 	elementBuffer_bind(ElementBuffer const *const ebo);
 
 //vertexArray.c
-void	vertexArray_construct(VertexArray *const vao);
-void 	vertexArray_destruct(VertexArray const *const vao);
-void 	vertexArray_bind(VertexArray const *const vao);
-void    vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout);
+void vertexArray_construct(VertexArray *const vao);
+void vertexArray_destruct(VertexArray const *const vao);
+void vertexArray_bind(VertexArray const *const vao);
+void vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout);
 
 //program.c
-void    program_construct(Program *const program, char const *const fsPath, char const *const vsPath);
-void    program_destruct(Program const program);
-void 	program_bind(Program const program);
-void    program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
-void    program_uniform1i_set(Program const program, char const *const name, GLint const v0);
-void    program_uniformMat4_set(Program const program, char const *const name, mat4 const m0);
-void    program_uniform4fv_set(Program const program, char const *const name, vec4 const v);
-void    program_uniform1f_set(Program const program, char const *const name, float const v0);
-void    program_uniform1u_set(Program const program, char const *const name, float const v0);
+void program_construct(Program *const program, char const *const fsPath, char const *const vsPath);
+void program_destruct(Program const program);
+void program_bind(Program const program);
+void program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
+void program_uniform1i_set(Program const program, char const *const name, GLint const v0);
+void program_uniformMat4_set(Program const program, char const *const name, mat4 const m0);
+void program_uniform4fv_set(Program const program, char const *const name, vec4 const v);
+void program_uniform1f_set(Program const program, char const *const name, float const v0);
+void program_uniform1u_set(Program const program, char const *const name, float const v0);
+void program_uniform2uv_set(Program const program, char const *const name, uint32_t const *const v0);
+void program_uniform2fv_set(Program const program, char const *const name, vec2 const v0);
 
 
 //vertexBufferLayout.c
