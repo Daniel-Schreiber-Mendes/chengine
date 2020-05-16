@@ -23,8 +23,13 @@ void vertexArray_bind(VertexArray const *const vao)
 void vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout)
 {
 	glBindVertexArray(vao->id);
-	vertexBuffer_bind(vbo);
+	vertexArray_current_buffer_add(vbo, layout);
+}
 
+
+void vertexArray_current_buffer_add(GLuint const vbo, VertexBufferLayout const layout)
+{
+	vertexBuffer_bind(vbo);
 	//each layout of the attributes a the vbo is getting enabled and specified.
 	//should be of type uint but glVertexAttribPointer takes a void* where the adress is used as the actual value
 	void const *offset = 0;

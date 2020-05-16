@@ -68,41 +68,42 @@ void 	vertexBuffer_bind(VertexBuffer const vbo);
 	(ebo_ptr)->elementCount = sizeof(array) / sizeof(array[0]);
 	//get number of element in array
 
-void 	elementBuffer_destruct(ElementBuffer const *const ebo);
-void 	elementBuffer_bind(ElementBuffer const *const ebo);
+void 	elementBuffer_destruct(ElementBuffer const *ebo);
+void 	elementBuffer_bind(ElementBuffer const *ebo);
 
 //vertexArray.c
-void vertexArray_construct(VertexArray *const vao);
-void vertexArray_destruct(VertexArray const *const vao);
-void vertexArray_bind(VertexArray const *const vao);
-void vertexArray_buffer_add(VertexArray const *const vao, GLuint const vbo, VertexBufferLayout const layout);
+void vertexArray_construct(VertexArray *vao);
+void vertexArray_destruct(VertexArray const *vao);
+void vertexArray_bind(VertexArray const *vao);
+void vertexArray_buffer_add(VertexArray const *vao, GLuint vbo, VertexBufferLayout layout);
+void vertexArray_current_buffer_add(GLuint vbo, VertexBufferLayout layout);
 
 //program.c
-void program_construct(Program *const program, char const *const fsPath, char const *const vsPath);
-void program_destruct(Program const program);
-void program_bind(Program const program);
-void program_uniform4f_set(Program const program, char const *const name, GLfloat const v0, GLfloat const v1, GLfloat const v2, GLfloat const v3);
-void program_uniform1i_set(Program const program, char const *const name, GLint const v0);
-void program_uniformMat4_set(Program const program, char const *const name, mat4 const m0);
-void program_uniform4fv_set(Program const program, char const *const name, vec4 const v);
-void program_uniform1f_set(Program const program, char const *const name, float const v0);
-void program_uniform1u_set(Program const program, char const *const name, float const v0);
-void program_uniform2uv_set(Program const program, char const *const name, uint32_t const *const v0);
-void program_uniform2fv_set(Program const program, char const *const name, vec2 const v0);
+void program_construct(Program *program, char const *fsPath, char const *vsPath);
+void program_destruct(Program program);
+void program_bind(Program program);
+void program_uniform4f_set(Program program, char const *name, GLfloat v0, GLfloat v1, GLfloat v2, GLfloat v3);
+void program_uniform1i_set(Program program, char const *name, GLint v0);
+void program_uniformMat4_set(Program program, char const *name, mat4 const m0);
+void program_uniform4fv_set(Program program, char const *name, vec4 const v);
+void program_uniform1f_set(Program program, char const *name, float v0);
+void program_uniform1u_set(Program program, char const *name, float v0);
+void program_uniform2uv_set(Program program, char const *name, uint32_t const *v0);
+void program_uniform2fv_set(Program program, char const *name, vec2 const v0);
 
 
 //vertexBufferLayout.c
-void vertexBufferLayout_construct(VertexBufferLayout *const vbl, uint8_t const size);
-void vertexBufferLayout_element_add(VertexBufferLayout *const vbl, VertexBufferLayoutElement const element);
-void vertexBufferLayout_destruct(VertexBufferLayout const *const vbl);
+void vertexBufferLayout_construct(VertexBufferLayout *vbl, uint8_t size);
+void vertexBufferLayout_element_add(VertexBufferLayout *vbl, VertexBufferLayoutElement element);
+void vertexBufferLayout_destruct(VertexBufferLayout const *vbl);
 
 
-void texture_construct_from_file(Texture *const t, char const *const path);
-void texture_construct(Texture *const t, uint16_t const width, uint16_t const height);
-void texture_update_from_buffer(Texture *const t, void* buffer);
-void texture_rect_update_from_buffer(Texture *const t, uint16_t const xoffset, uint16_t const yoffset, uint16_t const width, uint16_t const height, void *buffer);
+void texture_construct_from_file(Texture *t, char const *path);
+void texture_construct(Texture *t, uint16_t width, uint16_t height);
+void texture_update_from_buffer(Texture *t, void* buffer);
+void texture_rect_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void *buffer);
 void texture_destruct(Texture const* t);
-void texture_bind(Texture const *const t);
+void texture_bind(Texture const *t);
 
 
 #endif
