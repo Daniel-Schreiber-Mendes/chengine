@@ -1,4 +1,4 @@
-#include "tiles.h"
+/*#include "tiles.h"
 
 #define CHUNK_COUNT 4
 
@@ -32,9 +32,9 @@ void chunk_loading_system(checs_system_parameters)
 	//left and right wrapping
 	if (new_chunk_offset_x != chunk_offset_x)
 	{
-		/* why is CHUNK_COUNT added altough it has no effect, because of modulo CHUNK_COUNT ? Because if new_chunk_offset_x - 1 or new_chunk_offset_x is negative, the array 
-			woudl get indexed negatively. since we want to "wrap the index around" if it is negative, if the index is -1, start at the most right index, we just add 
-			CHUNK_COUNT which has the same effect*/
+		// why is CHUNK_COUNT added altough it has no effect, because of modulo CHUNK_COUNT ? Because if new_chunk_offset_x - 1 or new_chunk_offset_x is negative, the array 
+	//		woudl get indexed negatively. since we want to "wrap the index around" if it is negative, if the index is -1, start at the most right index, we just add 
+	//		CHUNK_COUNT which has the same effect
 		uint8_t column = ((delta_chunk_offset_x == 1 ? -1 : 0) + new_chunk_offset_x + CHUNK_COUNT * 100) % CHUNK_COUNT;
 		for (uint8_t i=0; i < CHUNK_COUNT; ++i)
 		{
@@ -118,4 +118,4 @@ void chunk_construct(EntityId const e)
     r->renderableType = ARRAYS;
     r->program = chunk_program;
     r->texture = texture;
-}
+}*/

@@ -1,13 +1,13 @@
 #include "render.h"
 
 
-static void(*custom_draw_callback)(void);
-
-//imediate mode data
-static VertexArray imm_vertexArray;
-static ElementBuffer imm_elementBuffer;
-static Program imm_program;
-
+static RectBatch rectBatch;
+/*
+static void *batches[1] =
+{
+	&rectBatch
+}; //array of pointers to different batch types
+*/
 
 void render_system_init(void)
 {
@@ -15,31 +15,48 @@ void render_system_init(void)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_DEPTH_TEST); //is needed so a pixel with its z coordinate at -1 appers behind one with 0
 
-
-	GLfloat imm_positions[8] =
+	render_system_imm_init();
+	
 	{
-		-1, -1,
-		 1, -1,
-		 1,  1,
-		-1,  1, 
-	};
+		vector_construct(&rectBatch.entitys, sizeof(EntityId));
+		vertexArray_construct(&rectBatch.vao);
+		vertexArray_bind(&rectBatch.vao);
 
-	GLuint imm_elements[6] = 
-	{
-		0, 1, 2,
-		2, 3, 0
-	};
+		GLfloat positions[5 * 4] = 
+        {//  3 x position  2 x tex
+            0,  0, 1, 0, 0,
+            1,  0, 1, 1, 0,
+            1, -1, 1, 1, 1,
+            0, -1, 1, 0, 1
+        };
 
-	VertexBufferLayout imm_vbl;
-	VertexBuffer imm_vbo;
-	vertexArray_construct(&imm_vertexArray);
-	vertexBuffer_construct(&imm_vbo, imm_positions);
-	elementBuffer_construct(&imm_elementBuffer, imm_elements);
+        VertexBuffer vbo;
+        vertexBuffer_construct(&vbo, positions);
 
-	vertexBufferLayout_construct(&imm_vbl, 1);
-	vertexBufferLayout_element_add(&imm_vbl, ((VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE}));
-	vertexArray_buffer_add(&imm_vertexArray, imm_vbo, imm_vbl);
-	program_construct(&imm_program, "./resources/shader/imm_vertex.glsl", "./resources/shader/imm_fragment.glsl");
+
+        GLuint elements[6] = 
+        {
+            0, 1, 2,
+            2, 3, 0
+        };
+
+        ElementBuffer ebo;
+        elementBuffer_construct(&ebo, elements);
+
+        {
+        	VertexBufferLayout vbl;
+        	vertexBufferLayout_construct(&vbl, 2);
+
+	        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){3, GL_FLOAT, GL_FALSE})); //pos coords
+	        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, GL_FLOAT, GL_FALSE})); //tex coords
+	        vertexArray_buffer_add(&rectBatch.vao, vbo, vbl);
+
+	        vertexBufferLayout_destruct(&vbl);
+        }
+
+        rectBatch.mode = GL_TRIANGLES;
+        program_construct(&rectBatch.program, "./resources/shader/vertex.glsl", "./resources/shader/fragment.glsl");
+	}
 }
 
 
@@ -52,28 +69,27 @@ void render_system(checs_system_parameters)
 	checs_component_get(Camera, c, checs_entity_get_by_tag(CameraTag));
 	camera_default_vp_recalculate(c);
 
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	
+
+	/*
 	checs_entity_foreach(entity)
 	{
 		checs_component_get(Renderable, r, entity);
 		checs_component_get(Transform, t, entity);
 
-
 		//apply transforms of the entity and upload them to the shader uniforms
 		mat4 transform;
-		transform_transform_calculate(t, transform);
-
+		glm_mat4_identity(transform);
+    	glm_scale_uni(transform, r->scale);
+    	glm_rotate_z(transform, r->rot, transform);
+    	glm_translate(transform, t->pos);
 
 		vertexArray_bind(&r->vao);
 		program_bind(r->program);
-		if (r->texture)
-		{
-			texture_bind(r->texture);
-		}
+
 		program_uniformMat4_set(r->program, "u_transform", transform);
 		program_uniformMat4_set(r->program, "u_camera_vp", c->vp);
+		program_uniform1u_set(r->program, "u_texture_layer", r->texture->layer);
 
 		switch (r->renderableType)
 		{
@@ -93,12 +109,46 @@ void render_system(checs_system_parameters)
 				glDrawElementsInstanced(r->mode, r->elementCount, GL_UNSIGNED_INT, NULL, r->primitiveCount);
 				break;
 		}
-	}
+	}*/
 	
-	if (custom_draw_callback) //used for imediate mode and debugging purposes
+	if (rectBatch.entitys.size > 0)
 	{
-		custom_draw_callback();
+		uint32_t textureLayers[rectBatch.entitys.size];
+		vec2 textureSizes[rectBatch.entitys.size];
+		vec2 textureOffsets[rectBatch.entitys.size];
+		mat4 transforms[rectBatch.entitys.size];
+
+		glm_mat4_identity_array(transforms, rectBatch.entitys.size);
+
+		vector_foreach(&rectBatch.entitys, EntityId, entity)
+		{
+			checs_component_get(Renderable, r, entity);
+			checs_component_get(Transform, t, entity);
+
+	    	glm_scale_uni(transforms[i], r->scale);
+	    	glm_rotate_z(transforms[i], r->rot, transforms[i]);
+	    	glm_translate(transforms[i], t->pos);
+
+	    	textureLayers[i] = r->texture->layer;
+			glm_vec2_copy(r->textureOffset, textureOffsets[i]);
+			glm_vec2_copy((vec2){r->texture->width / (float)LAYER_WIDTH, r->texture->height / (float)LAYER_HEIGHT}, textureSizes[i]);
+		}
+		vertexArray_bind(&rectBatch.vao);
+		program_bind(rectBatch.program);
+
+		checs_component_get(Camera, c, checs_entity_get_by_tag(CameraTag));
+		camera_default_vp_recalculate(c);
+
+		program_uniformMat4_set(rectBatch.program, "u_camera_vp", c->vp);
+		program_uniformMat4v_set(rectBatch.program, "u_transforms", transforms, rectBatch.entitys.size);
+		program_uniform2fv_set(rectBatch.program, "u_texture_offsets", rectBatch.entitys.size, textureOffsets);
+		program_uniform1uv_set(rectBatch.program, "u_texture_layers", rectBatch.entitys.size, textureLayers);
+		program_uniform2fv_set(rectBatch.program, "u_texture_sizes", rectBatch.entitys.size, textureSizes);
+		glDrawElementsInstanced(rectBatch.mode, rectBatch.elementCount, GL_UNSIGNED_INT, NULL, rectBatch.entitys.size);
 	}
+
+	
+	render_system_imm_render();
 
 	glfwSwapBuffers(window);
 }
@@ -106,47 +156,17 @@ void render_system(checs_system_parameters)
 
 void render_system_terminate(void)
 {
-	vertexBuffer_destruct(&imm_vertexArray);
-	elementBuffer_destruct(&imm_elementBuffer);
-	program_destruct(imm_program);
+	render_system_imm_terminate();
+	vector_destruct(&rectBatch.entitys);
 }
 
 
-void render_system_custom_draw_callback_set(void(*_custom_draw_callback)(void))
+void render_system_on_entity_added(EntityId const e)
 {
-	custom_draw_callback = _custom_draw_callback;
-}
-
-
-void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size)
-{
-	//imediate mode drawing is pretty slow compared to retained mode drawing but this is not a problem because it is only used for debugging purposes
-	vertexArray_bind(&imm_vertexArray);
-	program_bind(imm_program);
-	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
-
-	mat4 transform, proj;
-	glm_mat4_identity(transform);
-	glm_scale(transform, (vec3){size[0], size[1], 1});
-	glm_translate(transform, pos);
-	glm_ortho(-c->aspectRatio, c->aspectRatio, -1, 1, -1.f, 1.f, proj); 
-	//only the aspect ratio is important for the projection because this drawable should not be manipulated by zoom or rotation or translation
-
-	program_uniformMat4_set(imm_program, "u_proj", proj);
-	program_uniform4fv_set(imm_program, "u_color", color);
-	program_uniformMat4_set(imm_program, "u_transform", transform);
-
-	glDrawElements(GL_TRIANGLES, imm_elementBuffer.elementCount, GL_UNSIGNED_INT, NULL);
-}
-
-
-void renderable_construct(Renderable *const r)
-{
-    vertexArray_construct(&r->vao);
-}
-
-
-void renderable_destruct(Renderable *const r)
-{
-    vertexArray_destruct(&r->vao);
+	checs_component_get_once(Renderable, r, e);
+	if (r->type == RT_RECT)
+	{
+		vector_push_back(&rectBatch.entitys, EntityId, e);
+		rectBatch.elementCount += 6;
+	}
 }

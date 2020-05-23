@@ -9,6 +9,7 @@ typedef struct
 	mat4 vp;
 	float aspectRatio;
 	float zoom;
+	float rot;
 	Transform *target; //this is optionally. if it is null, don't follow anything and just wait for a direct command to move the camera
 }
 Camera;

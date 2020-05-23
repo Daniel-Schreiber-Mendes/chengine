@@ -50,7 +50,7 @@ void physics_task(void)
 					vec2 impulse;
 					float contactv;
 					// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
-					float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 1.1;
+					float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 1.2;
 
 					if (c1->behaviourType == DYNAMIC)
 					{

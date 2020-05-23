@@ -83,7 +83,7 @@ void program_uniform1f_set(Program const program, char const *const name, float 
 }
 
 
-void program_uniform1u_set(Program const program, char const *const name, float const v0)
+void program_uniform1u_set(Program const program, char const *const name, uint32_t const v0)
 {
     glUseProgram(program);
     GLint location = glGetUniformLocation(program, name);
@@ -92,21 +92,39 @@ void program_uniform1u_set(Program const program, char const *const name, float 
 }
 
 
-void program_uniform2uv_set(Program const program, char const *const name, uint32_t const *const v0)
+void program_uniform1uv_set(Program const program, char const *const name, uint16_t const size, uint32_t const *const v0)
 {
     glUseProgram(program);
-    GLint const location = glGetUniformLocation(program, name);
+    GLint location = glGetUniformLocation(program, name);
     che_assert(location != -1);
-    glUniform2uiv(location, 1, v0);
+    glUniform1uiv(location, size, v0); 
 }
 
 
-void program_uniform2fv_set(Program const program, char const *const name, vec2 const v0)
+void program_uniform2uv_set(Program const program, char const *const name, uint16_t const size, uint32_t const *const v0)
 {
     glUseProgram(program);
     GLint const location = glGetUniformLocation(program, name);
     che_assert(location != -1);
-    glUniform2fv(location, 1, v0);
+    glUniform2uiv(location, size, v0);
+}
+
+
+void program_uniform2fv_set(Program const program, char const *const name, uint16_t const size, vec2 const v0)
+{
+    glUseProgram(program);
+    GLint const location = glGetUniformLocation(program, name);
+    che_assert(location != -1);
+    glUniform2fv(location, size, v0);
+}
+
+
+void program_uniformMat4v_set(Program program, char const *name, mat4 const *mv, uint16_t size)
+{
+    glUseProgram(program);
+    GLint const location = glGetUniformLocation(program, name);
+    che_assert(location != -1);
+    glUniformMatrix4fv(location, size, GL_FALSE, mv);
 }
 
 

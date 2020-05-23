@@ -8,17 +8,9 @@ void movement_task(void)
 	checs_components_foreach(Velocity, v, entity)
 	{
 		checs_component_get(Transform, t, entity);
-		glm_vec2_scale(v->vel, 0.95, v->vel);
+		glm_vec2_scale(v->vel, 0.96, v->vel);
 		glm_vec3_add(v->vel, t->pos, t->pos); //because we dont want to change the z position use vec2 which only has a x and z component
 	}
-}
-
-
-void transform_transform_calculate(Transform const *const t, mat4 transform)
-{
-    glm_mat4_identity(transform);
-    glm_rotate_z(transform, t->rot, transform);
-    glm_translate(transform, t->pos);
 }
 
 

@@ -7,6 +7,11 @@ typedef GLuint VertexBuffer; //only used when creating a renderable and is store
 typedef GLuint Program;
 
 
+#define LAYER_COUNT 4
+#define LAYER_WIDTH 400
+#define LAYER_HEIGHT 400
+
+
 typedef struct
 {
 	GLuint id;
@@ -42,9 +47,8 @@ ElementBuffer;
 
 typedef struct
 {
-	int width, height, channels;
-	GLuint id;
-	GLenum unit;
+	int width, height;
+	uint8_t layer;
 }
 Texture;
 
@@ -87,9 +91,11 @@ void program_uniform1i_set(Program program, char const *name, GLint v0);
 void program_uniformMat4_set(Program program, char const *name, mat4 const m0);
 void program_uniform4fv_set(Program program, char const *name, vec4 const v);
 void program_uniform1f_set(Program program, char const *name, float v0);
-void program_uniform1u_set(Program program, char const *name, float v0);
-void program_uniform2uv_set(Program program, char const *name, uint32_t const *v0);
-void program_uniform2fv_set(Program program, char const *name, vec2 const v0);
+void program_uniform1u_set(Program program, char const *name, uint32_t v0);
+void program_uniform1uv_set(Program program, char const *name, uint16_t size, uint32_t const *v0);
+void program_uniform2uv_set(Program program, char const *name, uint16_t size, uint32_t const *v0);
+void program_uniform2fv_set(Program program, char const *name, uint16_t size, vec2 const v0);
+void program_uniformMat4v_set(Program program, char const *name, mat4 const *mv, uint16_t size);
 
 
 //vertexBufferLayout.c
@@ -98,11 +104,10 @@ void vertexBufferLayout_element_add(VertexBufferLayout *vbl, VertexBufferLayoutE
 void vertexBufferLayout_destruct(VertexBufferLayout const *vbl);
 
 
+void texture_init(void);
+void texture_terminate(void);
 void texture_construct_from_file(Texture *t, char const *path);
-void texture_construct(Texture *t, uint16_t width, uint16_t height);
-void texture_update_from_buffer(Texture *t, void* buffer);
 void texture_rect_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void *buffer);
-void texture_destruct(Texture const* t);
 void texture_bind(Texture const *t);
 
 
