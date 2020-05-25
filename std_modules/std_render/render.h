@@ -37,6 +37,16 @@ typedef struct
 }
 Renderable;
 
+
+typedef struct
+{
+	uint16_t nextFrame;
+	float fps;
+	vec2 *textureOffsets;
+}
+Animatable;
+
+
 void render_system_on_entity_added(EntityId e);
 
 void render_system_init(void);

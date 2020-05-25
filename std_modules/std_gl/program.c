@@ -119,6 +119,15 @@ void program_uniform2fv_set(Program const program, char const *const name, uint1
 }
 
 
+void program_uniform1fv_set(Program const program, char const *const name, uint16_t const size, float const *const v0)
+{
+    glUseProgram(program);
+    GLint const location = glGetUniformLocation(program, name);
+    che_assert(location != -1);
+    glUniform1fv(location, size, v0);
+}
+
+
 void program_uniformMat4v_set(Program program, char const *name, mat4 const *mv, uint16_t size)
 {
     glUseProgram(program);

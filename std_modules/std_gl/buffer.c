@@ -51,3 +51,23 @@ void elementBuffer_bind(ElementBuffer const *const ebo)
 {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo->id);
 }
+
+
+void uniformBuffer_construct(UniformBuffer *const ubo, uint16_t const size, GLenum const type)
+{
+	glGenBuffers(1, ubo);
+	glBindBuffer(GL_UNIFORM_BUFFER, *ubo);
+	glBufferData(GL_UNIFORM_BUFFER, size, NULL, type);
+}
+
+
+void uniformBuffer_destruct(UniformBuffer const *const ubo)
+{
+	glDeleteBuffers(1, ubo);
+}
+
+
+void uniformBuffer_bind(UniformBuffer const ubo)
+{
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+}

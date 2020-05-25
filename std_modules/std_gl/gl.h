@@ -3,25 +3,26 @@
 #include <chengine-dev/engine.h>
 
 
-typedef GLuint VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
-typedef GLuint Program;
-
-
 #define LAYER_COUNT 4
-#define LAYER_WIDTH 400
-#define LAYER_HEIGHT 400
+#define LAYER_WIDTH 256
+#define LAYER_HEIGHT 256
+
+
+typedef uint32_t VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
+typedef uint32_t Program;
+typedef uint32_t UniformBuffer;
 
 
 typedef struct
 {
-	GLuint id;
+	uint32_t id;
 }
 VertexArray;
 
 
 typedef struct 
 {
-	GLint componentCount;
+	int componentCount;
 	GLenum type;
 	GLboolean normalized;
 }
@@ -39,7 +40,7 @@ VertexBufferLayout; //only used when creating a renderable and is stored by the 
 
 typedef struct
 {
-	GLuint id;
+	uint32_t id;
 	GLsizei elementCount;
 }
 ElementBuffer;
@@ -47,13 +48,14 @@ ElementBuffer;
 
 typedef struct
 {
-	int width, height;
+	uint16_t minx, miny;
+	uint16_t width, height;
 	uint8_t layer;
 }
 Texture;
 
 
-//vertexBuffer.c
+//buffer.c
 #define vertexBuffer_construct(vbo_ptr, array)\
 	glGenBuffers(1, (vbo_ptr));\
 	vertexBuffer_bind(*(vbo_ptr));\
@@ -63,7 +65,7 @@ void 	vertexBuffer_destruct(VertexBuffer const *const vbo);
 void 	vertexBuffer_bind(VertexBuffer const vbo);
 
 
-//elementBuffer.c
+//buffer.c
 
 #define elementBuffer_construct(ebo_ptr, array)\
 	glGenBuffers(1, &(ebo_ptr)->id);\
@@ -74,6 +76,12 @@ void 	vertexBuffer_bind(VertexBuffer const vbo);
 
 void 	elementBuffer_destruct(ElementBuffer const *ebo);
 void 	elementBuffer_bind(ElementBuffer const *ebo);
+
+
+void uniformBuffer_construct(UniformBuffer *ubo, uint16_t size, GLenum type);
+void uniformBuffer_destruct(UniformBuffer const *ubo);
+void uniformBuffer_bind(UniformBuffer ubo);
+
 
 //vertexArray.c
 void vertexArray_construct(VertexArray *vao);
@@ -95,6 +103,7 @@ void program_uniform1u_set(Program program, char const *name, uint32_t v0);
 void program_uniform1uv_set(Program program, char const *name, uint16_t size, uint32_t const *v0);
 void program_uniform2uv_set(Program program, char const *name, uint16_t size, uint32_t const *v0);
 void program_uniform2fv_set(Program program, char const *name, uint16_t size, vec2 const v0);
+void program_uniform1fv_set(Program program, char const *name, uint16_t size, float const *v0);
 void program_uniformMat4v_set(Program program, char const *name, mat4 const *mv, uint16_t size);
 
 
@@ -104,11 +113,22 @@ void vertexBufferLayout_element_add(VertexBufferLayout *vbl, VertexBufferLayoutE
 void vertexBufferLayout_destruct(VertexBufferLayout const *vbl);
 
 
-void texture_init(void);
-void texture_terminate(void);
-void texture_construct_from_file(Texture *t, char const *path);
+//texture.c
+//an image is a buffer of colors that can be load from a file
+//a texture is a index into an image to indicate where the texture starts and ends
+void textureManager_init(void);
+void textureManager_terminate(void);
+void textureManager_image_load(char const *path);
+uint8_t textureManager_current_layer_get(void);
+
+#define texture_construct(t, _width, _height) ((t)->width = _width, (t)->height = _height, (t)->layer = textureManager_current_layer_get() - 1)
+
+#define textureManager_construct_textures_from_file(path, expr)\
+({\
+	textureManager_image_load(path);\
+	(expr);\
+})
 void texture_rect_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void *buffer);
-void texture_bind(Texture const *t);
 
 
 #endif

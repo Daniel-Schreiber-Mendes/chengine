@@ -1,7 +1,8 @@
 #include "render.h"
 
-
+static UniformBuffer worldData_ubo;
 static RectBatch rectBatch;
+
 /*
 static void *batches[1] =
 {
@@ -24,11 +25,17 @@ void render_system_init(void)
 
 		GLfloat positions[5 * 4] = 
         {//  3 x position  2 x tex
-            0,  0, 1, 0, 0,
-            1,  0, 1, 1, 0,
-            1, -1, 1, 1, 1,
-            0, -1, 1, 0, 1
+            -0.5,  0.5, 1, 0, 0,
+             0.5,  0.5, 1, 1, 0,
+             0.5, -0.5, 1, 1, 1,
+            -0.5, -0.5, 1, 0, 1
         };
+        /*
+            -0,5,  0.5, 1, 0, 0,
+             0.5,  0.5, 1, 1, 0,
+             0.5, -0.5, 1, 1, 1,
+            -0.5, -0.5, 1, 0, 1
+            */
 
         VertexBuffer vbo;
         vertexBuffer_construct(&vbo, positions);
@@ -57,6 +64,11 @@ void render_system_init(void)
         rectBatch.mode = GL_TRIANGLES;
         program_construct(&rectBatch.program, "./resources/shader/vertex.glsl", "./resources/shader/fragment.glsl");
 	}
+
+	uint32_t bindingPoint = 1;
+	glUniformBlockBinding(rectBatch.program, glGetUniformBlockIndex(rectBatch.program, "WorldBlock"), bindingPoint);
+	uniformBuffer_construct(&worldData_ubo, 64, GL_STREAM_DRAW);
+	glBindBufferBase(GL_UNIFORM_BUFFER, bindingPoint, worldData_ubo);
 }
 
 
@@ -66,53 +78,17 @@ void render_system(checs_system_parameters)
 	checs_component_mut_use(Camera, c);
 	checs_component_use(Transform, t);
 
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 	checs_component_get(Camera, c, checs_entity_get_by_tag(CameraTag));
 	camera_default_vp_recalculate(c);
 
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	/*
-	checs_entity_foreach(entity)
-	{
-		checs_component_get(Renderable, r, entity);
-		checs_component_get(Transform, t, entity);
-
-		//apply transforms of the entity and upload them to the shader uniforms
-		mat4 transform;
-		glm_mat4_identity(transform);
-    	glm_scale_uni(transform, r->scale);
-    	glm_rotate_z(transform, r->rot, transform);
-    	glm_translate(transform, t->pos);
-
-		vertexArray_bind(&r->vao);
-		program_bind(r->program);
-
-		program_uniformMat4_set(r->program, "u_transform", transform);
-		program_uniformMat4_set(r->program, "u_camera_vp", c->vp);
-		program_uniform1u_set(r->program, "u_texture_layer", r->texture->layer);
-
-		switch (r->renderableType)
-		{
-			case ARRAYS:
-				glDrawArrays(r->mode, 0, r->vertexCount);
-				break;
-
-			case ARRAYS_INSTANCED:
-				glDrawArraysInstanced(r->mode, 0, r->vertexCount, r->primitiveCount);
-				break;
-
-			case ELEMENTS:
-				glDrawElements(r->mode, r->elementCount, GL_UNSIGNED_INT, NULL);
-				break;
-
-			case ELEMENTS_INSTANCED:
-				glDrawElementsInstanced(r->mode, r->elementCount, GL_UNSIGNED_INT, NULL, r->primitiveCount);
-				break;
-		}
-	}*/
+	uniformBuffer_bind(worldData_ubo);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, 64, c->vp);
 	
 	if (rectBatch.entitys.size > 0)
 	{
+		float scales[rectBatch.entitys.size];
 		uint32_t textureLayers[rectBatch.entitys.size];
 		vec2 textureSizes[rectBatch.entitys.size];
 		vec2 textureOffsets[rectBatch.entitys.size];
@@ -125,9 +101,10 @@ void render_system(checs_system_parameters)
 			checs_component_get(Renderable, r, entity);
 			checs_component_get(Transform, t, entity);
 
-	    	glm_scale_uni(transforms[i], r->scale);
-	    	glm_rotate_z(transforms[i], r->rot, transforms[i]);
+	    	scales[i] = r->scale;
+	    	//glm_scale_uni(transforms[i], r->scale);
 	    	glm_translate(transforms[i], t->pos);
+	    	glm_rotate_z(transforms[i], r->rot, transforms[i]);
 
 	    	textureLayers[i] = r->texture->layer;
 			glm_vec2_copy(r->textureOffset, textureOffsets[i]);
@@ -136,10 +113,7 @@ void render_system(checs_system_parameters)
 		vertexArray_bind(&rectBatch.vao);
 		program_bind(rectBatch.program);
 
-		checs_component_get(Camera, c, checs_entity_get_by_tag(CameraTag));
-		camera_default_vp_recalculate(c);
-
-		program_uniformMat4_set(rectBatch.program, "u_camera_vp", c->vp);
+		program_uniform1fv_set(rectBatch.program, "scales", rectBatch.entitys.size, scales);
 		program_uniformMat4v_set(rectBatch.program, "u_transforms", transforms, rectBatch.entitys.size);
 		program_uniform2fv_set(rectBatch.program, "u_texture_offsets", rectBatch.entitys.size, textureOffsets);
 		program_uniform1uv_set(rectBatch.program, "u_texture_layers", rectBatch.entitys.size, textureLayers);
@@ -158,6 +132,7 @@ void render_system_terminate(void)
 {
 	render_system_imm_terminate();
 	vector_destruct(&rectBatch.entitys);
+	uniformBuffer_destruct(&worldData_ubo);
 }
 
 
