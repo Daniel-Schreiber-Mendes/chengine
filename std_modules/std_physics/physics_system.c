@@ -10,7 +10,7 @@ static bool circle_circle_collision(Transform const *restrict t0, Transform cons
 static bool circle_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1);
 
 //2 dimensional array of all functions that check if two shapes collide. the array can be indexed by the tyope of the two COLLIDABLE_TYPES_COUNT
-static bool(*collision_tests[AABB + 1][AABB + 1]) 
+static bool(*collision_tests[2][2]) 
 			(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1) = 
 		{
 			{circle_circle_collision, circle_aabb_collision},
@@ -37,7 +37,7 @@ void physics_task(void)
 
 		checs_component_get(Velocity, v0, collider);
 
-		if (v0->vel[0] == 0.0 && v0->vel[1] == 0.0) continue;
+		if (!v0->vel[0] && !v0->vel[1]) continue;
 		{
 			checs_components_foreach(Collidable, c1, collidable)
 			{
@@ -50,6 +50,7 @@ void physics_task(void)
 					vec2 impulse;
 					float contactv;
 					// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
+					//inside the other one. because of this we have to correct it a bit by moving the object manually.
 					float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 1.2;
 
 					if (c1->behaviourType == DYNAMIC)
@@ -67,7 +68,6 @@ void physics_task(void)
 						glm_vec2_sub(v0->vel, (vec2){impulse[0] * c1->mass / (c0->mass + c1->mass), impulse[1] * c1->mass / (c0->mass + c1->mass)}, v0->vel);
 						glm_vec2_add(v1->vel, (vec2){impulse[0] * c0->mass / (c0->mass + c1->mass), impulse[1] * c0->mass / (c0->mass + c1->mass)}, v1->vel);
 
-						//inside the other one. because of this we have to correct it a bit by moving the object manually.
 						glm_vec2_muladds(contact.normal, -correction * c0->mass / (c0->mass + c1->mass), t0->pos);
 						glm_vec2_muladds(contact.normal,  correction * c1->mass / (c0->mass + c1->mass), t1->pos);
 
@@ -104,25 +104,25 @@ void physics_gravity_set(vec2 const g)
 static bool aabb_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1)
 {
 	//translation vetcor between the middles of the two rects
-	vec2 const t = {(t0->pos[0] + c0->bb[0] * 0.5) - (t1->pos[0] + c1->bb[0] * 0.5), (t0->pos[1] - c0->bb[1] * 0.5) - (t1->pos[1] - c1->bb[1] * 0.5)};
-	vec2 const p = {c0->bb[0] * 0.5 + c1->bb[0] * 0.5 - fabs(t[0]), c0->bb[1] * 0.5 + c1->bb[1] * 0.5 - fabs(t[1])}; //penetration depth on both axes
-    if (p[0] > 0 && p[1] < 0)
+	vec2 t;
+	glm_vec2_sub(t1, t0, t);
+	vec2 const p = {c0->bb[0] + c1->bb[0] - fabs(t[0]), c0->bb[1] + c1->bb[1] - fabs(t[1])}; //penetration depth on both axes
+	
+    if (p[0] < 0 || p[1] < 0)
     	return false;
 
     if (p[0] < p[1]) //if collision is mainly on x axis
     {
-    	contact.penetration = p[0];
-    	contact.normal[0] = -1 * sign(t[0]);
+    	contact.penetration = p[0]; 	
+    	contact.normal[0] = sign(t[0]);
     	contact.normal[1] = 0;
     }
     else //collision is mainly on y axis
     {
     	contact.penetration = p[1];
     	contact.normal[0] = 0;
-    	contact.normal[1] = -1 * sign(t[1]);
+    	contact.normal[1] = sign(t[1]);
     }
-    contact.position[0] = fmaxf(t0->pos[0], t1->pos[0]);
-    contact.position[1] = fmaxf(t0->pos[1] - c0->bb[1], t1->pos[1] - c1->bb[1]);
     return true;
 }
 
@@ -136,29 +136,27 @@ static bool aabb_circle_collision(Transform const *restrict t0, Transform const 
 static bool circle_circle_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1)
 {
 	//translation vector between two circle middles
-	vec2 const t = {(t1->pos[0] + c1->r) - (t0->pos[0] + c0->r), (t1->pos[1] - c1->r) - (t0->pos[1] - c0->r)};
+	vec2 t;
+	glm_vec2_sub(t1, t0, t);
 
 	if ((contact.penetration = c0->r + c1->r - glm_vec2_distance((vec2){0, 0}, t)) < 0) //the penetration is the sum of the radiuses minus the acutal distance
 		return false;
 
 	glm_vec2_normalize_to(t, contact.normal); //the normal is the normalized translation vector between the two circles
-	glm_vec2_copy(t0->pos, contact.position);
-	glm_vec2_muladds(contact.normal, c0->r, contact.position); //multiplies vec2 normal and scalar radius and adds them to the middle position of circle 0
     return true;
 }
 
 
 static bool circle_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1)
 {
-	contact.position[0] = clamp(t0->pos[0] + c0->r, t1->pos[0], t1->pos[0] + c1->bb[0]);
-	contact.position[1] = clamp(t0->pos[1] - c0->r, t1->pos[1] - c1->bb[1], t1->pos[1]);
+	vec2 contactPosition = {clamp(t0->pos[0], t1->pos[0] - c1->bb[0], t1->pos[0] + c1->bb[0]), clamp(t0->pos[1], t1->pos[1] - c1->bb[1], t1->pos[1] + c1->bb[1])};
  
-    bool const inside = glm_vec2_eqv((vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r}, contact.position); //if clamping doesn't change the position, both are the same
+    bool const inside = glm_vec2_eqv(t0->pos, contactPosition); //if clamping doesn't change the position, both are the same
 
-	if((contact.penetration = c0->r - glm_vec2_distance(contact.position, (vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r})) < 0 && !inside)
+	if((contact.penetration = c0->r - glm_vec2_distance(contactPosition, t0->pos)) < 0 && !inside)
     	return false;
 
- 	glm_vec2_sub((vec2){t0->pos[0] + c0->r, t0->pos[1] - c0->r}, contact.position, contact.normal);
+ 	glm_vec2_sub(t0->pos, contactPosition, contact.normal);
  	glm_vec2_normalize(contact.normal);
 
 	if(!inside)

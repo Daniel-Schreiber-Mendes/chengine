@@ -8,7 +8,6 @@ typedef struct
 {
 	float penetration;
 	vec2 normal; //the direction of the collision. for example if the top of a rect collides with another one, the normal is (0, 1)
-	vec2 position;
 }
 Contact;
 
