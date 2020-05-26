@@ -145,6 +145,19 @@ then
 		done
 		che update states
 	else
+	elif [ "$2" = "cglm" ]
+	then
+		mkdir build
+		cd build
+		git clone https://github.com/recp/cglm.git .
+		sh autogen.sh
+		./configure
+		make
+		make check
+		sudo make install
+		cd ..
+		sudo rm -r build
+	else
 		echo "Unkown update argument: ${2}"
 	fi
 elif [ "$1" = "rename" ]
