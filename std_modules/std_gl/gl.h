@@ -4,8 +4,8 @@
 
 
 #define LAYER_COUNT 4
-#define LAYER_WIDTH 256
-#define LAYER_HEIGHT 256
+#define LAYER_WIDTH 512
+#define LAYER_HEIGHT 512
 
 
 typedef uint32_t VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
@@ -48,8 +48,8 @@ ElementBuffer;
 
 typedef struct
 {
-	uint16_t minx, miny;
-	uint16_t width, height;
+	vec2 offset;
+	vec2 size;
 	uint8_t layer;
 }
 Texture;
@@ -121,13 +121,22 @@ void textureManager_terminate(void);
 void textureManager_image_load(char const *path);
 uint8_t textureManager_current_layer_get(void);
 
-#define texture_construct(t, _width, _height) ((t)->width = _width, (t)->height = _height, (t)->layer = textureManager_current_layer_get() - 1)
+
+#define texture_construct(t, offset_x, offset_y, width, height)\
+({\
+	(t)->offset[0] = offset_x / (float)LAYER_WIDTH;\
+	(t)->offset[1] = offset_y / (float)LAYER_HEIGHT;\
+	(t)->size[0] = width / (float)LAYER_WIDTH;\
+	(t)->size[1] = height / (float)LAYER_HEIGHT;\
+	(t)->layer = textureManager_current_layer_get() - 1;\
+})
 
 #define textureManager_construct_textures_from_file(path, expr)\
 ({\
 	textureManager_image_load(path);\
 	(expr);\
 })
+
 void texture_rect_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void *buffer);
 
 

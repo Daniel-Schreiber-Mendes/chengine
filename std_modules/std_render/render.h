@@ -32,8 +32,8 @@ typedef struct
 	} 
 	type;
 	float rot;
-	float scale; //TODO make this a vec2
-	vec2 textureOffset;
+	vec2 scale;
+	vec2 offset; //distance between renderable and position
 }
 Renderable;
 
@@ -42,7 +42,7 @@ typedef struct
 {
 	uint16_t nextFrame;
 	float fps;
-	vec2 *textureOffsets;
+	Texture *frames;
 }
 Animatable;
 

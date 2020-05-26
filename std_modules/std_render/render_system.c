@@ -30,12 +30,6 @@ void render_system_init(void)
              0.5, -0.5, 1, 1, 1,
             -0.5, -0.5, 1, 0, 1
         };
-        /*
-            -0,5,  0.5, 1, 0, 0,
-             0.5,  0.5, 1, 1, 0,
-             0.5, -0.5, 1, 1, 1,
-            -0.5, -0.5, 1, 0, 1
-            */
 
         VertexBuffer vbo;
         vertexBuffer_construct(&vbo, positions);
@@ -88,7 +82,6 @@ void render_system(checs_system_parameters)
 	
 	if (rectBatch.entitys.size > 0)
 	{
-		float scales[rectBatch.entitys.size];
 		uint32_t textureLayers[rectBatch.entitys.size];
 		vec2 textureSizes[rectBatch.entitys.size];
 		vec2 textureOffsets[rectBatch.entitys.size];
@@ -101,19 +94,18 @@ void render_system(checs_system_parameters)
 			checs_component_get(Renderable, r, entity);
 			checs_component_get(Transform, t, entity);
 
-	    	scales[i] = r->scale;
-	    	//glm_scale_uni(transforms[i], r->scale);
-	    	glm_translate(transforms[i], t->pos);
+	    	glm_translate(transforms[i], (vec3){r->offset[0], r->offset[1], 0});
 	    	glm_rotate_z(transforms[i], r->rot, transforms[i]);
+	    	glm_translate(transforms[i], (vec3){t->pos[0], t->pos[1], 0});
+	    	glm_scale(transforms[i], (vec3){r->scale[0], r->scale[1], 1});
 
 	    	textureLayers[i] = r->texture->layer;
-			glm_vec2_copy(r->textureOffset, textureOffsets[i]);
-			glm_vec2_copy((vec2){r->texture->width / (float)LAYER_WIDTH, r->texture->height / (float)LAYER_HEIGHT}, textureSizes[i]);
+			glm_vec2_copy(r->texture->offset, textureOffsets[i]);
+			glm_vec2_copy(r->texture->size, textureSizes[i]);
 		}
 		vertexArray_bind(&rectBatch.vao);
 		program_bind(rectBatch.program);
 
-		program_uniform1fv_set(rectBatch.program, "scales", rectBatch.entitys.size, scales);
 		program_uniformMat4v_set(rectBatch.program, "u_transforms", transforms, rectBatch.entitys.size);
 		program_uniform2fv_set(rectBatch.program, "u_texture_offsets", rectBatch.entitys.size, textureOffsets);
 		program_uniform1uv_set(rectBatch.program, "u_texture_layers", rectBatch.entitys.size, textureLayers);
