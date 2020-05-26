@@ -45,8 +45,8 @@ LIBS =
 EXE = ${1}
 VER = -std=c99
 MODE = -g
-OPT = -O0
-ERR = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion
+OPT = -O0 
+ERR = -Wall -Wuninitialized -Werror=implicit-function-declaration -Wextra -Wno-unused-parameter -Wno-incompatible-pointer-types -Werror=int-conversion -Wduplicated-cond -Wduplicated-branches -Wlogical-op -Wrestrict -Wnull-dereference -Wjump-misses-init -Wdouble-promotion -Wshadow -Wformat=2
 LFLAGS = -o
 CFLAGS = \$(ERR) \$(VER) \$(OPT) -c \$(MODE)
 
@@ -115,6 +115,9 @@ then
 		mkdir modules
 		mkdir states
 		create_makefile $3
+	elif [ "$2" = "makefile" ]
+	then
+		create_makefile $3
 	else
 		echo "Unkown create argument: ${2}"
 	fi
@@ -143,6 +146,15 @@ then
 		che update states
 	else
 		echo "Unkown update argument: ${2}"
+	fi
+elif [ "$1" = "rename" ]
+then
+	param_check $2
+	if [ "$2" = "project" ]
+	then
+		#TODO: implement it: change EXE in makefile to the given argument
+	else
+		echo "Unknown rename argument: ${$2}"
 	fi
 else
 	echo "Unkown command: ${1}"
