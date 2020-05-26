@@ -56,7 +56,7 @@ void render_system_init(void)
         }
 
         rectBatch.mode = GL_TRIANGLES;
-        program_construct(&rectBatch.program, "./resources/shader/vertex.glsl", "./resources/shader/fragment.glsl");
+        program_construct(&rectBatch.program, "modules/std_render/shader/vertex.glsl", "modules/std_render/shader/fragment.glsl");
 	}
 
 	uint32_t bindingPoint = 1;
