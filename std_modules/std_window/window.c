@@ -19,6 +19,8 @@ static void scroll_callback(GLFWwindow* _window, double const xoffset, double co
 void window_init(void)
 {
     che_assert(glfwInit());
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     monitor = glfwGetPrimaryMonitor();
     che_assert(window = glfwCreateWindow((width = std_width), (height = std_height), "", NULL, NULL));
     glfwMakeContextCurrent(window);

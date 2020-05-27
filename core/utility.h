@@ -19,7 +19,6 @@ Alternator;
 
 //utility.c
 uint8_t  alternator_alternate(Alternator *const alt);
-uint8_t  getGlTypeSize(GLuint const type);
 
 //math.c
 #define rand_element(arr, size) (arr[getRandUint16(0, size - 1)])

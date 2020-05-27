@@ -11,11 +11,14 @@
 typedef uint32_t VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 typedef uint32_t Program;
 typedef uint32_t UniformBuffer;
+typedef uint32_t ShaderStorageBuffer;
+typedef uint32_t TextureBuffer;
 
 
 typedef struct
 {
 	uint32_t id;
+	uint8_t attributeCount;
 }
 VertexArray;
 
@@ -23,17 +26,20 @@ VertexArray;
 typedef struct 
 {
 	int componentCount;
+	uint8_t size;
 	GLenum type;
 	GLboolean normalized;
+	uint8_t divisor;
+	VertexBuffer vbo;
 }
 VertexBufferLayoutElement; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 
 
 typedef struct
 {
-	VertexBufferLayoutElement *elements;
 	uint8_t elementCount;
 	GLsizei stride;
+	VertexBufferLayoutElement *elements;
 }
 VertexBufferLayout; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 
@@ -56,13 +62,15 @@ Texture;
 
 
 //buffer.c
-#define vertexBuffer_construct(vbo_ptr, array)\
-	glGenBuffers(1, (vbo_ptr));\
-	vertexBuffer_bind(*(vbo_ptr));\
-	glBufferData(GL_ARRAY_BUFFER, sizeof(array), array, GL_STATIC_DRAW);
+void vertexBuffer_construct(VertexBuffer *vbo, void *data, uint16_t size, GLenum type);
+void vertexBuffer_destruct(VertexBuffer const *vbo);
+void vertexBuffer_bind(VertexBuffer const vbo);
 
-void 	vertexBuffer_destruct(VertexBuffer const *const vbo);
-void 	vertexBuffer_bind(VertexBuffer const vbo);
+#define vertexBuffer_update_begin(vbo, offset, p)\
+	void *p = glMapNamedBuffer(vbo, GL_WRITE_ONLY);\
+	p += offset;
+
+#define vertexBuffer_update_end() glUnmapBuffer(GL_ARRAY_BUFFER)
 
 
 //buffer.c
@@ -78,17 +86,31 @@ void 	elementBuffer_destruct(ElementBuffer const *ebo);
 void 	elementBuffer_bind(ElementBuffer const *ebo);
 
 
-void uniformBuffer_construct(UniformBuffer *ubo, uint16_t size, GLenum type);
+void uniformBuffer_construct(UniformBuffer *ubo, uint16_t size, GLenum type, Program program, char const *name, uint8_t binding);
 void uniformBuffer_destruct(UniformBuffer const *ubo);
 void uniformBuffer_bind(UniformBuffer ubo);
+void uniformBuffer_update(UniformBuffer ubo, uint16_t size, void const *data);
 
+#define uniformBuffer_update_begin(ubo, p)\
+	void *p = glMapNamedBuffer(ubo, GL_WRITE_ONLY);
+
+#define uniformBuffer_update_end() glUnmapBuffer(GL_UNIFORM_BUFFER);
+
+
+void shaderStorageBuffer_construct(ShaderStorageBuffer *ssbo, uint16_t size, uint8_t binding);
+void shaderStorageBuffer_destruct(ShaderStorageBuffer const *ssbo);
+void shaderStorageBuffer_update(ShaderStorageBuffer ssbo, uint16_t size, void const *data);
+
+#define shaderStorageBuffer_update_begin(ubo, p)\
+	void *p = glMapNamedBuffer(ubo, GL_WRITE_ONLY);
+
+#define shaderStorageBuffer_update_end() glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
 //vertexArray.c
 void vertexArray_construct(VertexArray *vao);
 void vertexArray_destruct(VertexArray const *vao);
 void vertexArray_bind(VertexArray const *vao);
-void vertexArray_buffer_add(VertexArray const *vao, GLuint vbo, VertexBufferLayout layout);
-void vertexArray_current_buffer_add(GLuint vbo, VertexBufferLayout layout);
+void vertexArray_vbl_add(VertexArray *vao, VertexBufferLayout layout);
 
 //program.c
 void program_construct(Program *program, char const *fsPath, char const *vsPath);
@@ -107,7 +129,6 @@ void program_uniform1fv_set(Program program, char const *name, uint16_t size, fl
 void program_uniformMat4v_set(Program program, char const *name, mat4 const *mv, uint16_t size);
 
 
-//vertexBufferLayout.c
 void vertexBufferLayout_construct(VertexBufferLayout *vbl, uint8_t size);
 void vertexBufferLayout_element_add(VertexBufferLayout *vbl, VertexBufferLayoutElement element);
 void vertexBufferLayout_destruct(VertexBufferLayout const *vbl);

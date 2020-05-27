@@ -28,7 +28,7 @@ void camera_target_set(Camera *const c, Transform *const t)
 }
 
 
-void camera_default_vp_recalculate(Camera *const c)
+void camera_vp_recalculate(Camera *const c, mat4 vp)
 {
     mat4 view, proj; 
     checs_component_get_once(Transform, t, checs_entity_get_by_tag(CameraTag));
@@ -46,5 +46,5 @@ void camera_default_vp_recalculate(Camera *const c)
     /* by setting the projection always according to the aspect ratio if the window gets resized everything still gets rendered with the correct aspect ratio*/
     glm_rotate_z(view, c->rot, view);  //rotate it
     glm_mat4_inv(view, view); //if camera moves left, everything else should move right. because of this we have to inverse the direction
-    glm_mat4_mul(proj, view, c->vp);
+    glm_mat4_mul(proj, view, vp);
 }

@@ -51,7 +51,7 @@ void physics_task(void)
 					float contactv;
 					// because of floating point errors a small amount of energy constantly gets lost. if an object would stand on top of another, this would result in it slowly sinking
 					//inside the other one. because of this we have to correct it a bit by moving the object manually.
-					float const correction = fmaxf(contact.penetration - 0.001, 0.0) * 1.2;
+					float const correction = fmaxf(contact.penetration - 0.001f, 0.f) * 1.2f;
 
 					if (c1->behaviourType == DYNAMIC)
 					{
@@ -106,7 +106,7 @@ static bool aabb_aabb_collision(Transform const *restrict t0, Transform const *r
 	//translation vetcor between the middles of the two rects
 	vec2 t;
 	glm_vec2_sub(t1, t0, t);
-	vec2 const p = {c0->bb[0] + c1->bb[0] - fabs(t[0]), c0->bb[1] + c1->bb[1] - fabs(t[1])}; //penetration depth on both axes
+	vec2 const p = {c0->bb[0] + c1->bb[0] - fabsf(t[0]), c0->bb[1] + c1->bb[1] - fabsf(t[1])}; //penetration depth on both axes
 	
     if (p[0] < 0 || p[1] < 0)
     	return false;

@@ -22,7 +22,7 @@ void camera_construct(Camera *const c);
 void camera_default_zoom(Camera *const c, float const yoffset);
 void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height);
 void camera_target_set(Camera *const c, Transform *const t);
-void camera_default_vp_recalculate(Camera *const c);
+void camera_vp_recalculate(Camera *const c, mat4 vp);
 
 
 #endif

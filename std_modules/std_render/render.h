@@ -13,6 +13,7 @@
 typedef struct
 {
 	Program program;
+	VertexBuffer pv_vbo, pi_vbo; //per vertex and per instance
 	VertexArray vao;
 	uint16_t elementCount; //this is not the number of renderables, but the number of indices in the elementbuffer
 	GLenum mode;
@@ -33,7 +34,7 @@ typedef struct
 	type;
 	float rot;
 	vec2 scale;
-	vec2 offset; //distance between renderable and position
+	vec2 offset; //distance between renderable and center before rotation
 }
 Renderable;
 
@@ -55,8 +56,7 @@ void render_system_terminate(void);
 
 void render_system_imm_init(void);
 void render_system_imm_terminate(void);
-void render_system_imm_render(void);
-void render_system_imm_on_imm_draw_set(void(*_on_imm_draw)(void));
+void render_system_on_imm_draw(void); //Implemented by user
 void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size);
 
 

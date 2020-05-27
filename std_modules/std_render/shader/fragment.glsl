@@ -1,4 +1,4 @@
-#version 300 es
+#version 430
 
 precision lowp float;
 precision lowp sampler2DArray;
