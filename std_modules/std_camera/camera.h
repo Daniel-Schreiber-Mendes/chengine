@@ -6,10 +6,7 @@
 
 typedef struct
 {
-	mat4 vp;
-	float aspectRatio;
-	float zoom;
-	float rot;
+	float aspectRatio, zoom, rot;
 	Transform *target; //this is optionally. if it is null, don't follow anything and just wait for a direct command to move the camera
 }
 Camera;
@@ -18,11 +15,11 @@ Camera;
 #define CameraTag 0
 
 
-void camera_construct(Camera *const c);
-void camera_default_zoom(Camera *const c, float const yoffset);
-void camera_default_resize(Camera *const c, uint16_t const width, uint16_t const height);
-void camera_target_set(Camera *const c, Transform *const t);
-void camera_vp_recalculate(Camera *const c, mat4 vp);
+void camera_construct(Camera *c);
+void camera_zoom(Camera *c, float zoom);
+void camera_resize(Camera *c, uint16_t width, uint16_t height);
+void camera_target_set(Camera *c, Transform *t);
+void camera_vp_recalculate(Camera *c, mat4 vp);
 
 
 #endif

@@ -139,8 +139,8 @@ static void joystick_callback(int jid, int event)
 }
 
 
-/* we dont care about xoffset scrolling, so we are leaving that out */
 static void scroll_callback(GLFWwindow* _window, double const xoffset, double const yoffset)
 {
+    /* we dont care about xoffset scrolling, so we are leaving that out */
     checs_command_publish(ScrollCommand, (&(ScrollData){yoffset}));
 }

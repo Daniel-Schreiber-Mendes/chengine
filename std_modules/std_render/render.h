@@ -13,8 +13,8 @@
 typedef struct
 {
 	Program program;
-	VertexBuffer pv_vbo, pi_vbo; //per vertex and per instance
-	VertexArray vao;
+	Vbo pv_vbo, pi_vbo; //per vertex and per instance
+	Vao vao;
 	uint16_t elementCount; //this is not the number of renderables, but the number of indices in the elementbuffer
 	GLenum mode;
 	Vector entitys;
@@ -49,15 +49,13 @@ Animatable;
 
 
 void render_system_on_entity_added(EntityId e);
-
 void render_system_init(void);
 void render_system(checs_system_parameters);
 void render_system_terminate(void);
-
 void render_system_imm_init(void);
 void render_system_imm_terminate(void);
-void render_system_on_imm_draw(void); //Implemented by user
 void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size);
+void render_system_on_imm_draw(void); //Implemented by user
 
 
 #define mat4_print(m)\

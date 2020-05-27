@@ -1,8 +1,8 @@
 #include "render.h"
 
 
-static VertexArray vertexArray;
-static ElementBuffer elementBuffer;
+static Vao vao;
+static Ebo ebo;
 static Program program;
 
 
@@ -22,24 +22,24 @@ void render_system_imm_init(void)
 		2, 3, 0
 	};
 
-	VertexBufferLayout vbl;
-	VertexBuffer vbo;
-	vertexArray_construct(&vertexArray);
-	vertexBuffer_construct(&vbo, positions, sizeof(positions), GL_STATIC_DRAW);
-	elementBuffer_construct(&elementBuffer, elements);
+	Vbl vbl;
+	Vbo vbo;
+	vao_construct(&vao);
+	vbo_construct(&vbo, positions, sizeof(positions), GL_STATIC_DRAW);
+	ebo_construct(&ebo, elements, sizeof(elements), GL_STATIC_DRAW, 6);
 
-	vertexBufferLayout_construct(&vbl, 1);
-	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 0, vbo}));
-	vertexArray_vbl_add(&vertexArray, vbl);
-	vertexBufferLayout_destruct(&vbl);
+	vbl_construct(&vbl, 1);
+	vbl_element_add(&vbl, ((Vble){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 0, vbo}));
+	vao_vbl_add(&vao, vbl);
+	vbl_destruct(&vbl);
 	program_construct(&program, "modules/std_render/shader/imm_vertex.glsl", "modules/std_render/shader/imm_fragment.glsl");
 }
 
 
 void render_system_imm_terminate(void)
 {
-	vertexBuffer_destruct(&vertexArray);
-	elementBuffer_destruct(&elementBuffer);
+	vbo_destruct(&vao);
+	ebo_destruct(&ebo);
 	program_destruct(program);
 }
 
@@ -47,7 +47,7 @@ void render_system_imm_terminate(void)
 void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size)
 {
 	//imediate mode drawing is pretty slow compared to retained mode drawing but this is not a problem because it is only used for debugging purposes
-	vertexArray_bind(&vertexArray);
+	vao_bind(&vao);
 	program_bind(program);
 	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
 
@@ -62,5 +62,5 @@ void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const siz
 	program_uniform4fv_set(program, "u_color", color);
 	program_uniformMat4_set(program, "u_transform", transform);
 
-	glDrawElements(GL_TRIANGLES, elementBuffer.elementCount, GL_UNSIGNED_INT, NULL);
+	glDrawElements(GL_TRIANGLES, ebo.elementCount, GL_UNSIGNED_INT, NULL);
 }

@@ -12,7 +12,7 @@ out vec3 v_texCoord;
 
 uniform uint u_texture_layers[16];
 
-layout (std140) uniform CameraData
+layout (std140) uniform Camera
 {
 					//base alignment //aligned offset
 	mat4 u_camera_vp; //64              0

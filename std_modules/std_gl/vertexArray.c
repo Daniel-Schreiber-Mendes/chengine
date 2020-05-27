@@ -1,33 +1,33 @@
 #include "gl.h"
 
 
-void vertexArray_construct(VertexArray *const vao)
+void vao_construct(Vao *const vao)
 {
 	glGenVertexArrays(1, &vao->id);
 	glBindVertexArray(vao->id);
 }
 
 
-void vertexArray_destruct(VertexArray const *const vao)
+void vao_destruct(Vao const *const vao)
 {
 	glDeleteVertexArrays(1, &vao->id);
 }
 
 
-void vertexArray_bind(VertexArray const *const vao)
+void vao_bind(Vao const *const vao)
 {
 	glBindVertexArray(vao->id);
 }
 
 
-void vertexArray_vbl_add(VertexArray *const vao, VertexBufferLayout const layout)
+void vao_vbl_add(Vao *const vao, Vbl const layout)
 {
 	glBindVertexArray(vao->id);
 	void const *offset = 0;
 	//should be of type uint but glVertexAttribPointer takes a void* where the adress is used as the actual value
 	for (uint8_t i=0 ; i < layout.elementCount; ++i)
 	{
-		vertexBuffer_bind(layout.elements[i].vbo);
+		vbo_bind(layout.elements[i].vbo);
 		glEnableVertexAttribArray(i + vao->attributeCount);
 		glVertexAttribDivisor(i + vao->attributeCount, layout.elements[i].divisor);
 		glVertexAttribPointer

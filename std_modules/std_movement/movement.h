@@ -17,12 +17,8 @@ typedef struct
 Velocity;
 
 
-float transform_distance_get(Transform const *restrict t, Transform const *restrict t2);
-
-/*Requirements:
- - If an entity has a Velocity component it has to have a transform component
-*/
 void movement_task(void);
+float transform_distance_get(Transform const *restrict t, Transform const *restrict t2);
 
 
 

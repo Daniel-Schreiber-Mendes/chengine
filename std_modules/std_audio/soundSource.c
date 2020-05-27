@@ -7,15 +7,15 @@ void soundSource_construct(SoundSource *const s, char const *const path)
     uint32_t samplerate, size;
     ALvoid *const data = wavFile_load(path, &channels, &samplerate, &bps, &size);
 
-    {
-        ALuint buffer;
-        alGenBuffers(1, &buffer);
-        alBufferData(buffer, wav_format_get(channels, bps), data, size, samplerate);
-        alGenSources(1, &s->source);
-        alSourcei(s->source, AL_BUFFER, buffer);
-        alDeleteBuffers(1, &buffer);
-    }
-
+    
+    ALuint buffer;
+    alGenBuffers(1, &buffer);
+    alBufferData(buffer, wav_format_get(channels, bps), data, size, samplerate);
+    alGenSources(1, &s->source);
+    alSourcei(s->source, AL_BUFFER, buffer);
+    alDeleteBuffers(1, &buffer);
+    
+    
     che_scope_free(data);
 }
 

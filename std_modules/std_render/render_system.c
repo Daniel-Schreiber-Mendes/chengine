@@ -1,14 +1,8 @@
 #include "render.h"
 
-static UniformBuffer cameraData_ubo;
+static Ubo camera_ubo;
 static RectBatch rectBatch;
 
-/*
-static void *batches[1] =
-{
-	&rectBatch
-}; //array of pointers to different batch types
-*/
 
 void render_system_init(void)
 {
@@ -20,8 +14,8 @@ void render_system_init(void)
 	
 	{
 		vector_construct(&rectBatch.entitys, sizeof(EntityId));
-		vertexArray_construct(&rectBatch.vao);
-		vertexArray_bind(&rectBatch.vao);
+		vao_construct(&rectBatch.vao);
+		vao_bind(&rectBatch.vao);
 
         {
         	//per vertex
@@ -39,42 +33,41 @@ void render_system_init(void)
 	            2, 3, 0
 	        };
 
-	        ElementBuffer ebo;
+	        Ebo ebo;
 
-	        elementBuffer_construct(&ebo, elements);
-	        vertexBuffer_construct(&rectBatch.pv_vbo, positions, sizeof(positions), GL_STATIC_DRAW);
+	        ebo_construct(&ebo, elements, sizeof(elements), GL_STATIC_DRAW, 6);
+	        vbo_construct(&rectBatch.pv_vbo, positions, sizeof(positions), GL_STATIC_DRAW);
 	        
-	        VertexBufferLayout vbl;
-	    	vertexBufferLayout_construct(&vbl, 2);
-	        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){3, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 0, rectBatch.pv_vbo})); //pos coords
-	        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 0, rectBatch.pv_vbo})); //tex coords
-	        vertexArray_vbl_add(&rectBatch.vao, vbl);
-        	vertexBufferLayout_destruct(&vbl);
+	        Vbl vbl;
+	    	vbl_construct(&vbl, 2);
+	        vbl_element_add(&vbl, ((Vble){3, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 0, rectBatch.pv_vbo})); //pos coords
+	        vbl_element_add(&vbl, ((Vble){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 0, rectBatch.pv_vbo})); //tex coords
+	        vao_vbl_add(&rectBatch.vao, vbl);
+        	vbl_destruct(&vbl);
     	}
 
     	{
     		//per instance
-    		vertexBuffer_construct(&rectBatch.pi_vbo, NULL, 80 * 16, GL_STREAM_DRAW);
+    		vbo_construct(&rectBatch.pi_vbo, NULL, 80 * 16, GL_STREAM_DRAW);
 
-	       	VertexBufferLayout vbl;
-	    	vertexBufferLayout_construct(&vbl, 6);
-	        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //texture offset
-	        vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //texture size
+	       	Vbl vbl;
+	    	vbl_construct(&vbl, 6);
+	        vbl_element_add(&vbl, ((Vble){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //texture offset
+	        vbl_element_add(&vbl, ((Vble){2, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //texture size
 
-	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 1
-	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 2
-	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 3
-	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 4
-	        vertexArray_vbl_add(&rectBatch.vao, vbl);
-        	vertexBufferLayout_destruct(&vbl);
+	    	vbl_element_add(&vbl, ((Vble){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 1
+	    	vbl_element_add(&vbl, ((Vble){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 2
+	    	vbl_element_add(&vbl, ((Vble){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 3
+	    	vbl_element_add(&vbl, ((Vble){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 4
+	        vao_vbl_add(&rectBatch.vao, vbl);
+        	vbl_destruct(&vbl);
     	}
 
         rectBatch.mode = GL_TRIANGLES;
         program_construct(&rectBatch.program, "modules/std_render/shader/vertex.glsl", "modules/std_render/shader/fragment.glsl");
 	}
 
-
-	uniformBuffer_construct(&cameraData_ubo, 64, GL_STREAM_DRAW, rectBatch.program, "CameraData", 0);
+	ubo_construct(&camera_ubo, 64, GL_STREAM_DRAW, rectBatch.program, "Camera", 0);
 }
 
 
@@ -87,18 +80,18 @@ void render_system(checs_system_parameters)
 
 	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
 
-	uniformBuffer_update_begin(cameraData_ubo, cameraData);
-		camera_vp_recalculate(c, cameraData);
-	uniformBuffer_update_end();
+	ubo_update_begin(camera_ubo, camera_ubo_p);
+		camera_vp_recalculate(c, camera_ubo_p);
+	ubo_update_end();
 
 	
 	if (rectBatch.entitys.size > 0)
 	{
 		uint32_t textureLayers[rectBatch.entitys.size];
 
-		vertexArray_bind(&rectBatch.vao);
+		vao_bind(&rectBatch.vao);
 
-		vertexBuffer_update_begin(rectBatch.pi_vbo, p);
+		vbo_update_begin(rectBatch.pi_vbo, p);
 		vector_foreach(&rectBatch.entitys, EntityId, entity)
 		{
 			checs_component_get(Renderable, r, entity);
@@ -118,7 +111,7 @@ void render_system(checs_system_parameters)
 	    	glm_vec2_copy(&r->texture->size, textureSize);
 	    	textureLayers[i] = r->texture->layer;
 		}
-		vertexBuffer_update_end();
+		vbo_update_end();
 
 		program_bind(rectBatch.program);
 		program_uniform1uv_set(rectBatch.program, "u_texture_layers", rectBatch.entitys.size, textureLayers);
@@ -135,11 +128,12 @@ void render_system(checs_system_parameters)
 void render_system_terminate(void)
 {
 	render_system_imm_terminate();
+	program_destruct(rectBatch.program);
 	vector_destruct(&rectBatch.entitys);
-	uniformBuffer_destruct(&cameraData_ubo);
-	vertexArray_destruct(&rectBatch.vao);
-	vertexBuffer_destruct(&rectBatch.pi_vbo);
-	vertexBuffer_destruct(&rectBatch.pv_vbo);
+	ubo_destruct(&camera_ubo);
+	vao_destruct(&rectBatch.vao);
+	vbo_destruct(&rectBatch.pi_vbo);
+	vbo_destruct(&rectBatch.pv_vbo);
 }
 
 

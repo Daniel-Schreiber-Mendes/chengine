@@ -8,11 +8,11 @@
 #define LAYER_HEIGHT 512
 
 
-typedef uint32_t VertexBuffer; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
+typedef uint32_t Vbo; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
 typedef uint32_t Program;
-typedef uint32_t UniformBuffer;
-typedef uint32_t ShaderStorageBuffer;
-typedef uint32_t TextureBuffer;
+typedef uint32_t Ubo;
+typedef uint32_t Ssbo;
+typedef uint32_t Tbo;
 
 
 typedef struct
@@ -20,7 +20,7 @@ typedef struct
 	uint32_t id;
 	uint8_t attributeCount;
 }
-VertexArray;
+Vao;
 
 
 typedef struct 
@@ -30,26 +30,26 @@ typedef struct
 	GLenum type;
 	GLboolean normalized;
 	uint8_t divisor;
-	VertexBuffer vbo;
+	Vbo vbo;
 }
-VertexBufferLayoutElement; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
+Vble; //only used when creating a renderable and is stored by the vertexarray
 
 
 typedef struct
 {
 	uint8_t elementCount;
-	GLsizei stride;
-	VertexBufferLayoutElement *elements;
+	uint16_t stride; //total size of vertex
+	Vble *elements;
 }
-VertexBufferLayout; //only used when creating a renderable and is stored by the vertexarray. the renderable does not store it
+Vbl; //only used when creating a renderable and is stored by the vertexarray
 
 
 typedef struct
 {
 	uint32_t id;
-	GLsizei elementCount;
+	uint16_t elementCount;
 }
-ElementBuffer;
+Ebo;
 
 
 typedef struct
@@ -61,60 +61,47 @@ typedef struct
 Texture;
 
 
-//buffer.c
-void vertexBuffer_construct(VertexBuffer *vbo, void *data, uint16_t size, GLenum type);
-void vertexBuffer_destruct(VertexBuffer const *vbo);
-void vertexBuffer_bind(VertexBuffer const vbo);
 
-#define vertexBuffer_update_begin(vbo, offset)\
+void vbo_construct(Vbo *vbo, void const *data, uint16_t size, GLenum type);
+void vbo_destruct(Vbo const *vbo);
+void vbo_bind(Vbo const vbo);
+void vbo_update_end(void);
+
+#define vbo_update_begin(vbo, p)\
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);\
 	void *p = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
-#define vertexBuffer_update_end() glUnmapBuffer(GL_ARRAY_BUFFER)
+void 	ebo_construct(Ebo *ebo, void const *data, uint16_t size, GLenum type, uint16_t elementCount);
+void 	ebo_destruct(Ebo const *ebo);
+void 	ebo_bind(Ebo const *ebo);
 
 
-//buffer.c
+void 	ubo_construct(Ubo *ubo, uint16_t size, GLenum type, Program program, char const *name, uint8_t binding);
+void 	ubo_destruct(Ubo const *ubo);
+void 	ubo_bind(Ubo ubo);
+void 	ubo_update(Ubo ubo, uint16_t size, void const *data);
+void 	ubo_update_end(void);
 
-#define elementBuffer_construct(ebo_ptr, array)\
-	glGenBuffers(1, &(ebo_ptr)->id);\
-	elementBuffer_bind((ebo_ptr));\
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(array), array, GL_STATIC_DRAW);\
-	(ebo_ptr)->elementCount = sizeof(array) / sizeof(array[0]);
-	//get number of element in array
-
-void 	elementBuffer_destruct(ElementBuffer const *ebo);
-void 	elementBuffer_bind(ElementBuffer const *ebo);
-
-
-void uniformBuffer_construct(UniformBuffer *ubo, uint16_t size, GLenum type, Program program, char const *name, uint8_t binding);
-void uniformBuffer_destruct(UniformBuffer const *ubo);
-void uniformBuffer_bind(UniformBuffer ubo);
-void uniformBuffer_update(UniformBuffer ubo, uint16_t size, void const *data);
-
-#define uniformBuffer_update_begin(ubo, p)\
+#define ubo_update_begin(ubo, p)\
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);\
 	void *p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
 
-#define uniformBuffer_update_end() glUnmapBuffer(GL_UNIFORM_BUFFER);
 
+void 	ssbo_construct(Ssbo *ssbo, uint16_t size, uint8_t binding);
+void 	ssbo_destruct(Ssbo const *ssbo);
+void 	ssbo_update_end(void);
 
-void shaderStorageBuffer_construct(ShaderStorageBuffer *ssbo, uint16_t size, uint8_t binding);
-void shaderStorageBuffer_destruct(ShaderStorageBuffer const *ssbo);
-void shaderStorageBuffer_update(ShaderStorageBuffer ssbo, uint16_t size, void const *data);
-
-#define shaderStorageBuffer_update_begin(ubo, p)\
+#define ssbo_update_begin(ubo, p)\
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ubo);\
 	void *p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
-#define shaderStorageBuffer_update_end() glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
-//vertexArray.c
-void vertexArray_construct(VertexArray *vao);
-void vertexArray_destruct(VertexArray const *vao);
-void vertexArray_bind(VertexArray const *vao);
-void vertexArray_vbl_add(VertexArray *vao, VertexBufferLayout layout);
+void vao_construct(Vao *vao);
+void vao_destruct(Vao const *vao);
+void vao_bind(Vao const *vao);
+void vao_vbl_add(Vao *vao, Vbl layout);
 
-//program.c
+
 void program_construct(Program *program, char const *fsPath, char const *vsPath);
 void program_destruct(Program program);
 void program_bind(Program program);
@@ -131,36 +118,25 @@ void program_uniform1fv_set(Program program, char const *name, uint16_t size, fl
 void program_uniformMat4v_set(Program program, char const *name, mat4 const *mv, uint16_t size);
 
 
-void vertexBufferLayout_construct(VertexBufferLayout *vbl, uint8_t size);
-void vertexBufferLayout_element_add(VertexBufferLayout *vbl, VertexBufferLayoutElement element);
-void vertexBufferLayout_destruct(VertexBufferLayout const *vbl);
+void vbl_construct(Vbl *vbl, uint8_t size);
+void vbl_element_add(Vbl *vbl, Vble element);
+void vbl_destruct(Vbl const *vbl);
 
 
-//texture.c
-//an image is a buffer of colors that can be load from a file
-//a texture is a index into an image to indicate where the texture starts and ends
-void textureManager_init(void);
-void textureManager_terminate(void);
-void textureManager_image_load(char const *path);
+void 	textureManager_init(void);
+void 	textureManager_terminate(void);
+void 	textureManager_image_load(char const *path);
 uint8_t textureManager_current_layer_get(void);
+void 	texture_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void const *buffer);
 
-
-#define texture_construct(t, offset_x, offset_y, width, height)\
-({\
-	(t)->offset[0] = offset_x / (float)LAYER_WIDTH;\
-	(t)->offset[1] = offset_y / (float)LAYER_HEIGHT;\
-	(t)->size[0] = width / (float)LAYER_WIDTH;\
-	(t)->size[1] = height / (float)LAYER_HEIGHT;\
-	(t)->layer = textureManager_current_layer_get() - 1;\
-})
+#define texture_construct(t, dx, dy, width, height)\
+	*(t) = (Texture){{dx / (float)LAYER_WIDTH, dy / (float)LAYER_HEIGHT}, {width / (float)LAYER_WIDTH, height / (float)LAYER_HEIGHT}, textureManager_current_layer_get() - 1}
 
 #define textureManager_construct_textures_from_file(path, expr)\
 ({\
 	textureManager_image_load(path);\
 	(expr);\
 })
-
-void texture_rect_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void *buffer);
 
 
 #endif
