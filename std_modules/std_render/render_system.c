@@ -65,7 +65,6 @@ void render_system_init(void)
 	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 2
 	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 3
 	    	vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){4, sizeof(GLfloat), GL_FLOAT, GL_FALSE, 1, rectBatch.pi_vbo})); //transform row 4
-	        //vertexBufferLayout_element_add(&vbl, ((VertexBufferLayoutElement){1, sizeof(GLuint), GL_UNSIGNED_INT, GL_FALSE, 1, rectBatch.pi_vbo})); //texture layer*/
 	        vertexArray_vbl_add(&rectBatch.vao, vbl);
         	vertexBufferLayout_destruct(&vbl);
     	}
@@ -98,29 +97,30 @@ void render_system(checs_system_parameters)
 		uint32_t textureLayers[rectBatch.entitys.size];
 
 		vertexArray_bind(&rectBatch.vao);
+
+		vertexBuffer_update_begin(rectBatch.pi_vbo, p);
 		vector_foreach(&rectBatch.entitys, EntityId, entity)
 		{
 			checs_component_get(Renderable, r, entity);
 			checs_component_get(Transform, t, entity);
 
-			vertexBuffer_update_begin(rectBatch.pi_vbo, i * 80 + 16, transform);
+			void *textureOffset = p + i * 80;
+			void *textureSize = p + i * 80 + 8;
+			void *transform = p + i * 80 + 16;
+
 			glm_mat4_identity(transform);
-		    	glm_translate(transform, (vec3){t->pos[0], t->pos[1], 0});
-		    	glm_rotate_z(transform, r->rot, transform);
-		    	glm_translate(transform, (vec3){r->offset[0], r->offset[1], 0});
-		    	glm_scale(transform, (vec3){r->scale[0], r->scale[1], 1});
-			vertexBuffer_update_end();
+	    	glm_translate(transform, (vec3){t->pos[0], t->pos[1], 0});
+	    	glm_rotate_z(transform, r->rot, transform);
+	    	glm_translate(transform, (vec3){r->offset[0], r->offset[1], 0});
+	    	glm_scale(transform, (vec3){r->scale[0], r->scale[1], 1});
 
+	    	glm_vec2_copy(&r->texture->offset, textureOffset);
+	    	glm_vec2_copy(&r->texture->size, textureSize);
 	    	textureLayers[i] = r->texture->layer;
-			//glNamedBufferSubData(rectBatch.pi_vbo, i * 80 + 16, 64, &transforms[i]);
-			glNamedBufferSubData(rectBatch.pi_vbo, i * 80, 8, &r->texture->offset);
-			glNamedBufferSubData(rectBatch.pi_vbo, i * 80 + 8, 8, &r->texture->size);
-
 		}
+		vertexBuffer_update_end();
 
-		vertexArray_bind(&rectBatch.vao);
 		program_bind(rectBatch.program);
-
 		program_uniform1uv_set(rectBatch.program, "u_texture_layers", rectBatch.entitys.size, textureLayers);
 		glDrawElementsInstanced(rectBatch.mode, rectBatch.elementCount, GL_UNSIGNED_INT, NULL, rectBatch.entitys.size);
 	}
@@ -137,6 +137,9 @@ void render_system_terminate(void)
 	render_system_imm_terminate();
 	vector_destruct(&rectBatch.entitys);
 	uniformBuffer_destruct(&cameraData_ubo);
+	vertexArray_destruct(&rectBatch.vao);
+	vertexBuffer_destruct(&rectBatch.pi_vbo);
+	vertexBuffer_destruct(&rectBatch.pv_vbo);
 }
 
 

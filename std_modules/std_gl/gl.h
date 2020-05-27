@@ -66,9 +66,9 @@ void vertexBuffer_construct(VertexBuffer *vbo, void *data, uint16_t size, GLenum
 void vertexBuffer_destruct(VertexBuffer const *vbo);
 void vertexBuffer_bind(VertexBuffer const vbo);
 
-#define vertexBuffer_update_begin(vbo, offset, p)\
-	void *p = glMapNamedBuffer(vbo, GL_WRITE_ONLY);\
-	p += offset;
+#define vertexBuffer_update_begin(vbo, offset)\
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);\
+	void *p = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
 #define vertexBuffer_update_end() glUnmapBuffer(GL_ARRAY_BUFFER)
 
@@ -92,7 +92,8 @@ void uniformBuffer_bind(UniformBuffer ubo);
 void uniformBuffer_update(UniformBuffer ubo, uint16_t size, void const *data);
 
 #define uniformBuffer_update_begin(ubo, p)\
-	void *p = glMapNamedBuffer(ubo, GL_WRITE_ONLY);
+	glBindBuffer(GL_UNIFORM_BUFFER, ubo);\
+	void *p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
 
 #define uniformBuffer_update_end() glUnmapBuffer(GL_UNIFORM_BUFFER);
 
@@ -102,7 +103,8 @@ void shaderStorageBuffer_destruct(ShaderStorageBuffer const *ssbo);
 void shaderStorageBuffer_update(ShaderStorageBuffer ssbo, uint16_t size, void const *data);
 
 #define shaderStorageBuffer_update_begin(ubo, p)\
-	void *p = glMapNamedBuffer(ubo, GL_WRITE_ONLY);
+	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ubo);\
+	void *p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
 #define shaderStorageBuffer_update_end() glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 
