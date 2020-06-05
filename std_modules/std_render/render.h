@@ -28,7 +28,6 @@ typedef struct
 	enum
 	{
 		RT_RECT, //rt for renderable type
-		RT_CIRCLE,
 		RT_QUAD
 	} 
 	type;

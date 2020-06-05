@@ -5,6 +5,7 @@ void movement_task(void)
 {
 	checs_component_mut_use(Transform, t);
 	checs_component_mut_use(Velocity, v);
+
 	checs_components_foreach(Velocity, v, entity)
 	{
 		checs_component_get(Transform, t, entity);

@@ -13,7 +13,7 @@ void main()
 {
 	vec4 texColor = texture(u_textures, v_texCoord);
 
-	//if there are any remains that are not totally opaque, discard the fragementu
+	//if there are any remains that are not totally opaque, discard the fragement
 	if (texColor.a < 0.05)
 		discard;
 

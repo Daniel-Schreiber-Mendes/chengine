@@ -28,7 +28,6 @@ void physics_task(void)
 	checs_component_mut_use(Velocity, v1);
 	checs_component_use(Collidable, c1);
 
-
 	checs_components_foreach(Collidable, c0, collider)
 	{
 		checs_component_get(Collidable, c0, collider);
