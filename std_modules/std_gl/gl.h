@@ -58,18 +58,43 @@ typedef struct
 	vec2 size;
 	uint8_t layer;
 }
-Texture;
+Texture; //texture used by renderer and user. all textures are part of exactly one rtexture. 
+
+
+typedef struct
+{
+	uint32_t id;
+	GLenum type;
+}
+RTexture; //raw texture, meaning not managed, used by module creators, not users. has no function for loading it from a file
+
+//gets evaluated at compile time
+#define getGlTypeFromBo(Type)\
+    ({\
+        int retval;\
+        if (!strcmp(#Type, "Vbo"))\
+            retval = GL_ARRAY_BUFFER;\
+        else if (!strcmp(#Type, "Ubo"))\
+            retval = GL_UNIFORM_BUFFER;\
+        else if (!strcmp(#Type, "Ssbo"))\
+            retval = GL_SHADER_STORAGE_BUFFER;\
+        else\
+        	assert(false);\
+        retval;\
+    })
+
+#define bo_update(Type, bo, PtrType, p, expr)\
+	glBindBuffer(getGlTypeFromBo(Type), bo);\
+	PtrType *p = glMapBuffer(getGlTypeFromBo(Type), GL_WRITE_ONLY);\
+	expr;\
+	glUnmapBuffer(getGlTypeFromBo(Type));
 
 
 
 void vbo_construct(Vbo *vbo, void const *data, uint16_t size, GLenum type);
 void vbo_destruct(Vbo const *vbo);
 void vbo_bind(Vbo const vbo);
-void vbo_update_end(void);
 
-#define vbo_update_begin(vbo, p)\
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);\
-	void *p = glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
 void 	ebo_construct(Ebo *ebo, void const *data, uint16_t size, GLenum type, uint16_t elementCount);
 void 	ebo_destruct(Ebo const *ebo);
@@ -79,21 +104,11 @@ void 	ebo_bind(Ebo const *ebo);
 void 	ubo_construct(Ubo *ubo, uint16_t size, GLenum type, Program program, char const *name, uint8_t binding);
 void 	ubo_destruct(Ubo const *ubo);
 void 	ubo_bind(Ubo ubo);
-void 	ubo_update(Ubo ubo, uint16_t size, void const *data);
-void 	ubo_update_end(void);
-
-#define ubo_update_begin(ubo, p)\
-	glBindBuffer(GL_UNIFORM_BUFFER, ubo);\
-	void *p = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+void 	ubo_update_direct(Ubo ubo, uint16_t size, void const *data);
 
 
-void 	ssbo_construct(Ssbo *ssbo, uint16_t size, uint8_t binding);
+void 	ssbo_construct(Ssbo *ssbo, uint16_t size, uint8_t binding, GLenum usage);
 void 	ssbo_destruct(Ssbo const *ssbo);
-void 	ssbo_update_end(void);
-
-#define ssbo_update_begin(ubo, p)\
-	glBindBuffer(GL_SHADER_STORAGE_BUFFER, ubo);\
-	void *p = glMapBuffer(GL_SHADER_STORAGE_BUFFER, GL_WRITE_ONLY);
 
 
 void vao_construct(Vao *vao);
@@ -128,6 +143,7 @@ void 	textureManager_terminate(void);
 void 	textureManager_image_load(char const *path);
 uint8_t textureManager_current_layer_get(void);
 void 	texture_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset, uint16_t width, uint16_t height, void const *buffer);
+void 	textureManager_texture_bind(void);
 
 #define texture_construct(t, dx, dy, width, height)\
 	*(t) = (Texture){{dx / (float)LAYER_WIDTH, dy / (float)LAYER_HEIGHT}, {width / (float)LAYER_WIDTH, height / (float)LAYER_HEIGHT}, textureManager_current_layer_get() - 1}
@@ -137,6 +153,10 @@ void 	texture_update_from_buffer(Texture *t, uint16_t xoffset, uint16_t yoffset,
 	textureManager_image_load(path);\
 	(expr);\
 })
+
+void rtexture_construct(RTexture *rt, GLenum type);
+void rtexture_destruct(RTexture *rt);
+void rtexture_bind(RTexture const *rt);
 
 
 #endif

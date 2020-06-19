@@ -5,23 +5,36 @@
 #include <stdint.h>
 #include <GL/glew.h>
 #include <math.h>
+#include "../std_gl/gl.h"
 
 
 typedef struct
-{
-	uint16_t width, height, bearing_x, bearing_y;
-	uint32_t advance; // Offset to advance to next glyph
-}
+{ 
+	uint16_t size[2], bearing[2];
+	uint32_t advance; //32 and not 16 because one can send only uint32's to the gpu
+}												// Offset to advance to next glyph
 Character;
 
 
+
 typedef struct
 {
-	uint32_t texture_id;
 	FT_Face face;
+	RTexture texture;
 	Character characters[128];
+	uint8_t index; //index into array of loaded fonts
+	uint32_t textureSize[2];
 }
 Font;
+
+
+typedef struct
+{
+	Font const *font;
+	char const *string;
+	uint8_t scale;
+}
+Text;
 
 
 

@@ -38,20 +38,24 @@ void font_construct(Font *const f, char const *const path, uint8_t const size)
 
 	    f->characters[i] = (Character)
 	    {
-	        f->face->glyph->bitmap.width, f->face->glyph->bitmap.rows,
-	        f->face->glyph->bitmap_left, f->face->glyph->bitmap_top,
+	        {f->face->glyph->bitmap.width, f->face->glyph->bitmap.rows},
+	        {f->face->glyph->bitmap_left, f->face->glyph->bitmap_top},
 	        f->face->glyph->advance.x
 	    };
 	}
 
-	glGenTextures(1, &f->texture_id);
+	rtexture_construct(&f->texture, GL_TEXTURE_2D_ARRAY);
+	rtexture_bind(&f->texture);
 	glTexImage3D(GL_TEXTURE_2D_ARRAY, 0, GL_RED, max_width, max_height, 128, 0, GL_RED, GL_UNSIGNED_BYTE, NULL);
 
 	for (uint8_t i=0; i < 128; ++i)
 	{
 		FT_Load_Char(f->face, i, FT_LOAD_RENDER);
-		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, f->characters[i].width, f->characters[i].height, 1, GL_RED, GL_UNSIGNED_BYTE, f->face->glyph->bitmap.buffer);
+		glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, f->characters[i].size[0], f->characters[i].size[1], 1, GL_RED, GL_UNSIGNED_BYTE, f->face->glyph->bitmap.buffer);
 	}
+
+	f->textureSize[0] = max_width;
+	f->textureSize[1] = max_height;
 }
 
 

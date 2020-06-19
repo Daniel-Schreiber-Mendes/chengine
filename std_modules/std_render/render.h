@@ -5,6 +5,7 @@
 #include "../std_camera/camera.h"
 #include "../std_window/window.h"
 #include "../std_gl/gl.h"
+#include "../std_text/text.h"
 
 
 #define RENDER_SYSTEM_COMPONENTS Renderable, Transform
@@ -33,7 +34,7 @@ typedef struct
 	type;
 	float rot;
 	vec2 scale;
-	vec2 offset; //distance between renderable and center before rotation
+	vec2 offset; //distance between renderable and position(which is the center) before rotation
 }
 Renderable;
 
@@ -53,7 +54,9 @@ void render_system(checs_system_parameters);
 void render_system_terminate(void);
 void render_system_imm_init(void);
 void render_system_imm_terminate(void);
-void render_system_imm_rectangle_draw(vec4 const color, vec3 pos, vec2 const size);
+void render_system_imm_rectangle_draw(vec4 const color, vec2 const pos, vec2 const size);
+void render_system_imm_text_draw(vec4 const color, vec3 const pos, Text const *t);
+void render_system_imm_font_load(Font *font);
 void render_system_on_imm_draw(void); //Implemented by user
 
 

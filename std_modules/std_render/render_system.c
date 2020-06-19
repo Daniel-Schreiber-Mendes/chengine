@@ -11,12 +11,13 @@ void render_system_init(void)
 	glEnable(GL_DEPTH_TEST); //is needed so a pixel with its z coordinate at -1 appers behind one with 0
 
 	render_system_imm_init();
-	
+
 	{
 		vector_construct(&rectBatch.entitys, sizeof(EntityId));
 		vao_construct(&rectBatch.vao);
 		vao_bind(&rectBatch.vao);
 
+		//rectbatch
         {
         	//per vertex
 			GLfloat positions[5 * 4] = 
@@ -67,7 +68,7 @@ void render_system_init(void)
         program_construct(&rectBatch.program, "modules/std_render/shader/vertex.glsl", "modules/std_render/shader/fragment.glsl");
 	}
 
-	ubo_construct(&camera_ubo, 64, GL_STREAM_DRAW, rectBatch.program, "Camera", 0);
+	ubo_construct(&camera_ubo, 64, GL_DYNAMIC_DRAW, rectBatch.program, "Camera", 0);
 }
 
 
@@ -80,9 +81,9 @@ void render_system(checs_system_parameters)
 
 	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
 
-	ubo_update_begin(camera_ubo, camera_ubo_p);
+	bo_update(Ubo, camera_ubo, float, camera_ubo_p, ({
 		camera_vp_recalculate(c, camera_ubo_p);
-	ubo_update_end();
+	}));
 
 	
 	if (rectBatch.entitys.size > 0)
@@ -91,30 +92,32 @@ void render_system(checs_system_parameters)
 
 		vao_bind(&rectBatch.vao);
 
-		vbo_update_begin(rectBatch.pi_vbo, p);
-		vector_foreach(&rectBatch.entitys, EntityId, entity)
-		{
-			checs_component_get(Renderable, r, entity);
-			checs_component_get(Transform, t, entity);
+		bo_update(Vbo, rectBatch.pi_vbo, float, p, ({
+			vector_foreach(&rectBatch.entitys, EntityId, entity)
+			{
+				checs_component_get(Renderable, r, entity);
+				checs_component_get(Transform, t, entity);
 
-			void *textureOffset = p + i * 80;
-			void *textureSize = p + i * 80 + 8;
-			void *transform = p + i * 80 + 16;
+				void *textureOffset = p + i * 20;
+				void *textureSize = p + i * 20 + 2;
+				void *transform = p + i * 20 + 4;
 
-			glm_mat4_identity(transform);
-	    	glm_translate(transform, (vec3){t->pos[0], t->pos[1], 0});
-	    	glm_rotate_z(transform, r->rot, transform);
-	    	glm_translate(transform, (vec3){r->offset[0], r->offset[1], 0});
-	    	glm_scale(transform, (vec3){r->scale[0], r->scale[1], 1});
+				glm_mat4_identity(transform);
+		    	glm_translate(transform, (vec3){t->pos[0], t->pos[1], 0});
+		    	glm_rotate_z(transform, r->rot, transform);
+		    	glm_translate(transform, (vec3){r->offset[0], r->offset[1], 0});
+		    	glm_scale(transform, (vec3){r->scale[0], r->scale[1], 1});
 
-	    	glm_vec2_copy(&r->texture->offset, textureOffset);
-	    	glm_vec2_copy(&r->texture->size, textureSize);
-	    	textureLayers[i] = r->texture->layer;
-		}
-		vbo_update_end();
+		    	glm_vec2_copy(&r->texture->offset, textureOffset);
+		    	glm_vec2_copy(&r->texture->size, textureSize);
+		    	textureLayers[i] = r->texture->layer;
+			}
+		}))
 
 		program_bind(rectBatch.program);
 		program_uniform1uv_set(rectBatch.program, "u_texture_layers", rectBatch.entitys.size, textureLayers);
+
+		textureManager_texture_bind();
 		glDrawElementsInstanced(rectBatch.mode, rectBatch.elementCount, GL_UNSIGNED_INT, NULL, rectBatch.entitys.size);
 	}
 

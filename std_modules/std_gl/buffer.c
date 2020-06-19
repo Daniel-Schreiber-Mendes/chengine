@@ -21,12 +21,6 @@ void vbo_bind(Vbo const vbo)
 }
 
 
-void vbo_update_end(void)
-{
-	glUnmapBuffer(GL_ARRAY_BUFFER);
-}
-
-
 void vbl_construct(Vbl *const vbl, uint8_t const size)
 {
 	vbl->elements = (Vble*)che_malloc(sizeof(Vble) * size);
@@ -86,7 +80,7 @@ void ubo_construct(Ubo *const ubo, uint16_t const size, GLenum const type, Progr
 }
 
 
-void ubo_update(Ubo const ubo, uint16_t const size, void const *const data)
+void ubo_update_direct(Ubo const ubo, uint16_t const size, void const *const data)
 {
 	glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 	void *const dest = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
@@ -107,17 +101,11 @@ void ubo_bind(Ubo const ubo)
 }
 
 
-void ubo_update_end(void)
-{
-	glUnmapBuffer(GL_UNIFORM_BUFFER);
-}
-
-
-void ssbo_construct(Ssbo *const ssbo, uint16_t const size, uint8_t const binding)
+void ssbo_construct(Ssbo *const ssbo, uint16_t const size, uint8_t const binding, GLenum const usage)
 {
 	glGenBuffers(1, ssbo);
 	glBindBuffer(GL_SHADER_STORAGE_BUFFER, *ssbo);
-	glBufferData(GL_SHADER_STORAGE_BUFFER, size, NULL, GL_STREAM_DRAW);
+	glBufferData(GL_SHADER_STORAGE_BUFFER, size, NULL, usage);
 	glBindBufferBase(GL_SHADER_STORAGE_BUFFER, binding, *ssbo);
 }
 
@@ -125,10 +113,4 @@ void ssbo_construct(Ssbo *const ssbo, uint16_t const size, uint8_t const binding
 void ssbo_destruct(Ssbo const *const ssbo)
 {
 	glDeleteBuffers(1, ssbo);
-}
-
-
-void ssbo_update_end(void)
-{
-	glUnmapBuffer(GL_SHADER_STORAGE_BUFFER);
 }
