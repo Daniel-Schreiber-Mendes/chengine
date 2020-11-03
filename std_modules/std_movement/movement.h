@@ -21,5 +21,4 @@ void movement_task(void);
 float transform_distance_get(Transform const *restrict t, Transform const *restrict t2);
 
 
-
 #endif

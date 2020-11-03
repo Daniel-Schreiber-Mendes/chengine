@@ -26,16 +26,17 @@ void camera_target_set(Camera *const c, Transform *const t)
 }
 
 
-void camera_vp_recalculate(Camera *const c, mat4 vp)
+void camera_vp_recalculate(EntityId const id, mat4 vp)
 {
     mat4 view = GLM_MAT4_IDENTITY_INIT;
 
-    checs_component_get_once(Transform, t, checs_entity_get_by_tag(CameraTag));
+    checs_component_get_once(Transform, t, id);
+    checs_component_get_once(Camera, c, id);
 
     //if the camera has a target, interpolate their positions which makes the camera smoothly follow the target
     if (c->target)
     {
-        glm_vec3_lerp(t->pos, c->target->pos, 0.1f, t->pos);
+        glm_vec2_lerp(t->pos, c->target->pos, 0.08f, t->pos);
     }
 
     /* by setting the projection always according to the aspect ratio if the window gets resized everything still gets rendered with the correct aspect ratio*/

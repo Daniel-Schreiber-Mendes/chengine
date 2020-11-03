@@ -39,19 +39,12 @@ typedef struct
 Renderable;
 
 
-typedef struct
-{
-	uint16_t nextFrame;
-	float fps;
-	Texture *frames;
-}
-Animatable;
-
-
-void render_system_on_entity_added(EntityId e);
 void render_system_init(void);
-void render_system(checs_system_parameters);
 void render_system_terminate(void);
+void render_system(checs_system_parameters);
+void render_system_on_entity_added(EntityId e);
+void render_system_camera_set(EntityId c);
+
 void render_system_imm_init(void);
 void render_system_imm_terminate(void);
 void render_system_imm_rectangle_draw(vec4 const color, vec2 const pos, vec2 const size);

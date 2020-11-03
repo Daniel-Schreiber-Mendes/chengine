@@ -18,75 +18,60 @@ void window_cursor_visible_set(bool set);
 void window_poll_events(void);
 
 
-#define WindowCloseCommand     0
-#define FramebufferSizeCommand 1
-#define KeyCommand 			   2
-#define MouseButtonCommand     3
-#define JoystickCommand        4
-#define ScrollCommand 		   5
-#define StandardCommandCount   6
-
-
 typedef struct
 {
 	int const width, height;
 }
-FramebufferSizeData;
+FramebufferSizeCommand;
 
 
 typedef struct
 {
 	int const key, scancode, action, mods;
 }
-KeyData;
+KeyCommand;
 
 
 typedef struct
 {
 	int const button, action, mods;
 }
-MouseButtonData;
+MouseButtonCommand;
 
 
 typedef struct
 {
 	int const jid, event;
 }
-JoystickData;
+JoystickCommand;
 
 
 typedef struct
 {
 	float yoffset;
 }
-ScrollData;
-
-
-#define KeyEvent 		   0
-#define MouseButtonEvent   1
-#define JoystickEvent      2
-#define StandardEventCount 3
+ScrollCommand;
 
 
 typedef struct
 {
 	int const key, scancode, action, mods;
 }
-KeyEventData;
+KeyEvent;
 
 
 typedef struct
 {
 	int const button, action, mods;
 }
-MouseButtonEventData;
+MouseButtonEvent;
 
 
 typedef struct
 {
 	int const jid, event;
 }
-JoystickEventData;
+JoystickEvent;
 
 
 #endif

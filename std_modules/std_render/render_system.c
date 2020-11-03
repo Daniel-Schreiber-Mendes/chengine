@@ -2,6 +2,7 @@
 
 static Ubo camera_ubo;
 static RectBatch rectBatch;
+static EntityId camera; 
 
 
 void render_system_init(void)
@@ -79,10 +80,8 @@ void render_system(checs_system_parameters)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	checs_component_get_once(Camera, c, checs_entity_get_by_tag(CameraTag));
-
 	bo_update(Ubo, camera_ubo, float, camera_ubo_p, ({
-		camera_vp_recalculate(c, camera_ubo_p);
+		camera_vp_recalculate(camera, camera_ubo_p);
 	}));
 
 	
@@ -93,14 +92,14 @@ void render_system(checs_system_parameters)
 		vao_bind(&rectBatch.vao);
 
 		bo_update(Vbo, rectBatch.pi_vbo, float, p, ({
-			vector_foreach(&rectBatch.entitys, EntityId, entity)
+			vector_vforeach(&rectBatch.entitys, EntityId, entity)
 			{
 				checs_component_get(Renderable, r, entity);
 				checs_component_get(Transform, t, entity);
 
-				void *textureOffset = p + i * 20;
-				void *textureSize = p + i * 20 + 2;
-				void *transform = p + i * 20 + 4;
+				float *textureOffset = p + i * 20;
+				float *textureSize = p + i * 20 + 2;
+				float *transform = p + i * 20 + 4;
 
 				glm_mat4_identity(transform);
 		    	glm_translate(transform, (vec3){t->pos[0], t->pos[1], 0});
@@ -146,6 +145,12 @@ void render_system_on_entity_added(EntityId const e)
 	if (r->type == RT_RECT)
 	{
 		vector_push_back(&rectBatch.entitys, EntityId, e);
-		rectBatch.elementCount += 6;
+		rectBatch.elementCount += 6; //because a quad consists of 6 vertices
 	}
+}
+
+
+void render_system_camera_set(EntityId const c)
+{
+	camera = c;
 }

@@ -10,8 +10,7 @@ static bool circle_circle_collision(Transform const *restrict t0, Transform cons
 static bool circle_aabb_collision(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1);
 
 //2 dimensional array of all functions that check if two shapes collide. the array can be indexed by the tyope of the two COLLIDABLE_TYPES_COUNT
-static bool(*collision_tests[2][2]) 
-			(Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1) = 
+static bool(*collision_tests[2][2]) (Transform const *restrict t0, Transform const *restrict t1, Collidable const *restrict c0, Collidable const *restrict c1) = 
 		{
 			{circle_circle_collision, circle_aabb_collision},
 			{aabb_circle_collision  , aabb_aabb_collision},

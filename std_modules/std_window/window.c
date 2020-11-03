@@ -116,31 +116,31 @@ static void window_close_callback(GLFWwindow* _window)
 
 static void framebuffer_size_callback(GLFWwindow *const _window, int const _width, int const _height)
 {
-    checs_command_publish(FramebufferSizeCommand, (&(FramebufferSizeData){_width, _height}));
+    checs_command_publish(FramebufferSizeCommand, (&(FramebufferSizeCommand){_width, _height}));
 }
 
 
 static void key_callback(GLFWwindow* _window, int key, int scancode, int action, int mods)
 {
-    checs_command_publish(KeyCommand, (&(KeyData){key, scancode, action, mods}));
-    checs_event_publish(KeyEventData, KeyEvent, ((KeyEventData){key, scancode, action, mods}));
+    checs_command_publish(KeyCommand, (&(KeyCommand){key, scancode, action, mods}));
+    checs_event_publish(KeyEvent, ((KeyEvent){key, scancode, action, mods}));
 }
 
 
 static void mouse_button_callback(GLFWwindow* _window, int button, int action, int mods)
 {
-    checs_command_publish(MouseButtonCommand, (&(MouseButtonData){button, action, mods}));
+    checs_command_publish(MouseButtonCommand, (&(MouseButtonCommand){button, action, mods}));
 }
 
 
 static void joystick_callback(int jid, int event)
 {
-    checs_command_publish(JoystickCommand, (&(JoystickData){jid, event}));
+    checs_command_publish(JoystickCommand, (&(JoystickCommand){jid, event}));
 }
 
 
 static void scroll_callback(GLFWwindow* _window, double const xoffset, double const yoffset)
 {
     /* we dont care about xoffset scrolling, so we are leaving that out */
-    checs_command_publish(ScrollCommand, (&(ScrollData){yoffset}));
+    checs_command_publish(ScrollCommand, (&(ScrollCommand){yoffset}));
 }

@@ -19,7 +19,7 @@ void camera_construct(Camera *c);
 void camera_zoom(Camera *c, float zoom);
 void camera_resize(Camera *c, uint16_t width, uint16_t height);
 void camera_target_set(Camera *c, Transform *t);
-void camera_vp_recalculate(Camera *c, mat4 vp);
+void camera_vp_recalculate(EntityId id, mat4 vp);
 
 
 #endif
