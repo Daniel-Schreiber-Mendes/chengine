@@ -55,7 +55,7 @@ create_makefile ()
 	cat << EOF > Makefile
 SRC =
 HDR = 
-OBJ = \$(SRC:.c=.c.o)
+OBJ = \$(SRC:.c=.o)
 LIBS =
 EXE = ${1}
 VER = -std=c99
@@ -178,17 +178,15 @@ then
 	else
 		echo "Unkown update argument: ${2}"
 	fi
-elif [ "$1" = "rename" ]
-then
-	param_check $2
-	if [ "$2" = "project" ]
-	then
-		awk '/EXE = / {$1 = ${3}} {print $0 > Makefile.tmp}'
-		rm Makefile
-		mv Makefile.tmp Makfefile
-	else
-		echo "Unknown rename argument: ${$2}"
-	fi
+#elif [ "$1" = "rename" ]
+#then
+#	param_check $2
+#	if [ "$2" = "project" ]
+#	then
+#		#TODO: implement it: change EXE in makefile to the given argument
+#	else
+#		echo "Unknown rename argument: ${$2}"
+#	fi
 elif [ "$1" = "compile" ]
 then
 	if [ "$2" = "project" ]
@@ -203,40 +201,25 @@ then
 		}
 		END { print files }
 		' Makefile) 
-
-		#for file in $files
-		#do
-		#	if [ $file -ot $file.c ] 
-		#	then
-				#$files = ${files#${file}}
-				#$files = $files
-				#echo ${files:s/${file}/}
-		#	fi
-		#done
-		
+		echo $files
 		#copy files but with ComponentSignatures instead of components
-		gawk -v RS='<[^>. ]+>' '{ ORS="" }  
-		RT {                                       
-		   switch (RT)
-		   {
-		    	case /E:/:
-		    		if (!(RT in events))                    
-				    	events[RT] = eventCount++       
-				    ORS=events[RT]  
-				    break
-				default:
-					if (!(RT in components))                    
-			      		components[RT] = componentCount++                       
-			   		ORS=components[RT] 
-		   }
-
-		   if (!(RT in components))                    
-		      components[RT] = n++                       
-		   ORS=components[RT]                   
+		awk 'FNR == 1 {
+		    close(out)
+		    out = FILENAME ".c"
 		}
 		{
-		   print $0 > (FILENAME ".c")
-		}' $files
+		    head = ""
+		    tail = $0
+		    while ( match(tail,/<[^>.]+>/) ) {
+		        tgt = substr(tail,RSTART+1,RLENGTH-2)
+		        if ( !(tgt in map) ) {
+		            map[tgt] = cnt++
+		        }
+		        head = head substr(tail,1,RSTART-1) map[tgt]
+		        tail = substr(tail,RSTART+RLENGTH)
+		    }
+		    print head tail > out
+		}' states/test.c
 		make
 	else
 		echo "Unknown compile argument: ${2}"
