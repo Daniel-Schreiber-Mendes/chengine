@@ -13,10 +13,12 @@ param_check ()
 
 module_update ()
 {
-	read -r firstline < Makefile
-	for file in $1/*.c
+	read -r sourcefiles < Makefile
+	rm -f modules/$1/*.c.c 
+	rm -f modules/$1/*.c.o 
+	for file in modules/$1/*.c
 	do
-		if [[ firstline != *"$file"* ]]
+		if [[ sourcefiles != *"$file"* ]]
 		then
 			sed -i "1s|.*|& $file|" Makefile
 		fi
@@ -52,8 +54,8 @@ module_header_create()
 
 create_makefile ()
 {
-	cat << EOF > Makefile
-SRC =
+	cat << EOF > $1/Makefile
+SRC = src/setup.c
 HDR = 
 OBJ = \$(SRC:.c=.c.o)
 LIBS =
@@ -107,8 +109,7 @@ then
 		module_remove $3
 	elif [ "$2" = "project" ]
 	then
-		rm -r modules states
-		rm Makefile
+		rm -r $3
 	elif [ "$2" = "che" ]
 	then
 		sudo rm /usr/bin/che
@@ -131,8 +132,18 @@ then
 	elif [ "$2" = "project" ]
 	then
 		param_check $3
-		mkdir modules
-		mkdir states
+		mkdir $3
+		mkdir $3/modules
+		mkdir $3/states
+		mkdir $3/src
+		mkdir $3/resources
+		mkdir $3/resources/error
+		mkdir $3/resources/texture
+		mkdir $3/resources/sound
+		mkdir $3/resources/shader
+		touch $3/src/setup.c
+		touch $3/states/states.h
+		touch $3/$3.h
 		create_makefile $3
 	elif [ "$2" = "makefile" ]
 	then
@@ -153,7 +164,7 @@ then
 		do
 			if [[ firstline != *"$file"* ]]
 			then
-				sed -i "1s|.*|& $file|" Makefile
+				sed -i "1s|.*|& $file|" Makefile #deletes first line, should not do that
 			fi
 		done
 	elif [ "$2" = "project" ]
@@ -214,25 +225,42 @@ then
 		#	fi
 		#done
 		
-		#copy files but with ComponentSignatures instead of components
+		#if component is found, write to file its signature otherwise its name and signature
 		gawk -v RS='<[^>. ]+>' '{ ORS="" }  
 		RT {                                       
 		   switch (RT)
 		   {
 		    	case /E:/:
 		    		if (!(RT in events))                    
-				    	events[RT] = eventCount++       
-				    ORS=events[RT]  
+				    	events[RT] = eventCount++   
+				    name=RT    
+				    sub(/<E:/, "", name)
+				    sub(/>/, "", name)
+				    ORS=name ", " events[RT]
+				    break
+				case /C:/:
+		    		if (!(RT in commands))                    
+				    	commands[RT] = commandcount++   
+				    commandName=RT    
+				    sub(/<C:/, "", commandName)
+				    sub(/>/, "", commandName)
+				    ORS=commandName ", " commands[RT]
+				    break
+				case /A:/:
+		    		if (!(RT in attributes))                    
+				    	attributes[RT] = attributecount++   
+				    ORS=attributes[RT]
+				    break
+				case /T:/:
+					if (!(RT in templates))     
+				    	templates[RT] = templatecount++   
+				    ORS=templates[RT]
 				    break
 				default:
 					if (!(RT in components))                    
 			      		components[RT] = componentCount++                       
 			   		ORS=components[RT] 
-		   }
-
-		   if (!(RT in components))                    
-		      components[RT] = n++                       
-		   ORS=components[RT]                   
+		   }                
 		}
 		{
 		   print $0 > (FILENAME ".c")
