@@ -18,10 +18,15 @@ module_update ()
 	rm -f modules/$1/*.c.o 
 	for file in modules/$1/*.c
 	do
-		if [[ sourcefiles != *"$file"* ]]
-		then
-			sed -i "1s|.*|& $file|" Makefile
-		fi
+		awk ' BEGIN {
+			if ($0 ~ !/$file/)
+			{
+				$0 = $0 $file
+			}
+		{
+			print $0 > Makefile.tmp
+		}
+		}' Makefile
 	done
 	##TODO: remove files that are no longer in module
 }
@@ -38,14 +43,20 @@ module_remove()
 }
 
 
-module_header_create()
+header_create()
 {
-	echo -e "#ifndef ${1^^}_MOD_H\n#define ${1^^}_MOD_H\n\n\n\n#endif" > modules/$1/$1.h 
+	echo -e "#ifndef ${2^^}_H\n#define ${2^^}_H\n\n\n\n#endif" > $1/$2.h
 	#-e makes echo interpret \n as a newline character, otherwise it would just print it into the file
 	#^^ makes the string before that fully uppercase
+}
+
+
+module_create()
+{
+	mkdir modules/$1
+	header_create modules/$1/ $1
 	cp Makefile Makefile_new
-	awk -v header=$1.h 
-	'/HDR/ { $0 = $0 header " "}
+	awk -v header=$1.h '/HDR/ { $0 = $0 header " "}
 		{print $0 > "Makefile_new"}' Makefile
 	rm Makefile
 	mv Makefile_new Makefile
@@ -54,7 +65,7 @@ module_header_create()
 
 create_makefile ()
 {
-	cat << EOF > $1/Makefile
+	cat << EOF > $1/Makefile 
 SRC = src/setup.c
 HDR = 
 OBJ = \$(SRC:.c=.c.o)
@@ -125,8 +136,7 @@ then
 		then
 			echo "Module ${3} already exists"
 		else
-			mkdir modules/$3
-			module_header_create $3
+			module_create $3
 		fi
 
 	elif [ "$2" = "project" ]
@@ -142,8 +152,8 @@ then
 		mkdir $3/resources/sound
 		mkdir $3/resources/shader
 		touch $3/src/setup.c
-		touch $3/states/states.h
-		touch $3/$3.h
+		header_create $3/states/ states
+		header_create $3/ $3
 		create_makefile $3
 	elif [ "$2" = "makefile" ]
 	then
@@ -164,7 +174,7 @@ then
 		do
 			if [[ firstline != *"$file"* ]]
 			then
-				sed -i "1s|.*|& $file|" Makefile #deletes first line, should not do that
+				sed '/SRC = / s/$/ ${file}/' Makefile
 			fi
 		done
 	elif [ "$2" = "project" ]
