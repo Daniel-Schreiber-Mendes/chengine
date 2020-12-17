@@ -18,15 +18,11 @@ module_update ()
 	rm -f modules/$1/*.c.o 
 	for file in modules/$1/*.c
 	do
-		awk ' BEGIN {
-			if ($0 ~ !/$file/)
-			{
-				$0 = $0 $file
-			}
-		{
-			print $0 > Makefile.tmp
+		awk -v f="$file" '/SRC = /{ 
+			if ($0 !~ /f/)  { $0 = $0 " " f ; print f }  
 		}
-		}' Makefile
+		{ print $0 > "Makefile.tmp" }' Makefile
+		#mv Makefile.tmp Makefile
 	done
 	##TODO: remove files that are no longer in module
 }
@@ -60,6 +56,19 @@ module_create()
 		{print $0 > "Makefile_new"}' Makefile
 	rm Makefile
 	mv Makefile_new Makefile
+}
+
+
+states_update()
+{
+	read -r firstline < Makefile
+	for file in states/*.c
+	do
+		if [[ firstline != *"$file"* ]]
+		then
+			sed '/SRC = / s/$/ ${file}/' Makefile
+		fi
+	done
 }
 
 
@@ -169,14 +178,7 @@ then
 		module_update $3
 	elif [ "$2" = "states" ]
 	then
-		read -r firstline < Makefile
-		for file in states/*.c
-		do
-			if [[ firstline != *"$file"* ]]
-			then
-				sed '/SRC = / s/$/ ${file}/' Makefile
-			fi
-		done
+		states_update
 	elif [ "$2" = "project" ]
 	then
 		for mod in ./modules/*
@@ -214,28 +216,8 @@ elif [ "$1" = "compile" ]
 then
 	if [ "$2" = "project" ]
 	then
-		#ectract filenames from Makefile
-		files=$(awk '
-		BEGIN {files = ""}
-		/SRC = / {
-			for (i=3; i<=NF; i++) {
-				files = files $i " "
-			}
-		}
-		END { print files }
-		' Makefile) 
-
-		#for file in $files
-		#do
-		#	if [ $file -ot $file.c ] 
-		#	then
-				#$files = ${files#${file}}
-				#$files = $files
-				#echo ${files:s/${file}/}
-		#	fi
-		#done
-		
-		#if component is found, write to file its signature otherwise its name and signature
+		find . -name \*.c.* -type f -delete #in case files got not deleted because operation was cancelled
+		files=$(find . -type f -name '*.c')
 		gawk -v RS='<[^>. ]+>' '{ ORS="" }  
 		RT {                                       
 		   switch (RT)
@@ -250,20 +232,20 @@ then
 				    break
 				case /C:/:
 		    		if (!(RT in commands))                    
-				    	commands[RT] = commandcount++   
+				    	commands[RT] = commandCount++   
 				    commandName=RT    
 				    sub(/<C:/, "", commandName)
 				    sub(/>/, "", commandName)
-				    ORS=commandName ", " commands[RT]
+				    ORS=commands[RT]
 				    break
 				case /A:/:
 		    		if (!(RT in attributes))                    
-				    	attributes[RT] = attributecount++   
+				    	attributes[RT] = attributeCount++   
 				    ORS=attributes[RT]
 				    break
 				case /T:/:
 					if (!(RT in templates))     
-				    	templates[RT] = templatecount++   
+				    	templates[RT] = templateCount++   
 				    ORS=templates[RT]
 				    break
 				default:
@@ -274,8 +256,33 @@ then
 		}
 		{
 		   print $0 > (FILENAME ".c")
+		}
+		END {
+			systemUpdateCount = 0
+			systemDrawCount = 0
+			taskUpdateCount = 6
+			taskDrawCount = 1
+			tagCount = 0
+			print (systemUpdateCount ",\n" systemDrawCount ",\n" taskUpdateCount ",\n" taskDrawCount ",\n" tagCount ",\n" componentCount ",\n "commandCount ",\n" eventCount ",\n" attributeCount ",\n" templateCount) > "che.log"
 		}' $files
-		make
+		gawk 'NR==FNR {
+			data[dataCount++] = $1
+			dataCount++
+			next
+		}
+		/ checs_init()/ {
+			sub(/);/, "", $0)
+			for (i = 0; i < dataCount; i++){
+				$0 = $0 data[i]
+			}
+			$0 = $0 ");"
+		}
+		{
+			print $0 > "src/setup.c.c.tmp"
+		}' che.log src/setup.c.c
+		mv src/setup.c.c.tmp src/setup.c.c
+		make run
+		#find . -name \*.c.* -type f -delete
 	else
 		echo "Unknown compile argument: ${2}"
 	fi
