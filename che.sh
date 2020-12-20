@@ -282,7 +282,7 @@ then
 		}' che.log src/setup.c.c
 		mv src/setup.c.c.tmp src/setup.c.c
 		make run
-		#find . -name \*.c.* -type f -delete
+		find . -name \*.c.* -type f -delete
 	else
 		echo "Unknown compile argument: ${2}"
 	fi
