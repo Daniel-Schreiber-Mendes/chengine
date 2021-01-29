@@ -72,6 +72,130 @@ states_update()
 }
 
 
+
+load_che_data()
+{
+	gawk 'NR==FNR {
+		data[dataCount++] = $1
+		dataCount++
+		next
+	}
+	/ checs_init()/ {
+		sub(/);/, "", $0)
+		for (i = 0; i < dataCount; i++){
+			$0 = $0 data[i]
+		}
+		$0 = $0 ");"
+	}
+	{
+		print $0 > "src/setup.c.c.tmp"
+	}' che.log src/setup.c.c
+	mv src/setup.c.c.tmp src/setup.c.c
+}
+
+
+replace_checs_macros()
+{
+	files=$(find . -name '*.c')
+	available_modules_files=$(find modules -name '*.c')
+
+	#available_modules=$(gawk '/[^ 	]+import\(void\)/ {
+	#	sub(/void/, "", $0)
+	#	sub(/(void)/, "", $0)
+	#	modules=modules $0
+	#}
+	#END {print modules} ' $available_module_files)
+	used_module_calls=$(awk '/import/' src/setup.c) #create string of all module import calls
+	used_modules=$(sed 's/_import();//' <<< "$used_modules") #remove everything but module name
+	echo $used_modules
+
+	gawk -v RS='<[^>. ]+>' '{ ORS="" }  
+	RT {                                       
+	   switch (RT)
+	   {
+	    	case /E:/:
+	    		if (!(RT in events))                    
+			    	events[RT] = eventCount++   
+			    name=RT    
+			    sub(/<E:/, "", name)
+			    sub(/>/, "", name)
+			    ORS=name ", " events[RT]
+			    break
+			case /C:/:
+	    		if (!(RT in commands))                    
+			    	commands[RT] = commandCount++   
+			    commandName=RT    
+			    sub(/<C:/, "", commandName)
+			    sub(/>/, "", commandName)
+			    ORS=commands[RT]
+			    break
+			case /A:/:
+	    		if (!(RT in attributes))                    
+			    	attributes[RT] = attributeCount++   
+			    ORS=attributes[RT]
+			    break
+			case /T:/:
+				if (!(RT in templates))     
+			    	templates[RT] = templateCount++   
+			    ORS=templates[RT]
+			    break
+			default:
+				if (!(RT in components))                    
+		      		components[RT] = componentCount++                       
+		   		ORS=components[RT] 
+	   }                
+	}
+	{
+	   print $0 > (FILENAME ".c")
+	}
+	END {
+		systemUpdateCount = 0
+		systemDrawCount = 0
+		taskUpdateCount = 6
+		taskDrawCount = 1
+		tagCount = 0
+		print (systemUpdateCount ",\n" systemDrawCount ",\n" taskUpdateCount ",\n" taskDrawCount ",\n" tagCount ",\n" componentCount ",\n "commandCount ",\n" eventCount ",\n" attributeCount ",\n" templateCount) > "che.log"
+	}' $files
+}
+
+
+replace_checs_macros_tst()
+{
+	module_calls=$(awk '/import/' src/setup.c) #create string of all module import calls
+	modules=$(sed 's/_.*//' <<< "$used_module_calls") #remove everything but module name
+	modules=$(awk -v RS="[ \n]+" '!n[$0]++' <<< "$used_modules") #remove duplicates
+	modules=$(awk -v RS=' ' '$0 = "modules/" $0' <<< $modules) #put path prefix to every module
+	module_files=$(find $modules -name '*.c') #find all .c files inside modules
+	echo $module_files
+
+	awk -v funcs='foobar(void) foobar_(void) foo_bar(void)' '
+	BEGIN {
+	    split(funcs,tmp)
+	    for (i in tmp) {
+	        fnames[tmp[i]]
+	    }
+	}
+	/^[[:space:]]*[[:alnum:]_]+[[:space:]]*[[:alnum:]]+\([^)]*)/ {
+	    inFunc = ($NF in fnames ? 1 : 0)
+	}
+	{
+		head = ""
+	    tail = $0
+	    while ( inFunc && match(tail,/<E:[^>]+>/) ) {
+	        tgt = substr(tail,RSTART+1,RLENGTH-2)
+	        if ( !(tgt in map) ) {
+	            map[tgt] = cnt++
+	        }
+	        head = head substr(tail,1,RSTART) map[tgt]
+	        tail = substr(tail,RSTART+RLENGTH-1)
+	    }
+	    $0 = head tail
+	}
+	{
+	    print $0 > (FILENAME ".c")
+	}' $module_files
+}
+
 create_makefile ()
 {
 	cat << EOF > $1/Makefile 
@@ -217,72 +341,11 @@ then
 	if [ "$2" = "project" ]
 	then
 		find . -name \*.c.* -type f -delete #in case files got not deleted because operation was cancelled
-		files=$(find . -type f -name '*.c')
-		gawk -v RS='<[^>. ]+>' '{ ORS="" }  
-		RT {                                       
-		   switch (RT)
-		   {
-		    	case /E:/:
-		    		if (!(RT in events))                    
-				    	events[RT] = eventCount++   
-				    name=RT    
-				    sub(/<E:/, "", name)
-				    sub(/>/, "", name)
-				    ORS=name ", " events[RT]
-				    break
-				case /C:/:
-		    		if (!(RT in commands))                    
-				    	commands[RT] = commandCount++   
-				    commandName=RT    
-				    sub(/<C:/, "", commandName)
-				    sub(/>/, "", commandName)
-				    ORS=commands[RT]
-				    break
-				case /A:/:
-		    		if (!(RT in attributes))                    
-				    	attributes[RT] = attributeCount++   
-				    ORS=attributes[RT]
-				    break
-				case /T:/:
-					if (!(RT in templates))     
-				    	templates[RT] = templateCount++   
-				    ORS=templates[RT]
-				    break
-				default:
-					if (!(RT in components))                    
-			      		components[RT] = componentCount++                       
-			   		ORS=components[RT] 
-		   }                
-		}
-		{
-		   print $0 > (FILENAME ".c")
-		}
-		END {
-			systemUpdateCount = 0
-			systemDrawCount = 0
-			taskUpdateCount = 6
-			taskDrawCount = 1
-			tagCount = 0
-			print (systemUpdateCount ",\n" systemDrawCount ",\n" taskUpdateCount ",\n" taskDrawCount ",\n" tagCount ",\n" componentCount ",\n "commandCount ",\n" eventCount ",\n" attributeCount ",\n" templateCount) > "che.log"
-		}' $files
-		gawk 'NR==FNR {
-			data[dataCount++] = $1
-			dataCount++
-			next
-		}
-		/ checs_init()/ {
-			sub(/);/, "", $0)
-			for (i = 0; i < dataCount; i++){
-				$0 = $0 data[i]
-			}
-			$0 = $0 ");"
-		}
-		{
-			print $0 > "src/setup.c.c.tmp"
-		}' che.log src/setup.c.c
-		mv src/setup.c.c.tmp src/setup.c.c
-		make run
-		find . -name \*.c.* -type f -delete
+		#replace_checs_macros
+		replace_checs_macros_tst
+		#load_che_data
+		#make run
+		#find . -name \*.c.* -type f -delete
 	else
 		echo "Unknown compile argument: ${2}"
 	fi
