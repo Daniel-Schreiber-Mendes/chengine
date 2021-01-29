@@ -162,34 +162,38 @@ replace_checs_macros()
 replace_checs_macros_tst()
 {
 	module_calls=$(awk '/import/' src/setup.c) #create string of all module import calls
-	modules=$(sed 's/_.*//' <<< "$used_module_calls") #remove everything but module name
-	modules=$(awk -v RS="[ \n]+" '!n[$0]++' <<< "$used_modules") #remove duplicates
-	modules=$(awk -v RS=' ' '$0 = "modules/" $0' <<< $modules) #put path prefix to every module
+	modules=$(sed 's/_.*//' <<< "$module_calls") #remove everything but module name
+	modules=$(awk -v RS="[ \n]+" '!n[$0]++' <<< "$modules") #remove duplicates
+	modules=$(sed 's/\</modules\//g' <<< $modules) #add path suffix to each module
 	module_files=$(find $modules -name '*.c') #find all .c files inside modules
 	echo $module_files
 
-	awk -v funcs='foobar(void) foobar_(void) foo_bar(void)' '
+	#module_calls=$(sed '' <<< $used)
+	#/ ^\s* \w+ \s* \w+ \( [^)] *) /
+	awk -v funcs='movement_import(void)' '
 	BEGIN {
 	    split(funcs,tmp)
 	    for (i in tmp) {
 	        fnames[tmp[i]]
 	    }
 	}
-	/^[[:space:]]*[[:alnum:]_]+[[:space:]]*[[:alnum:]]+\([^)]*)/ {
+	/^\s*void\s*\w+\(void)/ {
 	    inFunc = ($NF in fnames ? 1 : 0)
 	}
 	{
-		head = ""
-	    tail = $0
-	    while ( inFunc && match(tail,/<E:[^>]+>/) ) {
-	        tgt = substr(tail,RSTART+1,RLENGTH-2)
-	        if ( !(tgt in map) ) {
-	            map[tgt] = cnt++
-	        }
-	        head = head substr(tail,1,RSTART) map[tgt]
-	        tail = substr(tail,RSTART+RLENGTH-1)
-	    }
-	    $0 = head tail
+		if (inFunc) {
+			head = ""
+		    tail = $0
+		    while ( match(tail,/<[^>]+>/) ) {
+		        tgt = substr(tail,RSTART+1,RLENGTH-2)
+		        if ( !(tgt in map) ) {
+		            map[tgt] = cnt++
+		        }
+		        head = head substr(tail,1,RSTART) map[tgt]
+		        tail = substr(tail,RSTART+RLENGTH-1)
+		    }
+		    $0 = head tail
+		}
 	}
 	{
 	    print $0 > (FILENAME ".c")
