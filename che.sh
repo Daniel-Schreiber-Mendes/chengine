@@ -166,38 +166,94 @@ replace_checs_macros_tst()
 	modules=$(awk -v RS="[ \n]+" '!n[$0]++' <<< "$modules") #remove duplicates
 	modules=$(sed 's/\</modules\//g' <<< $modules) #add path suffix to each module
 	module_files=$(find $modules -name '*.c') #find all .c files inside modules
-	echo $module_files
-
-	#module_calls=$(sed '' <<< $used)
-	#/ ^\s* \w+ \s* \w+ \( [^)] *) /
-	awk -v funcs='movement_import(void)' '
+	module_calls=$(sed 's/);/void)/g' <<< $module_calls)
+	files=$(find modules src states -name '*.c') #get all c files that could use templates
+	module_files_count=$(wc -w <<< $module_files) #count number of files inside used modules
+	module_files_count=$((module_files_count+1)) #because templates can also be registered inside setup.c, which doesnt get added to the list automatically
+	#register only the templates that are used inside the module import functions so that unused templates dont increment the template counter
+	awk -v funcs="$module_calls che_checs_init(void)" -v module_files_count="$module_files_count" ' 
+	FNR==1{FNUM++}
 	BEGIN {
-	    split(funcs,tmp)
-	    for (i in tmp) {
-	        fnames[tmp[i]]
-	    }
+		if (FNUM<=module_files_count) {
+		    split(funcs,tmp)
+		    for (i in tmp) {
+		        fnames[tmp[i]]
+		    }	
+		}
 	}
-	/^\s*void\s*\w+\(void)/ {
-	    inFunc = ($NF in fnames ? 1 : 0)
+	FNUM<=module_files_count { 
+		if ($0 ~ /^\s*void\s*\w+\(void)/) {
+	    	inFunc = ($NF in fnames ? 1 : 0)
+		}
 	}
-	{
+	FNUM<=module_files_count {
 		if (inFunc) {
-			head = ""
 		    tail = $0
 		    while ( match(tail,/<[^>]+>/) ) {
 		        tgt = substr(tail,RSTART+1,RLENGTH-2)
-		        if ( !(tgt in map) ) {
-		            map[tgt] = cnt++
-		        }
-		        head = head substr(tail,1,RSTART) map[tgt]
+		       	switch (tgt){
+			    	case /E:/:
+			    		if (!(tgt in events))
+					    	events[tgt] = eventCount++   
+					    break
+					case /C:/:
+			    		if (!(tgt in commands))                    
+					    	commands[tgt] = commandCount++   
+					    break
+					case /A:/:
+			    		if (!(tgt in attributes))                    
+					    	attributes[tgt] = attributeCount++   
+					    break
+					case /T:/:
+						if (!(tgt in templates))     
+					    	templates[tgt] = templateCount++   
+					    break
+					default:
+						if (!(tgt in components))    
+				      		components[tgt] = componentCount++                      
+				}   
 		        tail = substr(tail,RSTART+RLENGTH-1)
 		    }
-		    $0 = head tail
 		}
 	}
-	{
-	    print $0 > (FILENAME ".c")
-	}' $module_files
+	FNUM>module_files_count {
+		head = ""
+	    tail = $0
+	    while ( match(tail,/<[^>.]+>/) ) {
+	        tgt = substr(tail,RSTART+1,RLENGTH-2)
+
+		       	switch (tgt){
+			    	case /E:/:
+			    		tgt = substr(tgt, 3) ", " events[tgt]
+					    break
+					case /C:/:                  
+					    tgt = commands[tgt]
+					    break
+					case /A:/:                 
+					    tgt = attributes[tgt]
+					    break
+					case /T:/:  
+					    tgt = templates[tgt]
+					    break
+					default:
+				      	tgt = components[tgt]  
+				}
+
+	        head = head substr(tail,1,RSTART-1) tgt
+	        tail = substr(tail,RSTART+RLENGTH)
+	    }
+	}
+	FNUM>module_files_count {
+	   print head tail > (FILENAME ".c")
+	}
+	END {
+		systemUpdateCount = 0
+		systemDrawCount = 0
+		taskUpdateCount = 6
+		taskDrawCount = 1
+		tagCount = 0
+		print (systemUpdateCount ",\n" systemDrawCount ",\n" taskUpdateCount ",\n" taskDrawCount ",\n" tagCount ",\n" componentCount ",\n "commandCount ",\n" eventCount ",\n" attributeCount ",\n" templateCount) > "che.log"
+	}' $module_files src/setup.c $files
 }
 
 create_makefile ()
@@ -347,9 +403,9 @@ then
 		find . -name \*.c.* -type f -delete #in case files got not deleted because operation was cancelled
 		#replace_checs_macros
 		replace_checs_macros_tst
-		#load_che_data
-		#make run
-		#find . -name \*.c.* -type f -delete
+		load_che_data
+		make run
+		find . -name \*.c.* -type f -delete
 	else
 		echo "Unknown compile argument: ${2}"
 	fi
