@@ -96,72 +96,7 @@ load_che_data()
 
 replace_checs_macros()
 {
-	files=$(find . -name '*.c')
-	available_modules_files=$(find modules -name '*.c')
-
-	#available_modules=$(gawk '/[^ 	]+import\(void\)/ {
-	#	sub(/void/, "", $0)
-	#	sub(/(void)/, "", $0)
-	#	modules=modules $0
-	#}
-	#END {print modules} ' $available_module_files)
-	used_module_calls=$(awk '/import/' src/setup.c) #create string of all module import calls
-	used_modules=$(sed 's/_import();//' <<< "$used_modules") #remove everything but module name
-	echo $used_modules
-
-	gawk -v RS='<[^>. ]+>' '{ ORS="" }  
-	RT {                                       
-	   switch (RT)
-	   {
-	    	case /E:/:
-	    		if (!(RT in events))                    
-			    	events[RT] = eventCount++   
-			    name=RT    
-			    sub(/<E:/, "", name)
-			    sub(/>/, "", name)
-			    ORS=name ", " events[RT]
-			    break
-			case /C:/:
-	    		if (!(RT in commands))                    
-			    	commands[RT] = commandCount++   
-			    commandName=RT    
-			    sub(/<C:/, "", commandName)
-			    sub(/>/, "", commandName)
-			    ORS=commands[RT]
-			    break
-			case /A:/:
-	    		if (!(RT in attributes))                    
-			    	attributes[RT] = attributeCount++   
-			    ORS=attributes[RT]
-			    break
-			case /T:/:
-				if (!(RT in templates))     
-			    	templates[RT] = templateCount++   
-			    ORS=templates[RT]
-			    break
-			default:
-				if (!(RT in components))                    
-		      		components[RT] = componentCount++                       
-		   		ORS=components[RT] 
-	   }                
-	}
-	{
-	   print $0 > (FILENAME ".c")
-	}
-	END {
-		systemUpdateCount = 0
-		systemDrawCount = 0
-		taskUpdateCount = 6
-		taskDrawCount = 1
-		tagCount = 0
-		print (systemUpdateCount ",\n" systemDrawCount ",\n" taskUpdateCount ",\n" taskDrawCount ",\n" tagCount ",\n" componentCount ",\n "commandCount ",\n" eventCount ",\n" attributeCount ",\n" templateCount) > "che.log"
-	}' $files
-}
-
-
-replace_checs_macros_tst()
-{
-	module_calls=$(awk '/import/' src/setup.c) #create string of all module import calls
+	module_calls=$(awk '/^\s*\w+import/' src/setup.c) #create string of all module import calls, ignore import if commented out with //, multiline comments are ignored
 	modules=$(sed 's/_.*//' <<< "$module_calls") #remove everything but module name
 	modules=$(awk -v RS="[ \n]+" '!n[$0]++' <<< "$modules") #remove duplicates
 	modules=$(sed 's/\</modules\//g' <<< $modules) #add path suffix to each module
@@ -180,6 +115,12 @@ replace_checs_macros_tst()
 		        fnames[tmp[i]]
 		    }	
 		}
+		attributeCount = 0
+		systemUpdateCount = 0
+		systemDrawCount = 0
+		taskUpdateCount = 0
+		taskDrawCount = 0
+		tagCount = 0
 	}
 	FNUM<=module_files_count { 
 		if ($0 ~ /^\s*void\s*\w+\(void)/) {
@@ -188,6 +129,14 @@ replace_checs_macros_tst()
 	}
 	FNUM<=module_files_count {
 		if (inFunc) {
+			if ($0 ~ /checs_tasks_register/) {
+				if ($0 ~ /UPDATE/) {
+					taskUpdateCount = taskUpdateCount + NF - 1
+				} 
+				else {
+					taskDrawCount = taskDrawCount + NF - 1
+				}
+			}
 		    tail = $0
 		    while ( match(tail,/<[^>]+>/) ) {
 		        tgt = substr(tail,RSTART+1,RLENGTH-2)
@@ -221,6 +170,7 @@ replace_checs_macros_tst()
 	    tail = $0
 	    while ( match(tail,/<[^>.]+>/) ) {
 	        tgt = substr(tail,RSTART+1,RLENGTH-2)
+	        tgt_err = tgt 
 
 		       	switch (tgt){
 			    	case /E:/:
@@ -239,6 +189,9 @@ replace_checs_macros_tst()
 				      	tgt = components[tgt]  
 				}
 
+			if (tgt=="") {
+				tgt = "000"
+			}
 	        head = head substr(tail,1,RSTART-1) tgt
 	        tail = substr(tail,RSTART+RLENGTH)
 	    }
@@ -247,11 +200,6 @@ replace_checs_macros_tst()
 	   print head tail > (FILENAME ".c")
 	}
 	END {
-		systemUpdateCount = 0
-		systemDrawCount = 0
-		taskUpdateCount = 6
-		taskDrawCount = 1
-		tagCount = 0
 		print (systemUpdateCount ",\n" systemDrawCount ",\n" taskUpdateCount ",\n" taskDrawCount ",\n" tagCount ",\n" componentCount ",\n "commandCount ",\n" eventCount ",\n" attributeCount ",\n" templateCount) > "che.log"
 	}' $module_files src/setup.c $files
 }
@@ -401,11 +349,10 @@ then
 	if [ "$2" = "project" ]
 	then
 		find . -name \*.c.* -type f -delete #in case files got not deleted because operation was cancelled
-		#replace_checs_macros
-		replace_checs_macros_tst
+		replace_checs_macros
 		load_che_data
 		make run
-		find . -name \*.c.* -type f -delete
+		#find . -name \*.c.* -type f -delete
 	else
 		echo "Unknown compile argument: ${2}"
 	fi
