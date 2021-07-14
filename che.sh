@@ -137,13 +137,21 @@ replace_checs_macros()
 					taskDrawCount = taskDrawCount + NF - 1
 				}
 			}
+			else if ($0 ~ /checs_system_register/) {
+				if ($0 ~ /UPDATE/) {
+					systemUpdateCount++
+				} 
+				else {
+					systemDrawCount++
+				}
+			}
 		    tail = $0
 		    while ( match(tail,/<[^>]+>/) ) {
 		        tgt = substr(tail,RSTART+1,RLENGTH-2)
 		       	switch (tgt){
 			    	case /E:/:
 			    		if (!(tgt in events))
-					    	events[tgt] = eventCount++   
+					    	events[tgt] = eventCount++
 					    break
 					case /C:/:
 			    		if (!(tgt in commands))                    
@@ -156,10 +164,10 @@ replace_checs_macros()
 					case /T:/:
 						if (!(tgt in templates))     
 					    	templates[tgt] = templateCount++   
-					    break
+					    break 
 					default:
 						if (!(tgt in components))    
-				      		components[tgt] = componentCount++                      
+				      		components[tgt] = componentCount++
 				}   
 		        tail = substr(tail,RSTART+RLENGTH-1)
 		    }
@@ -185,12 +193,17 @@ replace_checs_macros()
 					case /T:/:  
 					    tgt = templates[tgt]
 					    break
+					case /#/:
+						if (!(tgt in tags))     
+					    	tags[tgt] = tagCount++  
+						tgt = tags[tgt]
+						break
 					default:
 				      	tgt = components[tgt]  
 				}
 
 			if (tgt=="") {
-				tgt = "000"
+				tgt = "0000"
 			}
 	        head = head substr(tail,1,RSTART-1) tgt
 	        tail = substr(tail,RSTART+RLENGTH)
@@ -352,7 +365,7 @@ then
 		replace_checs_macros
 		load_che_data
 		make run
-		#find . -name \*.c.* -type f -delete
+		find . -name \*.c.* -type f -delete
 	else
 		echo "Unknown compile argument: ${2}"
 	fi

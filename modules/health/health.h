@@ -34,7 +34,7 @@ DeathEvent;
 
 void health_import(void);
 void health_task(void);
-void health_collision_callback(checs_command_parameters);
+void health_collision_callback(CollisionCommand *cc);
 
 
 #endif

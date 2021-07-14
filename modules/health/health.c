@@ -26,9 +26,8 @@ void health_task(void)
 
 
 
-void health_collision_callback(checs_command_parameters)
+void health_collision_callback(CollisionCommand *cc)
 {
-	checs_command_use(CollisionCommand, cc);
 	if (checs_entity_has_component(<Damage>, cc->collider) && checs_entity_has_component(<Health>, cc->collidable))
 	{
 		checs_component_get_t(<Health>, Health, cc->collidable)->health += checs_component_get_t(<Damage>, Damage, cc->collider)->damage;
